@@ -1,10 +1,9 @@
+import LoginForm from "@/components/Composition/Login/login";
+
 export default function Home() {
   return (
-    <div className="flex h-screen items-center justify-center bg-gray-100">
-      <div className="flex h-2/3 w-3/4 flex-col items-center rounded-md bg-white p-4 shadow-md">
-        <div className="text-2xl font-bold">Your component here</div>
-        <div className="h-full w-full border"></div>
-      </div>
+    <div className="flex h-svh w-full items-center justify-center bg-gray-200">
+      <LoginForm />
     </div>
   );
 }
