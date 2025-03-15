@@ -4,3 +4,271 @@
 
 @layer base {
 }
+
+@theme {
+  --color-brand-50: #faf0fd;
+  --color-brand-100: #efd4f8;
+  --color-brand-200: #e2b8f1;
+  --color-brand-300: #d39de7;
+  --color-brand-400: #c283da;
+  --color-brand-500: #ae6cc9;
+  --color-brand-600: #9957b3;
+  --color-brand-700: #81459b;
+  --color-brand-800: #69357f;
+  --color-brand-900: #502861;
+
+  --color-neutral-50: #f9fafb;
+  --color-neutral-100: #f2f4f7;
+  --color-neutral-200: #eaecf0;
+  --color-neutral-300: #d0d5dd;
+  --color-neutral-400: #98a2b3;
+  --color-neutral-500: #667085;
+  --color-neutral-600: #475467;
+  --color-neutral-700: #344054;
+  --color-neutral-800: #1d2939;
+  --color-neutral-900: #101828;
+
+  --color-info-50: #edf4fe;
+  --color-info-100: #c8dffa;
+  --color-info-200: #a2caf4;
+  --color-info-300: #7bb6eb;
+  --color-info-400: #53a1df;
+  --color-info-500: #258dce;
+  --color-info-600: #0079b9;
+  --color-info-700: #0065a0;
+  --color-info-800: #005183;
+  --color-info-900: #003d64;
+
+  --color-error-50: #ffeee9;
+  --color-error-100: #ffcdc0;
+  --color-error-200: #ffac9a;
+  --color-error-300: #ff8c77;
+  --color-error-400: #fd6e59;
+  --color-error-500: #ea5241;
+  --color-error-600: #d2392d;
+  --color-error-700: #b5251f;
+  --color-error-800: #951815;
+  --color-error-900: #73130f;
+
+  --color-success-50: #e8f8eb;
+  --color-success-100: #b9e8c4;
+  --color-success-200: #88d7a0;
+  --color-success-300: #5cc57e;
+  --color-success-400: #25b161;
+  --color-success-500: #009d48;
+  --color-success-600: #008733;
+  --color-success-700: #007124;
+  --color-success-800: #005b19;
+  --color-success-900: #004612;
+
+  --color-warning-50: #fffee2;
+  --color-warning-100: #ffd4aa;
+  --color-warning-200: #ffb876;
+  --color-warning-300: #f6a351;
+  --color-warning-400: #ee963a;
+  --color-warning-500: #e78c26;
+  --color-warning-600: #d67800;
+  --color-warning-700: #bf6300;
+  --color-warning-800: #9f4b00;
+  --color-warning-900: #723200;
+
+  --text-headline-2xl-regular: 72px;
+  --text-headline-2xl-regular--line-height: 90px;
+  --text-headline-2xl-regular--font-weight: 400;
+  --text-headline-2xl-regular--letter-spacing: -0.02em;
+
+  --text-headline-2xl-medium: 72px;
+  --text-headline-2xl-medium--line-height: 90px;
+  --text-headline-2xl-medium--font-weight: 500;
+  --text-headline-2xl-medium--letter-spacing: -0.02em;
+
+  --text-headline-2xl-semibold: 72px;
+  --text-headline-2xl-semibold--line-height: 90px;
+  --text-headline-2xl-semibold--font-weight: 600;
+  --text-headline-2xl-semibold--letter-spacing: -0.02em;
+
+  --text-headline-2xl-bold: 72px;
+  --text-headline-2xl-bold--line-height: 90px;
+  --text-headline-2xl-bold--font-weight: 700;
+  --text-headline-2xl-bold--letter-spacing: -0.02em;
+
+  --text-headline-xl-regular: 60px;
+  --text-headline-xl-regular--line-height: 72px;
+  --text-headline-xl-regular--font-weight: 400;
+  --text-headline-xl-regular--letter-spacing: -0.02em;
+
+  --text-headline-xl-medium: 60px;
+  --text-headline-xl-medium--line-height: 72px;
+  --text-headline-xl-medium--font-weight: 500;
+  --text-headline-xl-medium--letter-spacing: -0.02em;
+
+  --text-headline-xl-semibold: 60px;
+  --text-headline-xl-semibold--line-height: 72px;
+  --text-headline-xl-semibold--font-weight: 600;
+  --text-headline-xl-semibold--letter-spacing: -0.02em;
+
+  --text-headline-xl-bold: 60px;
+  --text-headline-xl-bold--line-height: 72px;
+  --text-headline-xl-bold--font-weight: 700;
+  --text-headline-xl-bold--letter-spacing: -0.02em;
+
+  --text-headline-lg-regular: 48px;
+  --text-headline-lg-regular--line-height: 60px;
+  --text-headline-lg-regular--font-weight: 400;
+  --text-headline-lg-regular--letter-spacing: -0.02em;
+
+  --text-headline-lg-medium: 48px;
+  --text-headline-lg-medium--line-height: 60px;
+  --text-headline-lg-medium--font-weight: 500;
+  --text-headline-lg-medium--letter-spacing: -0.02em;
+
+  --text-headline-lg-semibold: 48px;
+  --text-headline-lg-semibold--line-height: 60px;
+  --text-headline-lg-semibold--font-weight: 600;
+  --text-headline-lg-semibold--letter-spacing: -0.02em;
+
+  --text-headline-lg-bold: 48px;
+  --text-headline-lg-bold--line-height: 60px;
+  --text-headline-lg-bold--font-weight: 700;
+  --text-headline-lg-bold--letter-spacing: -0.02em;
+
+  --text-headline-md-regular: 36px;
+  --text-headline-md-regular--line-height: 44px;
+  --text-headline-md-regular--font-weight: 400;
+  --text-headline-md-regular--letter-spacing: -0.02em;
+
+  --text-headline-md-medium: 36px;
+  --text-headline-md-medium--line-height: 44px;
+  --text-headline-md-medium--font-weight: 500;
+  --text-headline-md-medium--letter-spacing: -0.02em;
+
+  --text-headline-md-semibold: 36px;
+  --text-headline-md-semibold--line-height: 44px;
+  --text-headline-md-semibold--font-weight: 600;
+  --text-headline-md-semibold--letter-spacing: -0.02em;
+
+  --text-headline-md-bold: 36px;
+  --text-headline-md-bold--line-height: 44px;
+  --text-headline-md-bold--font-weight: 700;
+  --text-headline-md-bold--letter-spacing: -0.02em;
+
+  --text-headline-sm-regular: 30px;
+  --text-headline-sm-regular--line-height: 38px;
+  --text-headline-sm-regular--font-weight: 400;
+  --text-headline-sm-regular--letter-spacing: -0.02em;
+
+  --text-headline-sm-medium: 30px;
+  --text-headline-sm-medium--line-height: 38px;
+  --text-headline-sm-medium--font-weight: 500;
+  --text-headline-sm-medium--letter-spacing: -0.02em;
+
+  --text-headline-sm-semibold: 30px;
+  --text-headline-sm-semibold--line-height: 38px;
+  --text-headline-sm-semibold--font-weight: 600;
+  --text-headline-sm-semibold--letter-spacing: -0.02em;
+
+  --text-headline-sm-bold: 30px;
+  --text-headline-sm-bold--line-height: 38px;
+  --text-headline-sm-bold--font-weight: 700;
+  --text-headline-sm-bold--letter-spacing: -0.02em;
+
+  --text-headline-xs-regular: 24px;
+  --text-headline-xs-regular--line-height: 32px;
+  --text-headline-xs-regular--font-weight: 400;
+  --text-headline-xs-regular--letter-spacing: -0.02em;
+
+  --text-headline-xs-medium: 24px;
+  --text-headline-xs-medium--line-height: 32px;
+  --text-headline-xs-medium--font-weight: 500;
+  --text-headline-xs-medium--letter-spacing: -0.02em;
+
+  --text-headline-xs-semibold: 24px;
+  --text-headline-xs-semibold--line-height: 32px;
+  --text-headline-xs-semibold--font-weight: 600;
+  --text-headline-xs-semibold--letter-spacing: -0.02em;
+
+  --text-headline-xs-bold: 24px;
+  --text-headline-xs-bold--line-height: 32px;
+  --text-headline-xs-bold--font-weight: 700;
+  --text-headline-xs-bold--letter-spacing: -0.02em;
+
+  --text-xs-regular: 12px;
+  --text-xs-regular--line-height: 18px;
+  --text-xs-regular--font-weight: 400;
+
+  --text-xs-medium: 12px;
+  --text-xs-medium--line-height: 18px;
+  --text-xs-medium--font-weight: 500;
+
+  --text-xs-semibold: 12px;
+  --text-xs-semibold--line-height: 18px;
+  --text-xs-semibold--font-weight: 600;
+
+  --text-xs-bold: 12px;
+  --text-xs-bold--line-height: 18px;
+  --text-xs-bold--font-weight: 700;
+
+  --text-sm-regular: 14px;
+  --text-sm-regular--line-height: 20px;
+  --text-sm-regular--font-weight: 400;
+
+  --text-sm-medium: 14px;
+  --text-sm-medium--line-height: 20px;
+  --text-sm-medium--font-weight: 500;
+
+  --text-sm-semibold: 14px;
+  --text-sm-semibold--line-height: 20px;
+  --text-sm-semibold--font-weight: 600;
+
+  --text-sm-bold: 14px;
+  --text-sm-bold--line-height: 20px;
+  --text-sm-bold--font-weight: 700;
+
+  --text-md-regular: 16px;
+  --text-md-regular--line-height: 24px;
+  --text-md-regular--font-weight: 400;
+
+  --text-md-medium: 16px;
+  --text-md-medium--line-height: 24px;
+  --text-md-medium--font-weight: 500;
+
+  --text-md-semibold: 16px;
+  --text-md-semibold--line-height: 24px;
+  --text-md-semibold--font-weight: 600;
+
+  --text-md-bold: 16px;
+  --text-md-bold--line-height: 24px;
+  --text-md-bold--font-weight: 700;
+
+  --text-lg-regular: 18px;
+  --text-lg-regular--line-height: 28px;
+  --text-lg-regular--font-weight: 400;
+
+  --text-lg-medium: 18px;
+  --text-lg-medium--line-height: 28px;
+  --text-lg-medium--font-weight: 500;
+
+  --text-lg-semibold: 18px;
+  --text-lg-semibold--line-height: 28px;
+  --text-lg-semibold--font-weight: 600;
+
+  --text-lg-bold: 18px;
+  --text-lg-bold--line-height: 28px;
+  --text-lg-bold--font-weight: 700;
+
+  --text-xl-regular: 20px;
+  --text-xl-regular--line-height: 30px;
+  --text-xl-regular--font-weight: 400;
+
+  --text-xl-medium: 20px;
+  --text-xl-medium--line-height: 30px;
+  --text-xl-medium--font-weight: 500;
+
+  --text-xl-semibold: 20px;
+  --text-xl-semibold--line-height: 30px;
+  --text-xl-semibold--font-weight: 600;
+
+  --text-xl-bold: 20px;
+  --text-xl-bold--line-height: 30px;
+  --text-xl-bold--font-weight: 700;
+}
