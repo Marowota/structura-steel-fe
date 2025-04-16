@@ -1,4 +1,4 @@
-export default function FontTester() {
+export function FontTester() {
   return (
     <>
       <div className="text-headline-2xl-regular">

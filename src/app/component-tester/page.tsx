@@ -1,12 +1,15 @@
 "use client";
 import { useRef, useState } from "react";
-import ColorTester from "./tester/color-tester";
-import FontTester from "./tester/font-tester";
-import { Button } from "@/components/Elements";
+import { Button } from "@/components/elements";
+import {
+  ButtonTester,
+  ColorTester,
+  FontTester,
+} from "@/app/component-tester/tester";
 
 export default function ComponentTesterBase() {
   const [tester, setTester] = useState(<></>);
-  const testerList = useRef([ColorTester, FontTester]);
+  const testerList = useRef([ColorTester, FontTester, ButtonTester]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">

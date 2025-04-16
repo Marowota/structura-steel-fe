@@ -1,4 +1,4 @@
-export default function ColorTester() {
+export function ColorTester() {
   return (
     <>
       <div className="bg-brand-50">Brand 50</div>

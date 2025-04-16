@@ -1,5 +1,5 @@
 "use client";
-import { Button, Input } from "@/components/Elements";
+import { Button, Input } from "@/components/elements";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
 
