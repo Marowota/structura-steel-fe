@@ -1,16 +1,34 @@
 import * as React from "react";
 
 import { cn } from "@/lib/utils";
+import { cva, VariantProps } from "class-variance-authority";
 
-const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
-  ({ className, type, ...props }, ref) => {
+const inputVariant = cva(
+  "text-md-regular rounded-md border-1 px-3 py-2 active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
+  {
+    variants: {
+      variant: {
+        normal:
+          "border-gray-300 focus-visible:border-purple-300 ring-purple-50",
+        success:
+          "border-success-300 focus-visible:border-success-500 ring-success-50",
+        error: "border-error-300 focus-visible:border-error-500 ring-error-50",
+        nothing: "",
+      },
+    },
+  },
+);
+
+export interface InputProps
+  extends React.ComponentProps<"input">,
+    VariantProps<typeof inputVariant> {}
+
+const Input = React.forwardRef<HTMLInputElement, InputProps>(
+  ({ variant, className, type, ...props }, ref) => {
     return (
       <input
         type={type}
-        className={cn(
-          "border-input file:text-foreground placeholder:text-muted-foreground focus-visible:ring-ring flex h-9 w-full rounded-md border bg-transparent px-3 py-1 text-base shadow-sm transition-colors file:border-0 file:bg-transparent file:text-sm file:font-medium focus-visible:ring-1 focus-visible:outline-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-          className,
-        )}
+        className={cn(inputVariant({ variant, className }), "")}
         ref={ref}
         {...props}
       />

@@ -20,20 +20,30 @@ export default function LoginForm() {
         alt="icon"
         width={200}
         height={200}
-        className="h-full w-full"
+        className="w-60"
         draggable={false}
       />
       <form
         onSubmit={handleSubmit(onSubmit)}
-        className="flex w-72 flex-col gap-4 px-5 pb-5"
+        className="flex w-[400px] min-w-[300px] flex-col gap-4 px-5 pb-5"
       >
-        <Input placeholder="Username" type="text" {...register("username")} />
         <Input
+          className="w-full"
+          placeholder="Username"
+          type="text"
+          variant={"normal"}
+          {...register("username")}
+        />
+        <Input
+          className="w-full"
           placeholder="Password"
           type="password"
+          variant={"normal"}
           {...register("password")}
         />
-        <Button type="submit">login</Button>
+        <Button className="w-full" type="submit">
+          login
+        </Button>
       </form>
     </div>
   );
