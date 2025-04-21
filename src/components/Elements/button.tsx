@@ -5,7 +5,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "@/lib/utils";
 
 const buttonVariants = cva(
-  "rounded-lg cursor-pointer w-fit h-fit transition-all duration-100 active:scale-90 select-none",
+  "rounded-lg cursor-pointer w-fit h-fit transition-all duration-100 select-none",
   {
     variants: {
       variant: {

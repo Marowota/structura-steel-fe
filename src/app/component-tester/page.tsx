@@ -5,11 +5,17 @@ import {
   ButtonTester,
   ColorTester,
   FontTester,
+  TableTester,
 } from "@/app/component-tester/tester";
 
 export default function ComponentTesterBase() {
   const [tester, setTester] = useState(<></>);
-  const testerList = useRef([ColorTester, FontTester, ButtonTester]);
+  const testerList = useRef([
+    ColorTester,
+    FontTester,
+    ButtonTester,
+    TableTester,
+  ]);
 
   return (
     <div className="flex min-h-screen items-center justify-center bg-gray-100">
