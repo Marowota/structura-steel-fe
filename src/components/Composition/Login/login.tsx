@@ -1,4 +1,5 @@
 "use client";
+import { usePostLogin } from "@/app/login/api/postLogin";
 import { Button, Input } from "@/components/elements";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -10,8 +11,10 @@ type TLogin = {
 
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<TLogin>();
-  const onSubmit: SubmitHandler<TLogin> = (data) => {
-    console.log(data);
+  const { mutateAsync: login } = usePostLogin();
+  const onSubmit: SubmitHandler<TLogin> = async (data) => {
+    const response = await login(data);
+    console.log(response);
   };
   return (
     <div className="flex h-fit w-fit flex-col items-center gap-3 rounded-xl bg-white px-5 py-3 shadow-md">
