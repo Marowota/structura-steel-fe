@@ -1,18 +1,13 @@
 "use client";
-import { usePostLogin } from "@/app/login/api/postLogin";
+import { PostLoginDTO, usePostLogin } from "@/app/login/api/postLogin";
 import { Button, Input } from "@/components/elements";
 import Image from "next/image";
 import { useForm, SubmitHandler } from "react-hook-form";
 
-type TLogin = {
-  username: string;
-  password: string;
-};
-
 export default function LoginForm() {
-  const { register, handleSubmit } = useForm<TLogin>();
+  const { register, handleSubmit } = useForm<PostLoginDTO>();
   const { mutateAsync: login } = usePostLogin();
-  const onSubmit: SubmitHandler<TLogin> = async (data) => {
+  const onSubmit: SubmitHandler<PostLoginDTO> = async (data) => {
     const response = await login(data);
     console.log(response);
   };

@@ -4,7 +4,7 @@ import { EToastType, toastNotification } from "@/lib/toastNotification";
 import { MutationOptions, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 
-type PostLoginDTO = {
+export type PostLoginDTO = {
   username: string;
   password: string;
   grant_type: string;
