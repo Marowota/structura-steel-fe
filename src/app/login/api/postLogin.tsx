@@ -34,7 +34,7 @@ export const postLogin = async (data: PostLoginDTO) => {
   data.grant_type ??= "password";
   data.client_id ??= "structura-steel-client";
 
-  const response = await extendedAxios.post<TCredential, PostLoginDTO>(
+  const response = await axios.post<TCredential>(
     API_URL.AuthService.login,
     data,
     {
