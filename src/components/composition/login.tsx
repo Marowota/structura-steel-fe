@@ -2,6 +2,7 @@
 import { PostLoginDTO, usePostLogin } from "@/app/login/api/postLogin";
 import { Button, Input } from "@/components/elements";
 import Image from "next/image";
+import { redirect } from "next/navigation";
 import { useForm, SubmitHandler } from "react-hook-form";
 
 export default function LoginForm() {
@@ -22,6 +23,7 @@ export default function LoginForm() {
       sessionStorage.setItem("expires_in", expiresIn.toISOString());
       localStorage.setItem("refresh_token", response.refresh_token ?? "");
       localStorage.setItem("refresh_expires_in", refreshExpireIn.toISOString());
+      redirect("/");
     }
   };
 

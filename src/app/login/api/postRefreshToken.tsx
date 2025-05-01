@@ -3,6 +3,7 @@ import { PostLoginDTO, TCredential, TLoginError } from "./postLogin";
 import { extendedAxios } from "@/lib/extendedAxios";
 import { API_URL } from "@/constant/apiURL";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
+import axios from "axios";
 
 export type PostRefreshTokenDTO = {
   grant_type?: string;
@@ -17,18 +18,24 @@ type TUsePostLoginParams = {
 export const postRefreshToken = async (data: PostRefreshTokenDTO) => {
   data.grant_type ??= "password";
   data.client_id ??= "structura-steel-client";
-
-  const response = await extendedAxios.post<TCredential, PostRefreshTokenDTO>(
-    API_URL.AuthService.login,
-    data,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+  try {
+    const response = await extendedAxios.post<TCredential, PostRefreshTokenDTO>(
+      API_URL.AuthService.login,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       },
-    },
-  );
+    );
 
-  return response?.data;
+    return response?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data ?? error;
+    }
+    throw error;
+  }
 };
 
 export const usePostRefreshToken = ({ options }: TUsePostLoginParams = {}) => {

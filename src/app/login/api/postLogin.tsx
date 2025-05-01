@@ -2,6 +2,7 @@ import { API_URL } from "@/constant/apiURL";
 import { extendedAxios } from "@/lib/extendedAxios";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
 import { MutationOptions, useMutation } from "@tanstack/react-query";
+import axios from "axios";
 
 export type PostLoginDTO = {
   username: string;
@@ -33,17 +34,24 @@ export const postLogin = async (data: PostLoginDTO) => {
   data.grant_type ??= "password";
   data.client_id ??= "structura-steel-client";
 
-  const response = await extendedAxios.post<TCredential, PostLoginDTO>(
-    API_URL.AuthService.login,
-    data,
-    {
-      headers: {
-        "Content-Type": "application/x-www-form-urlencoded",
+  try {
+    const response = await extendedAxios.post<TCredential, PostLoginDTO>(
+      API_URL.AuthService.login,
+      data,
+      {
+        headers: {
+          "Content-Type": "application/x-www-form-urlencoded",
+        },
       },
-    },
-  );
+    );
 
-  return response?.data;
+    return response?.data;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data ?? error;
+    }
+    throw error;
+  }
 };
 
 export const usePostLogin = ({ options }: TUsePostLoginParams = {}) => {
@@ -61,12 +69,10 @@ export const usePostLogin = ({ options }: TUsePostLoginParams = {}) => {
     },
     ...options,
   });
-
   const mutateAsync = async (data: PostLoginDTO) => {
     try {
       return await mutation.mutateAsync(data);
     } catch (error) {}
   };
-
   return { ...mutation, mutateAsync };
 };
