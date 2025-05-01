@@ -7,7 +7,9 @@ const API_BASE_URL = {
 
 export const API_URL = {
   AuthService: {
-    login: API_BASE_URL.authService + "/structura/signin",
+    //login: API_BASE_URL.authService + "/structura/signin",
+    login:
+      "http://localhost:8008/realms/structura/protocol/openid-connect/token",
     loginAdmin: API_BASE_URL.authService + "/master/signin",
   },
   productService: {

@@ -5,6 +5,7 @@ import axios, {
   AxiosResponse,
 } from "axios";
 import { EToastType, toastNotification } from "./toastNotification";
+import { API_URL } from "@/constant/apiURL";
 
 class ExtendedAxios {
   private instance: AxiosInstance;
@@ -61,13 +62,12 @@ class ExtendedAxios {
   }
 
   private async errorInterceptor<T, DTO>(error: AxiosError<T, DTO>) {
-    console.log(error);
     switch (error.status) {
       case 401:
-        toastNotification(
-          "Unauthorized, please login again",
-          EToastType.WARNING,
-        );
+        if (error.request.url?.includes(API_URL.AuthService.login)) {
+          return Promise.reject(error);
+        }
+        toastNotification("Unauthorized, please login again", EToastType.ERROR);
         return;
       case 403:
         toastNotification("Forbidden", EToastType.ERROR);

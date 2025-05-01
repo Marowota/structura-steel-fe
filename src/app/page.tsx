@@ -1,7 +1,6 @@
-import LoginForm from "@/components/composition/login/login";
+import { redirect } from "next/navigation";
 
 export default function Home() {
-  return (
-    <div className="flex h-svh w-full items-center justify-center bg-gray-200"></div>
-  );
+  redirect("/account");
+  return <></>;
 }

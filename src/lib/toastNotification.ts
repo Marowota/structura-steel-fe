@@ -7,10 +7,13 @@ export enum EToastType {
   WARNING = "#d67800",
 }
 
-export const toastNotification = (message: string, type: EToastType) => {
+export const toastNotification = (
+  message: string,
+  type: EToastType = EToastType.INFO,
+) => {
   toast(message, {
     position: "top-center",
     duration: 3000,
-    style: { background: type },
+    style: { background: type, color: "white" },
   });
 };

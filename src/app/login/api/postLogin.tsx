@@ -2,7 +2,6 @@ import { API_URL } from "@/constant/apiURL";
 import { extendedAxios } from "@/lib/extendedAxios";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
 import { MutationOptions, useMutation } from "@tanstack/react-query";
-import axios from "axios";
 
 export type PostLoginDTO = {
   username: string;
@@ -11,7 +10,7 @@ export type PostLoginDTO = {
   client_id: string;
 };
 
-type TCredential = {
+export type TCredential = {
   access_token?: string;
   expires_in?: number;
   refresh_expires_in?: number;
@@ -21,7 +20,7 @@ type TCredential = {
   scope?: string;
 };
 
-type TLoginError = {
+export type TLoginError = {
   error?: string;
   error_description?: string;
 };
@@ -34,7 +33,7 @@ export const postLogin = async (data: PostLoginDTO) => {
   data.grant_type ??= "password";
   data.client_id ??= "structura-steel-client";
 
-  const response = await axios.post<TCredential>(
+  const response = await extendedAxios.post<TCredential, PostLoginDTO>(
     API_URL.AuthService.login,
     data,
     {
@@ -43,19 +42,31 @@ export const postLogin = async (data: PostLoginDTO) => {
       },
     },
   );
-  return response.data;
+
+  return response?.data;
 };
 
 export const usePostLogin = ({ options }: TUsePostLoginParams = {}) => {
-  return useMutation({
+  const mutation = useMutation({
     mutationKey: ["sus"],
     mutationFn: postLogin,
     onSuccess: () => {
       toastNotification("Login successful", EToastType.SUCCESS);
     },
     onError: (error) => {
-      console.log(error);
+      toastNotification(
+        error?.error_description ?? "Login failed",
+        EToastType.ERROR,
+      );
     },
     ...options,
   });
+
+  const mutateAsync = async (data: PostLoginDTO) => {
+    try {
+      return await mutation.mutateAsync(data);
+    } catch (error) {}
+  };
+
+  return { ...mutation, mutateAsync };
 };
