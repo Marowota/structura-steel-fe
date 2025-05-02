@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
+import { nameToTwoText } from "@/mapper/nameToTwoText";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
@@ -22,11 +23,29 @@ export function MainLayout({ children }: { children: ReactNode }) {
       name: "Order",
       icon: <ReceiptText />,
       route: "/order",
+      header: "Order",
     },
-    { name: "Purchase", icon: <CreditCard />, route: "/purchase" },
-    { name: "Partner", icon: <Handshake />, route: "/partner" },
-    { name: "Product", icon: <Barcode />, route: "/product" },
+    {
+      name: "Purchase",
+      icon: <CreditCard />,
+      route: "/purchase",
+      header: "Purchase",
+    },
+    {
+      name: "Partner",
+      icon: <Handshake />,
+      route: "/partner",
+      header: "Partner",
+    },
+    {
+      name: "Product",
+      icon: <Barcode />,
+      route: "/product",
+      header: "Product",
+    },
   ];
+
+  const selectedTab = Tabs.find((tab) => tab.route === pathname);
 
   const handleLogout = () => {
     sessionStorage.removeItem("access_token");
@@ -67,7 +86,9 @@ export function MainLayout({ children }: { children: ReactNode }) {
           </Button>
         ))}
         <div className="mt-auto flex min-h-10 w-full items-center gap-4 border-t-[1px] border-gray-500 px-2 py-2">
-          <div className="h-10 min-w-10 rounded-full bg-gray-500"></div>
+          <div className="flex h-10 min-w-10 items-center justify-center rounded-full bg-gray-500 text-white">
+            {nameToTwoText(userInfo?.name)}
+          </div>
           <div className="text-md-semibold flex w-full flex-col overflow-hidden">
             <div>{userInfo?.name}</div>
           </div>
@@ -79,7 +100,13 @@ export function MainLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
-      {children}
+      <div className="mx-6 flex h-full w-full flex-col gap-1 bg-white p-6 shadow-md">
+        <div className="text-headline-sm-semibold text-brand-800">
+          {selectedTab?.header}
+        </div>
+        <div className="border-info-300 border" />
+        <div className="h-full w-full">{children}</div>
+      </div>
     </div>
   );
 }
