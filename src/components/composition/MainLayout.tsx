@@ -1,15 +1,21 @@
 "use client";
-import { ReactNode, useContext } from "react";
+import { ReactNode, useContext, useState } from "react";
 import { Button } from "@/components/elements";
 import Image from "next/image";
 import { UserContext } from "./AuthorizedLayout";
-import { Barcode, CreditCard, Handshake, ReceiptText } from "lucide-react";
+import {
+  Barcode,
+  CreditCard,
+  Handshake,
+  LogOut,
+  ReceiptText,
+} from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
+import { EToastType, toastNotification } from "@/lib/toastNotification";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
   const pathname = usePathname();
-  console.log("pathname", pathname);
 
   const Tabs = [
     {
@@ -21,6 +27,15 @@ export function MainLayout({ children }: { children: ReactNode }) {
     { name: "Partner", icon: <Handshake />, route: "/partner" },
     { name: "Product", icon: <Barcode />, route: "/product" },
   ];
+
+  const handleLogout = () => {
+    sessionStorage.removeItem("access_token");
+    sessionStorage.removeItem("expires_in");
+    localStorage.removeItem("refresh_token");
+    localStorage.removeItem("refresh_expires_in");
+    toastNotification("Logged out successfully", EToastType.SUCCESS);
+    redirect("/login");
+  };
 
   return (
     <div className="bg-white-200 flex h-screen w-full">
@@ -55,6 +70,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
           <div className="h-10 min-w-10 rounded-full bg-gray-500"></div>
           <div className="text-md-semibold flex w-full flex-col overflow-hidden">
             <div>{userInfo?.name}</div>
+          </div>
+          <div
+            className="ml-auto rounded-md p-2 hover:cursor-pointer hover:bg-gray-200 active:bg-gray-300"
+            onClick={() => handleLogout()}
+          >
+            <LogOut />
           </div>
         </div>
       </div>
