@@ -4,10 +4,12 @@ import { Button } from "@/components/elements";
 import Image from "next/image";
 import { UserContext } from "./AuthorizedLayout";
 import { Barcode, CreditCard, Handshake, ReceiptText } from "lucide-react";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
+  const pathname = usePathname();
+  console.log("pathname", pathname);
 
   const Tabs = [
     {
@@ -38,13 +40,13 @@ export function MainLayout({ children }: { children: ReactNode }) {
             key={tab.name}
             variant={"navbar"}
             size="nav"
-            className="flex gap-2"
+            className={`flex gap-2 ${pathname === tab.route ? "text-brand-600 bg-info-50 hover:bg-brand-50 active:bg-info-50" : "text-gray-900"}`}
             onClick={() => {
               redirect(tab.route);
             }}
           >
-            <div className="h-6 w-6">{tab.icon}</div>
-            <div className="text-white transition-all duration-300 group-hover:text-gray-900">
+            <div className="flex h-6 w-6">{tab.icon}</div>
+            <div className="w-0 overflow-hidden text-left text-inherit opacity-0 group-hover:w-full group-hover:opacity-100">
               {tab.name}
             </div>
           </Button>

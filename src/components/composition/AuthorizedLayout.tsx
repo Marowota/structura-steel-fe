@@ -1,7 +1,7 @@
 "use client";
 import { usePostRefreshToken } from "@/app/login/api/postRefreshToken";
 import { toastNotification } from "@/lib/toastNotification";
-import { redirect } from "next/navigation";
+import { redirect, usePathname } from "next/navigation";
 import { createContext, JSX, ReactNode, useEffect, useState } from "react";
 import { jwtDecode } from "jwt-decode";
 import { TJwtObject } from "@/types/TJwtObject";
@@ -11,6 +11,7 @@ export const UserContext = createContext<TJwtObject | null | undefined>(null);
 export function AuthorizedLayout({ children }: { children?: ReactNode }) {
   const { mutateAsync: getAccessToken } = usePostRefreshToken();
   const [userInfo, setUserInfo] = useState<TJwtObject | null>();
+  const pathname = usePathname();
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem("access_token");
@@ -81,7 +82,7 @@ export function AuthorizedLayout({ children }: { children?: ReactNode }) {
     } else {
       setUserInfo(null);
     }
-  }, []);
+  }, [pathname]);
 
   return (
     <>
