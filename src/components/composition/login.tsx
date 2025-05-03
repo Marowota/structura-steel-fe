@@ -10,9 +10,10 @@ import { useForm, SubmitHandler } from "react-hook-form";
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<PostLoginDTO>();
   const { mutateAsync: login } = usePostLogin();
-  const { userInfo } = useGetUserInfo({ noRedirect: true });
+  const { userInfo, setCredential } = useGetUserInfo({ noRedirect: true });
 
   useEffect(() => {
+    console.log("userInfo", userInfo);
     if (userInfo) {
       redirect("/");
     }
@@ -21,18 +22,7 @@ export default function LoginForm() {
   const onSubmit: SubmitHandler<PostLoginDTO> = async (data) => {
     const response = await login(data);
     if (response) {
-      const expiresIn = new Date(
-        Date.now() + ((response.expires_in ?? 0) - 60) * 1000,
-      );
-
-      const refreshExpireIn = new Date(
-        Date.now() + ((response.refresh_expires_in ?? 0) - 60) * 1000,
-      );
-
-      sessionStorage.setItem("access_token", response.access_token ?? "");
-      sessionStorage.setItem("expires_in", expiresIn.toISOString());
-      localStorage.setItem("refresh_token", response.refresh_token ?? "");
-      localStorage.setItem("refresh_expires_in", refreshExpireIn.toISOString());
+      setCredential(response);
       redirect("/");
     }
   };

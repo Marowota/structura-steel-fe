@@ -1,3 +1,4 @@
+import { TCredential } from "@/app/login/api/postLogin";
 import { usePostRefreshToken } from "@/app/login/api/postRefreshToken";
 import { toastNotification } from "@/lib/toastNotification";
 import { TJwtObject } from "@/types/TJwtObject";
@@ -14,7 +15,28 @@ export const useGetUserInfo = ({
   const [userInfo, setUserInfo] = useState<TJwtObject | null>();
   const pathname = usePathname();
 
-  const getAccessTokenHandler = async ({
+  const setCredential = (credential: TCredential) => {
+    const expiresIn = new Date(
+      Date.now() + ((credential.expires_in ?? 0) - 60) * 1000,
+    );
+
+    const refreshExpireIn = new Date(
+      Date.now() + ((credential.refresh_expires_in ?? 0) - 60) * 1000,
+    );
+
+    sessionStorage.setItem("access_token", credential.access_token ?? "");
+    sessionStorage.setItem("expires_in", expiresIn.toISOString());
+    localStorage.setItem("refresh_token", credential.refresh_token ?? "");
+    localStorage.setItem("refresh_expires_in", refreshExpireIn.toISOString());
+
+    console.log("Session refreshed successfully");
+    console.log("access_token", credential.access_token);
+    console.log("expires_in", expiresIn.toISOString());
+    console.log("refresh_token", credential.refresh_token);
+    console.log("refresh_expires_in", refreshExpireIn.toISOString());
+  };
+
+  const getCredentialHandler = async ({
     refreshToken,
   }: {
     refreshToken?: string;
@@ -26,25 +48,7 @@ export const useGetUserInfo = ({
     });
 
     if (response) {
-      const expiresIn = new Date(
-        Date.now() + ((response.expires_in ?? 0) - 60) * 1000,
-      );
-
-      const refreshExpireIn = new Date(
-        Date.now() + ((response.refresh_expires_in ?? 0) - 60) * 1000,
-      );
-
-      sessionStorage.setItem("access_token", response.access_token ?? "");
-      sessionStorage.setItem("expires_in", expiresIn.toISOString());
-      localStorage.setItem("refresh_token", response.refresh_token ?? "");
-      localStorage.setItem("refresh_expires_in", refreshExpireIn.toISOString());
-
-      console.log("Session refreshed successfully");
-      console.log("access_token", response.access_token);
-      console.log("expires_in", expiresIn.toISOString());
-      console.log("refresh_token", response.refresh_token);
-      console.log("refresh_expires_in", refreshExpireIn.toISOString());
-
+      setCredential(response);
       return true;
     }
     return false;
@@ -67,15 +71,17 @@ export const useGetUserInfo = ({
         refreshExpiresIn &&
         refreshExpiresIn > new Date().toISOString()
       ) {
-        getAccessTokenHandler({ refreshToken }).then((result) => {
+        getCredentialHandler({ refreshToken }).then((result) => {
           if (!result && !noRedirect) {
             toastNotification("Session expired, please login again");
+            setUserInfo(null);
             redirect("/login");
           }
         });
       } else {
         if (!noRedirect) {
           toastNotification("Session expired, please login again");
+          setUserInfo(null);
           redirect("/login");
         }
       }
@@ -88,5 +94,5 @@ export const useGetUserInfo = ({
     }
   }, [pathname]);
 
-  return { userInfo };
+  return { userInfo, setCredential };
 };
