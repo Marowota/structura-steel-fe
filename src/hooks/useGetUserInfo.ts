@@ -76,6 +76,8 @@ export const useGetUserInfo = ({
             toastNotification("Session expired, please login again");
             setUserInfo(null);
             redirect("/login");
+          } else {
+            setUserInfo(jwtDecode<TJwtObject>(accessToken ?? ""));
           }
         });
       } else {
@@ -85,12 +87,8 @@ export const useGetUserInfo = ({
           redirect("/login");
         }
       }
-    }
-
-    if (accessToken) {
-      setUserInfo(jwtDecode<TJwtObject>(accessToken));
     } else {
-      setUserInfo(null);
+      setUserInfo(jwtDecode<TJwtObject>(accessToken));
     }
   }, [pathname]);
 
