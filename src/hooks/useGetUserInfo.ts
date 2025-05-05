@@ -28,12 +28,6 @@ export const useGetUserInfo = ({
     sessionStorage.setItem("expires_in", expiresIn.toISOString());
     localStorage.setItem("refresh_token", credential.refresh_token ?? "");
     localStorage.setItem("refresh_expires_in", refreshExpireIn.toISOString());
-
-    console.log("Session refreshed successfully");
-    console.log("access_token", credential.access_token);
-    console.log("expires_in", expiresIn.toISOString());
-    console.log("refresh_token", credential.refresh_token);
-    console.log("refresh_expires_in", refreshExpireIn.toISOString());
   };
 
   const getCredentialHandler = async ({
@@ -60,11 +54,6 @@ export const useGetUserInfo = ({
     const refreshToken = localStorage.getItem("refresh_token");
     const refreshExpiresIn = localStorage.getItem("refresh_expires_in");
 
-    console.log("accessToken", accessToken);
-    console.log("expiresIn", expiresIn);
-    console.log("refreshToken", refreshToken);
-    console.log("refreshExpiresIn", refreshExpiresIn);
-
     if (!accessToken || !expiresIn || expiresIn < new Date().toISOString()) {
       if (
         refreshToken &&
@@ -77,7 +66,9 @@ export const useGetUserInfo = ({
             setUserInfo(null);
             redirect("/login");
           } else {
-            setUserInfo(jwtDecode<TJwtObject>(accessToken ?? ""));
+            setUserInfo(
+              accessToken ? jwtDecode<TJwtObject>(accessToken) : null,
+            );
           }
         });
       } else {
@@ -88,7 +79,7 @@ export const useGetUserInfo = ({
         }
       }
     } else {
-      setUserInfo(jwtDecode<TJwtObject>(accessToken));
+      setUserInfo(accessToken ? jwtDecode<TJwtObject>(accessToken) : null);
     }
   }, [pathname]);
 

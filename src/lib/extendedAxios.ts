@@ -3,6 +3,7 @@ import axios, {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosResponse,
+  InternalAxiosRequestConfig,
 } from "axios";
 import { EToastType, toastNotification } from "./toastNotification";
 import { API_URL } from "@/constant/apiURL";
@@ -85,6 +86,21 @@ class ExtendedAxios {
   }
 
   private async setupInterceptors() {
+    this.instance.interceptors.request.use(
+      (config: InternalAxiosRequestConfig) => {
+        const accessToken = sessionStorage.getItem("access_token");
+        const refreshToken = localStorage.getItem("refresh_token");
+
+        if (accessToken && config.url !== API_URL.AuthService.login) {
+          config.headers["Authorization"] = `Bearer ${accessToken}`;
+        }
+
+        return {
+          ...config,
+        };
+      },
+    );
+
     this.instance.interceptors.response.use(
       this.successInterceptor,
       this.errorInterceptor,

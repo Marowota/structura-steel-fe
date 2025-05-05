@@ -105,7 +105,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
           {selectedTab?.header}
         </div>
         <div className="border-info-300 border" />
-        <div className="h-full w-full">{children}</div>
+        <div className="w-full flex-1">{children}</div>
       </div>
     </div>
   );
