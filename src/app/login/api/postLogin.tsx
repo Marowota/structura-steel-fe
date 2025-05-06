@@ -71,7 +71,7 @@ export const usePostLogin = ({ options }: TUsePostLoginParams = {}) => {
   const mutateAsync = async (data: PostLoginDTO) => {
     try {
       return await mutation.mutateAsync(data);
-    } catch (error) {}
+    } catch {}
   };
   return { ...mutation, mutateAsync };
 };
