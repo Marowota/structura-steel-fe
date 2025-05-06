@@ -1,5 +1,5 @@
 import { API_URL } from "@/constant/apiURL";
-import { extendedAxios } from "@/lib/extendedAxios";
+import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import axios from "axios";

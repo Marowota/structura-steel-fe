@@ -53,7 +53,6 @@ export const MainTable = <T,>(
     getCoreRowModel: getCoreRowModel(),
   });
 
-  console.log("table", table.getRowModel().rows);
   const renderHeader = heading || filter;
 
   return (

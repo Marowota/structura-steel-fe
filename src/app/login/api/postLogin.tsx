@@ -1,6 +1,5 @@
 import { API_URL } from "@/constant/apiURL";
-import { extendedAxios } from "@/lib/extendedAxios";
-import { EToastType, toastNotification } from "@/lib/toastNotification";
+import { extendedAxios, EToastType, toastNotification } from "@/lib";
 import { MutationOptions, useMutation } from "@tanstack/react-query";
 import axios from "axios";
 

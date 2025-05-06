@@ -1,7 +1,9 @@
 "use client";
 import { PostLoginDTO, usePostLogin } from "@/app/login/api/postLogin";
 import { Button, Input } from "@/components/elements";
-import { useGetUserInfo } from "@/hooks/useGetUserInfo";
+import { useAuthenticate } from "@/hooks/useGetUserInfo";
+import { selectIsAuthenticated } from "@/lib/reducers";
+import { store } from "@/lib/store";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
@@ -10,14 +12,15 @@ import { useForm, SubmitHandler } from "react-hook-form";
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<PostLoginDTO>();
   const { mutateAsync: login } = usePostLogin();
-  const { userInfo, setCredential } = useGetUserInfo({ noRedirect: true });
+  const { setCredential } = useAuthenticate({ noRedirect: true });
+
+  const authenticated = selectIsAuthenticated(store.getState());
 
   useEffect(() => {
-    console.log("userInfo", userInfo);
-    if (userInfo) {
+    if (authenticated) {
       redirect("/");
     }
-  }, [userInfo]);
+  }, [authenticated]);
 
   const onSubmit: SubmitHandler<PostLoginDTO> = async (data) => {
     const response = await login(data);

@@ -1,19 +1,22 @@
 import { TCredential } from "@/app/login/api/postLogin";
 import { usePostRefreshToken } from "@/app/login/api/postRefreshToken";
-import { toastNotification } from "@/lib/toastNotification";
+import { authSlice, selectIsAuthenticated } from "@/lib/reducers";
+import { store } from "@/lib/store";
+import { EToastType, toastNotification } from "@/lib/toastNotification";
+import { TAuthToken } from "@/types/TAuthToken";
 import { TJwtObject } from "@/types/TJwtObject";
 import { jwtDecode } from "jwt-decode";
 import { redirect, usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
-export const useGetUserInfo = ({
+export const useAuthenticate = ({
   noRedirect = false,
 }: {
   noRedirect?: boolean;
 } = {}) => {
-  const { mutateAsync: getAccessToken, isError } = usePostRefreshToken();
-  const [userInfo, setUserInfo] = useState<TJwtObject | null>();
+  const { mutateAsync: getAccessToken } = usePostRefreshToken();
   const pathname = usePathname();
+  const authenticated = selectIsAuthenticated(store.getState());
 
   const setCredential = (credential: TCredential) => {
     const expiresIn = new Date(
@@ -28,9 +31,30 @@ export const useGetUserInfo = ({
     sessionStorage.setItem("expires_in", expiresIn.toISOString());
     localStorage.setItem("refresh_token", credential.refresh_token ?? "");
     localStorage.setItem("refresh_expires_in", refreshExpireIn.toISOString());
-  };
 
-  console.log("iserror", isError);
+    const authToken: TAuthToken = {
+      accessToken: credential.access_token ?? "",
+      refreshToken: credential.refresh_token ?? "",
+      expiresIn: expiresIn.toISOString(),
+      refreshExpiresIn: refreshExpireIn.toISOString(),
+    };
+
+    console.log(authToken);
+    if (authToken.accessToken) {
+      store.dispatch(
+        authSlice.actions.authenticate({
+          userInfo: jwtDecode<TJwtObject>(authToken.accessToken),
+          authToken: authToken,
+        }),
+      );
+    } else {
+      toastNotification(
+        "Logged in failed, no access token found",
+        EToastType.ERROR,
+      );
+      store.dispatch(authSlice.actions.logout());
+    }
+  };
 
   const getCredentialHandler = async ({
     refreshToken,
@@ -50,11 +74,17 @@ export const useGetUserInfo = ({
     return false;
   };
 
+  console.log("useAuthenticate", authenticated, pathname);
+
   useEffect(() => {
-    const accessToken = sessionStorage.getItem("access_token");
-    const expiresIn = sessionStorage.getItem("expires_in");
-    const refreshToken = localStorage.getItem("refresh_token");
-    const refreshExpiresIn = localStorage.getItem("refresh_expires_in");
+    const authToken: TAuthToken = {
+      accessToken: sessionStorage.getItem("access_token") ?? "",
+      refreshToken: localStorage.getItem("refresh_token") ?? "",
+      expiresIn: sessionStorage.getItem("expires_in") ?? "",
+      refreshExpiresIn: localStorage.getItem("refresh_expires_in") ?? "",
+    };
+    const { accessToken, refreshToken, expiresIn, refreshExpiresIn } =
+      authToken;
 
     if (!accessToken || !expiresIn || expiresIn < new Date().toISOString()) {
       if (
@@ -65,25 +95,19 @@ export const useGetUserInfo = ({
         getCredentialHandler({ refreshToken }).then((result) => {
           if (!result && !noRedirect) {
             toastNotification("Session expired, please login again");
-            setUserInfo(null);
+            store.dispatch(authSlice.actions.logout());
             redirect("/login");
-          } else {
-            setUserInfo(
-              accessToken ? jwtDecode<TJwtObject>(accessToken) : null,
-            );
           }
         });
       } else {
         if (!noRedirect) {
           toastNotification("Session expired, please login again");
-          setUserInfo(null);
+          store.dispatch(authSlice.actions.logout());
           redirect("/login");
         }
       }
-    } else {
-      setUserInfo(accessToken ? jwtDecode<TJwtObject>(accessToken) : null);
     }
-  }, [pathname, isError]);
+  }, [pathname, authenticated]);
 
-  return { userInfo, setCredential };
+  return { setCredential };
 };

@@ -66,7 +66,6 @@ export default function ProductPage() {
     sortDir: "asc",
   });
   const { data, isLoading } = useGetProducts({ params });
-  console.log("data", data);
   return (
     <div className="h-full pt-4">
       <MainTable
@@ -80,7 +79,6 @@ export default function ProductPage() {
           totalPages: data?.totalPages ?? -1,
           last: data?.last ?? true,
           onPageChange: (page) => {
-            console.log("page", page);
             setParams((prev) => ({ ...prev, pageNo: page }));
           },
         }}

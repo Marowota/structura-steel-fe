@@ -7,6 +7,8 @@ import axios, {
 } from "axios";
 import { EToastType, toastNotification } from "./toastNotification";
 import { API_URL } from "@/constant/apiURL";
+import { store } from "@/lib/store";
+import { authSlice } from "./reducers";
 
 class ExtendedAxios {
   private instance: AxiosInstance;
@@ -68,7 +70,7 @@ class ExtendedAxios {
         if (error.request.url?.includes(API_URL.AuthService.login)) {
           return Promise.reject(error);
         }
-        toastNotification("Unauthorized, please login again", EToastType.ERROR);
+        store.dispatch(authSlice.actions.expireToken());
         return;
       case 403:
         toastNotification("Forbidden", EToastType.ERROR);
