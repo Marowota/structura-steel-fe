@@ -61,7 +61,7 @@ const columns: ColumnDef<TProduct>[] = [
 export default function ProductPage() {
   const [params, setParams] = useState<GetProductsDTO>({
     pageNo: 0,
-    pageSize: 40,
+    pageSize: 10,
     sortBy: "id",
     sortDir: "asc",
   });
@@ -77,7 +77,7 @@ export default function ProductPage() {
           pageNo: (data?.pageNo ?? -1) + 1,
           pageSize: data?.pageSize ?? 0,
           totalElements: data?.totalElements ?? 0,
-          totalPages: (data?.totalPages ?? -1) + 1,
+          totalPages: data?.totalPages ?? -1,
           last: data?.last ?? true,
           onPageChange: (page) => {
             console.log("page", page);

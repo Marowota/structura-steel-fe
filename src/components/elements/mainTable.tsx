@@ -120,11 +120,12 @@ export const MainTable = <T,>(
           onPageChange={(props) => {
             paginateProps?.onPageChange?.(props.selected);
           }}
-          pageRangeDisplayed={5}
+          pageRangeDisplayed={2}
+          marginPagesDisplayed={1}
           pageCount={paginateProps?.totalPages ?? 0}
           previousLabel="<"
           renderOnZeroPageCount={null}
-          containerClassName="flex items-center justify-center gap-4"
+          containerClassName="flex items-center justify-center gap-4 select-none"
           pageClassName="cursor-pointer hover:bg-info-50 rounded-full text-center"
           pageLinkClassName="block w-6 h-6 rounded-full"
           activeClassName="bg-brand-50 border border-brand-200"
