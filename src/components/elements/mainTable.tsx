@@ -53,8 +53,6 @@ export const MainTable = <T,>(
     getCoreRowModel: getCoreRowModel(),
   });
 
-  const renderHeader = heading || filter;
-
   return (
     <div className="border-brand-300 flex h-[80vh] w-full flex-col rounded-md border py-2">
       <div className="text-md-bold flex items-center px-3 pb-2">

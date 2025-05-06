@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useContext, useState } from "react";
+import { ReactNode, useContext } from "react";
 import { Button } from "@/components/elements";
 import Image from "next/image";
 import { UserContext } from "./AuthorizedLayout";

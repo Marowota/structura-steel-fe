@@ -1,9 +1,7 @@
 "use client";
-import { createContext, JSX, ReactNode, useEffect, useState } from "react";
+import { createContext, ReactNode } from "react";
 import { TJwtObject } from "@/types/TJwtObject";
-import { useAuthenticate } from "@/hooks/useGetUserInfo";
-import { selectUserInfo } from "@/lib/reducers";
-import { store } from "@/lib/store";
+import { selectUserInfo, store } from "@/lib";
 
 export const UserContext = createContext<TJwtObject | null | undefined>(null);
 

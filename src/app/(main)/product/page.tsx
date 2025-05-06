@@ -65,7 +65,7 @@ export default function ProductPage() {
     sortBy: "id",
     sortDir: "asc",
   });
-  const { data, isLoading } = useGetProducts({ params });
+  const { data } = useGetProducts({ params });
   return (
     <div className="h-full pt-4">
       <MainTable

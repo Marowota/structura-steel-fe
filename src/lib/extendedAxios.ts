@@ -91,7 +91,6 @@ class ExtendedAxios {
     this.instance.interceptors.request.use(
       (config: InternalAxiosRequestConfig) => {
         const accessToken = sessionStorage.getItem("access_token");
-        const refreshToken = localStorage.getItem("refresh_token");
 
         if (accessToken && config.url !== API_URL.AuthService.login) {
           config.headers["Authorization"] = `Bearer ${accessToken}`;

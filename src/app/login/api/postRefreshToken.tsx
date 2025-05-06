@@ -1,8 +1,7 @@
 import { MutationOptions, useMutation } from "@tanstack/react-query";
-import { PostLoginDTO, TCredential, TLoginError } from "./postLogin";
-import { extendedAxios } from "@/lib/extendedAxios";
+import { TCredential, TLoginError } from "./postLogin";
+import { extendedAxios, EToastType, toastNotification } from "@/lib";
 import { API_URL } from "@/constant/apiURL";
-import { EToastType, toastNotification } from "@/lib/toastNotification";
 import axios from "axios";
 
 export type PostRefreshTokenDTO = {
