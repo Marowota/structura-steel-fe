@@ -11,7 +11,7 @@ export const useGetUserInfo = ({
 }: {
   noRedirect?: boolean;
 } = {}) => {
-  const { mutateAsync: getAccessToken } = usePostRefreshToken();
+  const { mutateAsync: getAccessToken, isError } = usePostRefreshToken();
   const [userInfo, setUserInfo] = useState<TJwtObject | null>();
   const pathname = usePathname();
 
@@ -29,6 +29,8 @@ export const useGetUserInfo = ({
     localStorage.setItem("refresh_token", credential.refresh_token ?? "");
     localStorage.setItem("refresh_expires_in", refreshExpireIn.toISOString());
   };
+
+  console.log("iserror", isError);
 
   const getCredentialHandler = async ({
     refreshToken,
@@ -81,7 +83,7 @@ export const useGetUserInfo = ({
     } else {
       setUserInfo(accessToken ? jwtDecode<TJwtObject>(accessToken) : null);
     }
-  }, [pathname]);
+  }, [pathname, isError]);
 
   return { userInfo, setCredential };
 };

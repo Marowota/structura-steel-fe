@@ -61,7 +61,7 @@ const columns: ColumnDef<TProduct>[] = [
 export default function ProductPage() {
   const [params, setParams] = useState<GetProductsDTO>({
     pageNo: 0,
-    pageSize: 30,
+    pageSize: 40,
     sortBy: "id",
     sortDir: "asc",
   });
@@ -72,8 +72,18 @@ export default function ProductPage() {
       <MainTable
         columns={columns}
         data={data?.content ?? []}
-        currentPage={(data?.pageNo ?? 0) + 1}
-        totalPage={(data?.totalPages ?? 0) + 1}
+        heading={"Number of Products: " + data?.totalElements}
+        paginateProps={{
+          pageNo: (data?.pageNo ?? -1) + 1,
+          pageSize: data?.pageSize ?? 0,
+          totalElements: data?.totalElements ?? 0,
+          totalPages: (data?.totalPages ?? -1) + 1,
+          last: data?.last ?? true,
+          onPageChange: (page) => {
+            console.log("page", page);
+            setParams((prev) => ({ ...prev, pageNo: page }));
+          },
+        }}
       />
     </div>
   );
