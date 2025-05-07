@@ -71,7 +71,7 @@ class ExtendedAxios {
           return Promise.reject(error);
         }
         store.dispatch(authSlice.actions.expireToken());
-        return;
+        return Promise.resolve();
       case 403:
         toastNotification("Forbidden", EToastType.ERROR);
         return;
