@@ -56,27 +56,26 @@ export const useAuthenticate = ({
     }
   };
 
-  const getCredentialHandler = async ({
-    refreshToken,
-  }: {
-    refreshToken?: string;
-  }) => {
-    const response = await getAccessToken({
-      grant_type: "refresh_token",
-      client_id: "structura-steel-client",
-      refresh_token: refreshToken ?? "",
-    });
-
-    if (response) {
-      setCredential(response);
-      return true;
-    }
-    return false;
-  };
-
   console.log("useAuthenticate", authenticated, pathname);
 
   useEffect(() => {
+    const getCredentialHandler = async ({
+      refreshToken,
+    }: {
+      refreshToken?: string;
+    }) => {
+      const response = await getAccessToken({
+        grant_type: "refresh_token",
+        client_id: "structura-steel-client",
+        refresh_token: refreshToken ?? "",
+      });
+
+      if (response) {
+        setCredential(response);
+        return true;
+      }
+      return false;
+    };
     const authToken: TAuthToken = {
       accessToken: sessionStorage.getItem("access_token") ?? "",
       refreshToken: localStorage.getItem("refresh_token") ?? "",
@@ -86,6 +85,7 @@ export const useAuthenticate = ({
     const { accessToken, refreshToken, expiresIn, refreshExpiresIn } =
       authToken;
 
+    console.log(authToken);
     if (!accessToken || !expiresIn || expiresIn < new Date().toISOString()) {
       if (
         refreshToken &&
@@ -107,7 +107,7 @@ export const useAuthenticate = ({
         }
       }
     }
-  }, [pathname, authenticated]);
+  }, [pathname, authenticated, noRedirect, getAccessToken]);
 
   return { setCredential };
 };
