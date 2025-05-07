@@ -65,13 +65,13 @@ class ExtendedAxios {
   }
 
   private async errorInterceptor<T, DTO>(error: AxiosError<T, DTO>) {
-    switch (error.status) {
+    switch (error.response?.status) {
       case 401:
         if (error.request.url?.includes(API_URL.AuthService.login)) {
           return Promise.reject(error);
         }
         store.dispatch(authSlice.actions.expireToken());
-        return Promise.resolve();
+        return;
       case 403:
         toastNotification("Forbidden", EToastType.ERROR);
         return;

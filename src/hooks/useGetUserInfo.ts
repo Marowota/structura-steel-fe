@@ -12,6 +12,7 @@ import { TJwtObject } from "@/types/TJwtObject";
 import { jwtDecode } from "jwt-decode";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect } from "react";
+import { useSelector } from "react-redux";
 
 export const setCredential = (credential: TCredential) => {
   const expiresIn = new Date(
@@ -34,7 +35,6 @@ export const setCredential = (credential: TCredential) => {
     refreshExpiresIn: refreshExpireIn.toISOString(),
   };
 
-  console.log(authToken);
   if (authToken.accessToken) {
     store.dispatch(
       authSlice.actions.authenticate({
@@ -54,10 +54,8 @@ export const setCredential = (credential: TCredential) => {
 export const useAuthenticate = () => {
   const { mutateAsync: getAccessToken } = usePostRefreshToken();
   const pathname = usePathname();
-  const authenticated = selectIsAuthenticated(store.getState());
-  const isTokenExpired = selectIsTokenExpired(store.getState());
-
-  console.log("useAuthenticate", authenticated, isTokenExpired, pathname);
+  const authenticated = useSelector(selectIsAuthenticated);
+  const isTokenExpired = useSelector(selectIsTokenExpired);
 
   useEffect(() => {
     if (!isTokenExpired) return;

@@ -3,17 +3,17 @@ import { PostLoginDTO, usePostLogin } from "@/app/login/api/postLogin";
 import { Button, Input } from "@/components/elements";
 import { setCredential } from "@/hooks/useGetUserInfo";
 import { selectIsAuthenticated } from "@/lib/reducers";
-import { store } from "@/lib/store";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
+import { useSelector } from "react-redux";
 
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<PostLoginDTO>();
   const { mutateAsync: login } = usePostLogin();
 
-  const authenticated = selectIsAuthenticated(store.getState());
+  const authenticated = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
     if (authenticated) {

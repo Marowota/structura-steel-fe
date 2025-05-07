@@ -3,6 +3,7 @@ import { Manrope } from "next/font/google";
 import "./globals.css";
 import { Toaster } from "react-hot-toast";
 import { TanstackProvider } from "@/providers/TanstackProvider";
+import StoreProvider from "@/providers/StoreProvider";
 
 const manrope = Manrope({
   subsets: ["latin"],
@@ -21,8 +22,10 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${manrope.className}`}>
       <body className={`text-neutral-900 antialiased`}>
-        <TanstackProvider>{children}</TanstackProvider>
-        <Toaster />
+        <StoreProvider>
+          <TanstackProvider>{children}</TanstackProvider>
+          <Toaster />
+        </StoreProvider>
       </body>
     </html>
   );
