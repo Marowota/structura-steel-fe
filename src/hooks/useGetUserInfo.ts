@@ -5,16 +5,19 @@ import {
   selectIsAuthenticated,
   selectIsTokenExpired,
 } from "@/lib/reducers";
-import { store } from "@/lib/store";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
 import { TAuthToken } from "@/types/TAuthToken";
 import { TJwtObject } from "@/types/TJwtObject";
+import { Dispatch, UnknownAction } from "@reduxjs/toolkit";
 import { jwtDecode } from "jwt-decode";
 import { redirect, usePathname } from "next/navigation";
 import { useEffect } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-export const setCredential = (credential: TCredential) => {
+export const setCredential = (
+  credential: TCredential,
+  dispatch: Dispatch<UnknownAction>,
+) => {
   const expiresIn = new Date(
     Date.now() + ((credential.expires_in ?? 0) - 60) * 1000,
   );
@@ -36,7 +39,7 @@ export const setCredential = (credential: TCredential) => {
   };
 
   if (authToken.accessToken) {
-    store.dispatch(
+    dispatch(
       authSlice.actions.authenticate({
         userInfo: jwtDecode<TJwtObject>(authToken.accessToken),
         authToken: authToken,
@@ -47,7 +50,7 @@ export const setCredential = (credential: TCredential) => {
       "Logged in failed, no access token found",
       EToastType.ERROR,
     );
-    store.dispatch(authSlice.actions.logout());
+    dispatch(authSlice.actions.logout());
   }
 };
 
@@ -56,12 +59,16 @@ export const useAuthenticate = () => {
   const pathname = usePathname();
   const authenticated = useSelector(selectIsAuthenticated);
   const isTokenExpired = useSelector(selectIsTokenExpired);
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (!isTokenExpired) return;
-    console.log("b", authenticated, pathname, isTokenExpired);
     const refreshToken = localStorage.getItem("refresh_token") ?? "";
     const refreshExpiresIn = localStorage.getItem("refresh_expires_in") ?? "";
+
+    console.log("refreshExpiresIn", refreshExpiresIn);
+    console.log("refreshToken", refreshToken);
+    console.log("isTokenExpired", isTokenExpired);
 
     const getCredentialHandler = async ({
       refreshToken,
@@ -75,14 +82,12 @@ export const useAuthenticate = () => {
       });
 
       if (response) {
-        setCredential(response);
+        setCredential(response, dispatch);
         return true;
       }
       return false;
     };
-
     if (
-      authenticated &&
       refreshToken &&
       refreshExpiresIn &&
       refreshExpiresIn > new Date().toISOString()
@@ -90,29 +95,27 @@ export const useAuthenticate = () => {
       getCredentialHandler({ refreshToken }).then((result) => {
         if (!result) {
           toastNotification("Session expired, please login again");
-          store.dispatch(authSlice.actions.logout());
+          dispatch(authSlice.actions.logout());
           redirect("/login");
         }
       });
     } else {
       toastNotification("Session expired, please login again");
-      store.dispatch(authSlice.actions.logout());
+      dispatch(authSlice.actions.logout());
       redirect("/login");
     }
-  }, [isTokenExpired, getAccessToken]);
+  }, [isTokenExpired, getAccessToken, dispatch]);
 
   useEffect(() => {
-    console.log("a", authenticated, pathname, isTokenExpired);
     const accessToken = sessionStorage.getItem("access_token") ?? "";
     const expiresIn = sessionStorage.getItem("expires_in") ?? "";
 
+    console.log("authenticated getinfo", authenticated);
     if (
       authenticated &&
       (!accessToken || !expiresIn || expiresIn < new Date().toISOString())
     ) {
-      store.dispatch(authSlice.actions.expireToken());
+      dispatch(authSlice.actions.expireToken());
     }
-  }, [pathname, authenticated]);
-
-  return { setCredential };
+  }, [pathname, authenticated, dispatch]);
 };

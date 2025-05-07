@@ -13,11 +13,13 @@ import {
 import { redirect, usePathname } from "next/navigation";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
 import { nameToTwoText } from "@/mapper/nameToTwoText";
-import { authSlice, store } from "@/lib";
+import { authSlice } from "@/lib";
+import { useDispatch } from "react-redux";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
   const pathname = usePathname();
+  const dispatch = useDispatch();
 
   const Tabs = [
     {
@@ -53,7 +55,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
     sessionStorage.removeItem("expires_in");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("refresh_expires_in");
-    store.dispatch(authSlice.actions.logout());
+    dispatch(authSlice.actions.logout());
     toastNotification("Logged out successfully", EToastType.SUCCESS);
     redirect("/login");
   };

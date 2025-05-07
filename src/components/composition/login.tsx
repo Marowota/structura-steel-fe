@@ -7,15 +7,17 @@ import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function LoginForm() {
   const { register, handleSubmit } = useForm<PostLoginDTO>();
   const { mutateAsync: login } = usePostLogin();
+  const dispatch = useDispatch();
 
   const authenticated = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
+    console.log("authenticated login", authenticated);
     if (authenticated) {
       redirect("/");
     }
@@ -24,8 +26,7 @@ export default function LoginForm() {
   const onSubmit: SubmitHandler<PostLoginDTO> = async (data) => {
     const response = await login(data);
     if (response) {
-      setCredential(response);
-      redirect("/");
+      setCredential(response, dispatch);
     }
   };
 
