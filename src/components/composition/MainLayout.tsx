@@ -13,6 +13,7 @@ import {
 import { redirect, usePathname } from "next/navigation";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
 import { nameToTwoText } from "@/mapper/nameToTwoText";
+import { authSlice, store } from "@/lib";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
@@ -53,6 +54,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("refresh_expires_in");
     toastNotification("Logged out successfully", EToastType.SUCCESS);
+    store.dispatch(authSlice.actions.logout());
     redirect("/login");
   };
 

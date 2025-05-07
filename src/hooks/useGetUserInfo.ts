@@ -76,6 +76,7 @@ export const useAuthenticate = ({
       }
       return false;
     };
+
     const authToken: TAuthToken = {
       accessToken: sessionStorage.getItem("access_token") ?? "",
       refreshToken: localStorage.getItem("refresh_token") ?? "",
@@ -84,9 +85,12 @@ export const useAuthenticate = ({
     };
     const { accessToken, refreshToken, expiresIn, refreshExpiresIn } =
       authToken;
+    const authenticated = selectIsAuthenticated(store.getState());
 
-    console.log(authToken);
-    if (!accessToken || !expiresIn || expiresIn < new Date().toISOString()) {
+    if (
+      authenticated &&
+      (!accessToken || !expiresIn || expiresIn < new Date().toISOString())
+    ) {
       if (
         refreshToken &&
         refreshExpiresIn &&
