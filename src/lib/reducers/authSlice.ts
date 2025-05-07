@@ -32,7 +32,6 @@ export const authSlice = createSlice({
     },
     logout: (state) => {
       state.isAuthenticated = false;
-      state.isTokenExpired = true;
       state.userInfo = null;
       state.authToken = null;
     },

@@ -59,6 +59,7 @@ export const useAuthenticate = () => {
 
   useEffect(() => {
     if (!isTokenExpired) return;
+    console.log("b", authenticated, pathname, isTokenExpired);
     const refreshToken = localStorage.getItem("refresh_token") ?? "";
     const refreshExpiresIn = localStorage.getItem("refresh_expires_in") ?? "";
 
@@ -81,6 +82,7 @@ export const useAuthenticate = () => {
     };
 
     if (
+      authenticated &&
       refreshToken &&
       refreshExpiresIn &&
       refreshExpiresIn > new Date().toISOString()
@@ -100,6 +102,7 @@ export const useAuthenticate = () => {
   }, [isTokenExpired, getAccessToken]);
 
   useEffect(() => {
+    console.log("a", authenticated, pathname, isTokenExpired);
     const accessToken = sessionStorage.getItem("access_token") ?? "";
     const expiresIn = sessionStorage.getItem("expires_in") ?? "";
 

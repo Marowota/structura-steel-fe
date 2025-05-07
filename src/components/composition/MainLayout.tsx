@@ -53,8 +53,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
     sessionStorage.removeItem("expires_in");
     localStorage.removeItem("refresh_token");
     localStorage.removeItem("refresh_expires_in");
-    toastNotification("Logged out successfully", EToastType.SUCCESS);
     store.dispatch(authSlice.actions.logout());
+    toastNotification("Logged out successfully", EToastType.SUCCESS);
     redirect("/login");
   };
 
