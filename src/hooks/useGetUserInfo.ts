@@ -51,11 +51,7 @@ export const setCredential = (credential: TCredential) => {
   }
 };
 
-export const useAuthenticate = ({
-  noRedirect = false,
-}: {
-  noRedirect?: boolean;
-} = {}) => {
+export const useAuthenticate = () => {
   const { mutateAsync: getAccessToken } = usePostRefreshToken();
   const pathname = usePathname();
   const authenticated = selectIsAuthenticated(store.getState());
@@ -92,20 +88,18 @@ export const useAuthenticate = ({
       refreshExpiresIn > new Date().toISOString()
     ) {
       getCredentialHandler({ refreshToken }).then((result) => {
-        if (!result && !noRedirect) {
+        if (!result) {
           toastNotification("Session expired, please login again");
           store.dispatch(authSlice.actions.logout());
           redirect("/login");
         }
       });
     } else {
-      if (!noRedirect) {
-        toastNotification("Session expired, please login again");
-        store.dispatch(authSlice.actions.logout());
-        redirect("/login");
-      }
+      toastNotification("Session expired, please login again");
+      store.dispatch(authSlice.actions.logout());
+      redirect("/login");
     }
-  }, [isTokenExpired, getAccessToken, noRedirect]);
+  }, [isTokenExpired, getAccessToken]);
 
   useEffect(() => {
     const accessToken = sessionStorage.getItem("access_token") ?? "";
