@@ -5,10 +5,17 @@ import {
   ColumnDef,
   flexRender,
   getCoreRowModel,
+  Row,
   useReactTable,
 } from "@tanstack/react-table";
+import { ArrowDown } from "lucide-react";
 import { ReactNode } from "react";
 import ReactPaginate from "react-paginate";
+
+export enum ETableSort {
+  ASC = "asc",
+  DESC = "desc",
+}
 
 export type TTablePaginateProps = {
   pageNo: number;
@@ -19,6 +26,12 @@ export type TTablePaginateProps = {
   onPageChange?: (page: number) => void;
 };
 
+export type TTableFilterProps = {
+  sortBy: string;
+  sortDir: ETableSort;
+  onFilterChange?: (filter: TTableFilterProps) => void;
+};
+
 export const MainTable = <T,>(
   {
     columns,
@@ -26,12 +39,16 @@ export const MainTable = <T,>(
     heading,
     filter,
     paginateProps,
+    filterProps,
+    onRowClick,
   }: {
     columns: ColumnDef<T>[];
     data: T[];
     heading?: ReactNode;
     filter?: ReactNode;
     paginateProps?: TTablePaginateProps;
+    filterProps?: TTableFilterProps;
+    onRowClick?: (row: Row<T>) => void;
   } = {
     columns: [],
     data: [],
@@ -52,6 +69,7 @@ export const MainTable = <T,>(
     data,
     getCoreRowModel: getCoreRowModel(),
   });
+  console.log(filterProps?.sortBy, filterProps?.sortDir);
 
   return (
     <div className="border-brand-300 flex h-[80vh] w-full flex-col rounded-md border py-2">
@@ -73,10 +91,35 @@ export const MainTable = <T,>(
                       key={header.id}
                       colSpan={header.colSpan}
                     >
-                      {flexRender(
-                        header.column.columnDef.header,
-                        header.getContext(),
-                      )}
+                      <div className="flex items-center gap-1">
+                        {flexRender(
+                          header.column.columnDef.header,
+                          header.getContext(),
+                        )}
+                        <ArrowDown
+                          className={cn(
+                            "h-4 w-4 cursor-pointer text-gray-500 hover:text-gray-900",
+                            header.id === filterProps?.sortBy
+                              ? ""
+                              : "opacity-0 hover:opacity-100",
+                            filterProps?.sortDir === ETableSort.DESC
+                              ? ""
+                              : "rotate-180",
+                          )}
+                          onClick={() =>
+                            filterProps?.onFilterChange?.({
+                              ...filterProps,
+                              sortBy: header.id,
+                              sortDir:
+                                header.id === filterProps?.sortBy
+                                  ? filterProps?.sortDir === ETableSort.DESC
+                                    ? ETableSort.ASC
+                                    : ETableSort.DESC
+                                  : filterProps?.sortDir,
+                            })
+                          }
+                        />
+                      </div>
                     </th>
                   ))}
                 </tr>
@@ -89,9 +132,10 @@ export const MainTable = <T,>(
                 <tr
                   key={row.id}
                   className={cn(
-                    "hover:bg-info-50",
+                    "hover:bg-info-50 cursor-pointer",
                     index % 2 ? "bg-brand-50" : "bg-white",
                   )}
+                  onClick={() => onRowClick && onRowClick(row)}
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (

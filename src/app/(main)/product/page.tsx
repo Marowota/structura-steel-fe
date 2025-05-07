@@ -1,7 +1,7 @@
 "use client";
 
-import { MainTable } from "@/components/elements";
-import { ColumnDef } from "@tanstack/react-table";
+import { ETableSort, MainTable } from "@/components/elements";
+import { ColumnDef, Row } from "@tanstack/react-table";
 import { GetProductsDTO, TProduct, useGetProducts } from "./api/getProducts";
 import { useState } from "react";
 
@@ -9,52 +9,52 @@ const columns: ColumnDef<TProduct>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "code",
     header: "Code",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "name",
     header: "Name",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "unitWeight",
     header: "Unit Weight",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "length",
     header: "Length",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "width",
     header: "Width",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "height",
     header: "Height",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "thickness",
     header: "Thickness",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "diameter",
     header: "Diameter",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
   {
     accessorKey: "standard",
     header: "Standard",
-    cell: (data) => data.renderValue(),
+    cell: (data) => data.renderValue() ?? "-",
   },
 ];
 
@@ -66,8 +66,13 @@ export default function ProductPage() {
     sortDir: "asc",
   });
   const { data } = useGetProducts({ params });
+
+  const onRowClick = (row: Row<TProduct>) => {
+    console.log(row.getValue("id"));
+  };
+
   return (
-    <div className="h-full pt-4">
+    <div className="flex h-full items-center pt-4">
       <MainTable
         columns={columns}
         data={data?.content ?? []}
@@ -82,6 +87,18 @@ export default function ProductPage() {
             setParams((prev) => ({ ...prev, pageNo: page }));
           },
         }}
+        filterProps={{
+          sortBy: params.sortBy,
+          sortDir: params.sortDir as ETableSort,
+          onFilterChange: (filter) => {
+            setParams((prev) => ({
+              ...prev,
+              sortBy: filter.sortBy,
+              sortDir: filter.sortDir,
+            }));
+          },
+        }}
+        onRowClick={onRowClick}
       />
     </div>
   );
