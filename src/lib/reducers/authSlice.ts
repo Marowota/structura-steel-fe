@@ -5,12 +5,14 @@ import { TAuthToken } from "@/types/TAuthToken";
 
 export interface IAuthState {
   isAuthenticated: boolean;
+  isTokenExpired: boolean;
   userInfo: TJwtObject | null;
   authToken: TAuthToken | null;
 }
 
 const initialState: IAuthState = {
   isAuthenticated: false,
+  isTokenExpired: true,
   userInfo: null,
   authToken: null,
 };
@@ -21,14 +23,16 @@ export const authSlice = createSlice({
   reducers: {
     authenticate: (state, action) => {
       state.isAuthenticated = true;
+      state.isTokenExpired = false;
       state.userInfo = action.payload.userInfo;
       state.authToken = action.payload.authToken;
     },
     expireToken: (state) => {
-      state.isAuthenticated = false;
+      state.isTokenExpired = true;
     },
     logout: (state) => {
       state.isAuthenticated = false;
+      state.isTokenExpired = true;
       state.userInfo = null;
       state.authToken = null;
     },
@@ -43,6 +47,9 @@ export const selectUserInfo = (state: RootState) => state.auth.userInfo;
 export const selectAuthToken = (state: RootState) => state.auth.authToken;
 
 export const selectAuthObject = (state: RootState) => state.auth;
+
+export const selectIsTokenExpired = (state: RootState) =>
+  state.auth.isTokenExpired;
 
 export const { authenticate, expireToken, logout } = authSlice.actions;
 export const authReducer = authSlice.reducer;
