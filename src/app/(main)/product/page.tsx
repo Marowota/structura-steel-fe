@@ -3,7 +3,8 @@
 import { ETableSort, MainTable } from "@/components/elements";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { GetProductsDTO, TProduct, useGetProducts } from "./api/getProducts";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useLinkParams } from "@/hooks/useLinkParams";
 
 const columns: ColumnDef<TProduct>[] = [
   {
@@ -59,16 +60,21 @@ const columns: ColumnDef<TProduct>[] = [
 ];
 
 export default function ProductPage() {
-  const [params, setParams] = useState<GetProductsDTO>({
+  const paramsDefault: GetProductsDTO = {
     pageNo: 0,
     pageSize: 10,
     sortBy: "id",
     sortDir: "asc",
-  });
+  };
+
+  const { params, setNewParams } = useLinkParams<GetProductsDTO>(paramsDefault);
+
   const { data } = useGetProducts({ params });
+  const router = useRouter();
 
   const onRowClick = (row: Row<TProduct>) => {
     console.log(row.getValue("id"));
+    router.push(`/product/${row.getValue("id")}`);
   };
 
   return (
@@ -84,18 +90,20 @@ export default function ProductPage() {
           totalPages: data?.totalPages ?? -1,
           last: data?.last ?? true,
           onPageChange: (page) => {
-            setParams((prev) => ({ ...prev, pageNo: page }));
+            const newParams = { ...params, pageNo: page };
+            setNewParams(newParams);
           },
         }}
         filterProps={{
           sortBy: params.sortBy,
           sortDir: params.sortDir as ETableSort,
           onFilterChange: (filter) => {
-            setParams((prev) => ({
-              ...prev,
+            const newParams = {
+              ...params,
               sortBy: filter.sortBy,
               sortDir: filter.sortDir,
-            }));
+            };
+            setNewParams(newParams);
           },
         }}
         onRowClick={onRowClick}

@@ -15,6 +15,7 @@ import { EToastType, toastNotification } from "@/lib/toastNotification";
 import { nameToTwoText } from "@/mapper/nameToTwoText";
 import { authSlice } from "@/lib";
 import { useDispatch } from "react-redux";
+import Link from "next/link";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
@@ -78,15 +79,15 @@ export function MainLayout({ children }: { children: ReactNode }) {
             key={tab.name}
             variant={"navbar"}
             size="nav"
-            className={`flex gap-2 ${pathname === tab.route ? "text-brand-600 bg-info-50 hover:bg-brand-50 active:bg-info-50" : "text-gray-900"}`}
-            onClick={() => {
-              redirect(tab.route);
-            }}
+            className={`flex gap-2 ${pathname.match(tab.route) ? "text-brand-600 bg-info-50 hover:bg-brand-50 active:bg-info-50" : "text-gray-900"}`}
+            asChild
           >
-            <div className="flex h-6 w-6">{tab.icon}</div>
-            <div className="w-0 overflow-hidden text-left text-inherit opacity-0 group-hover:w-full group-hover:opacity-100">
-              {tab.name}
-            </div>
+            <Link href={tab.route}>
+              <div className="flex h-6 w-6">{tab.icon}</div>
+              <div className="w-0 overflow-hidden text-left text-inherit opacity-0 group-hover:w-full group-hover:opacity-100">
+                {tab.name}
+              </div>
+            </Link>
           </Button>
         ))}
         <div className="mt-auto flex min-h-10 w-full items-center gap-4 border-t-[1px] border-gray-500 px-2 py-2">

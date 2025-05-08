@@ -161,6 +161,7 @@ export const MainTable = <T,>(
           onPageChange={(props) => {
             paginateProps?.onPageChange?.(props.selected);
           }}
+          forcePage={(paginateProps?.pageNo ?? 1) - 1}
           pageRangeDisplayed={2}
           marginPagesDisplayed={1}
           pageCount={paginateProps?.totalPages ?? 0}
