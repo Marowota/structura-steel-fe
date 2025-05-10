@@ -72,7 +72,7 @@ export const MainTable = <T,>(
   console.log(filterProps?.sortBy, filterProps?.sortDir);
 
   return (
-    <div className="border-brand-300 flex h-[80vh] w-full flex-col rounded-md border py-2">
+    <div className="border-brand-300 flex h-[78vh] w-full flex-col rounded-md border py-2">
       <div className="text-md-bold flex items-center px-3 pb-2">
         <div>{heading}</div>
         <div className="ml-auto">{filter}</div>

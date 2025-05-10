@@ -1,11 +1,12 @@
 "use client";
 
-import { ETableSort, MainTable } from "@/components/elements";
+import { Button, ETableSort, Input, MainTable } from "@/components/elements";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { GetProductsDTO, TProduct, useGetProducts } from "./api/getProducts";
 import { useRouter } from "next/navigation";
 import { useLinkParams } from "@/hooks/useLinkParams";
-
+import { useState } from "react";
+import { NewProductModal } from "./productModal";
 const columns: ColumnDef<TProduct>[] = [
   {
     accessorKey: "id",
@@ -77,37 +78,50 @@ export default function ProductPage() {
     router.push(`/product/${row.getValue("id")}`);
   };
 
+  const [isOpenCreate, setIsOpenCreate] = useState(false);
+
   return (
-    <div className="flex h-full items-center pt-4">
-      <MainTable
-        columns={columns}
-        data={data?.content ?? []}
-        heading={"Number of Products: " + data?.totalElements}
-        paginateProps={{
-          pageNo: (data?.pageNo ?? -1) + 1,
-          pageSize: data?.pageSize ?? 0,
-          totalElements: data?.totalElements ?? 0,
-          totalPages: data?.totalPages ?? -1,
-          last: data?.last ?? true,
-          onPageChange: (page) => {
-            const newParams = { ...params, pageNo: page };
-            setNewParams(newParams);
-          },
-        }}
-        filterProps={{
-          sortBy: params.sortBy,
-          sortDir: params.sortDir as ETableSort,
-          onFilterChange: (filter) => {
-            const newParams = {
-              ...params,
-              sortBy: filter.sortBy,
-              sortDir: filter.sortDir,
-            };
-            setNewParams(newParams);
-          },
-        }}
-        onRowClick={onRowClick}
-      />
-    </div>
+    <>
+      <NewProductModal isOpen={isOpenCreate} setIsOpen={setIsOpenCreate} />
+      <div className="flex h-full flex-col gap-3 pt-3">
+        <div className="flex">
+          <Input placeholder="Search product" className="min-w-64" />
+          <div className="ml-auto">
+            <Button size={"md"} onClick={() => setIsOpenCreate(true)}>
+              New product
+            </Button>
+          </div>
+        </div>
+        <MainTable
+          columns={columns}
+          data={data?.content ?? []}
+          heading={"Number of Products: " + data?.totalElements}
+          paginateProps={{
+            pageNo: (data?.pageNo ?? -1) + 1,
+            pageSize: data?.pageSize ?? 0,
+            totalElements: data?.totalElements ?? 0,
+            totalPages: data?.totalPages ?? -1,
+            last: data?.last ?? true,
+            onPageChange: (page) => {
+              const newParams = { ...params, pageNo: page };
+              setNewParams(newParams);
+            },
+          }}
+          filterProps={{
+            sortBy: params.sortBy,
+            sortDir: params.sortDir as ETableSort,
+            onFilterChange: (filter) => {
+              const newParams = {
+                ...params,
+                sortBy: filter.sortBy,
+                sortDir: filter.sortDir,
+              };
+              setNewParams(newParams);
+            },
+          }}
+          onRowClick={onRowClick}
+        />
+      </div>
+    </>
   );
 }

@@ -66,6 +66,8 @@ class ExtendedAxios {
 
   private async errorInterceptor<T, DTO>(error: AxiosError<T, DTO>) {
     switch (error.response?.status) {
+      case 400:
+        return Promise.reject(error);
       case 401:
         if (error.request.url?.includes(API_URL.AuthService.login)) {
           return Promise.reject(error);

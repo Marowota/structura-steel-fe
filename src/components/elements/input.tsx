@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
 const inputVariant = cva(
-  "text-md-regular rounded-md border-1 px-3 py-2 active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
+  "text-md-regular rounded-md border-1 w-full max-w-72 px-3 py-2 active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -16,22 +16,57 @@ const inputVariant = cva(
         nothing: "",
       },
     },
+    defaultVariants: {
+      variant: "normal",
+    },
   },
 );
 
 export interface InputProps
   extends React.ComponentProps<"input">,
-    VariantProps<typeof inputVariant> {}
+    VariantProps<typeof inputVariant> {
+  label?: string;
+  labelClassName?: string;
+  isError?: boolean;
+  errorMessage?: string;
+}
 
 const Input = React.forwardRef<HTMLInputElement, InputProps>(
-  ({ variant, className, type, ...props }, ref) => {
+  (
+    {
+      variant,
+      className,
+      type,
+      label,
+      labelClassName,
+      required,
+      isError,
+      errorMessage,
+      ...props
+    },
+    ref,
+  ) => {
     return (
-      <input
-        type={type}
-        className={cn(inputVariant({ variant, className }), "")}
-        ref={ref}
-        {...props}
-      />
+      <div className="flex flex-col gap-1">
+        {/* Label */}
+        {label && (
+          <div className={cn("", labelClassName)}>
+            {label} {required && <span className="text-error-600">*</span>}
+          </div>
+        )}
+        <input
+          type={type}
+          className={cn(
+            inputVariant({ variant: isError ? "error" : variant, className }),
+            "",
+          )}
+          ref={ref}
+          {...props}
+        />
+        {isError && (
+          <div className="text-error-600 text-xs-semibold">{errorMessage}</div>
+        )}
+      </div>
     );
   },
 );
