@@ -4,13 +4,18 @@ import { ModalHeader } from "@/components/elements/modalHeader";
 import { ModalSection } from "@/components/elements/modalSection";
 import { useForm } from "react-hook-form";
 import { PostProductDTO, usePostProduct } from "../api/postProducts";
+import { useGetProductDetail } from "../api/getProductsDetail";
+import { useEffect } from "react";
+import { usePutProduct } from "../api/putProducts";
 
 export const NewProductModal = ({
   isOpen,
-  setIsOpen,
+  onClose,
+  editId,
 }: {
   isOpen: boolean;
-  setIsOpen: (isOpen: boolean) => void;
+  onClose: () => void;
+  editId?: string;
 }) => {
   const {
     register,
@@ -18,22 +23,34 @@ export const NewProductModal = ({
     reset,
     formState: { errors },
   } = useForm<PostProductDTO>();
+  const { data: editData, isLoading } = useGetProductDetail({
+    params: { id: editId },
+  });
   const { mutateAsync: createProduct } = usePostProduct();
+  const { mutateAsync: updateProduct } = usePutProduct();
 
-  const onClose = () => {
-    reset();
-    setIsOpen(false);
+  const onCloseHandler = () => {
+    reset({});
+    onClose();
   };
 
   const onSubmit = async (data: PostProductDTO) => {
     try {
-      await createProduct(data);
-      onClose();
+      if (editId) {
+        await updateProduct({ id: editId, data });
+      } else {
+        await createProduct(data);
+      }
+      onCloseHandler();
     } catch {}
   };
 
+  useEffect(() => {
+    reset(editData);
+  }, [editData]);
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose}>
+    <Modal isOpen={isOpen} onClose={onCloseHandler}>
       <div className="flex flex-col gap-2">
         <ModalHeader title="New Product" />
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -138,14 +155,16 @@ export const NewProductModal = ({
           </ModalSection>
           <div className="flex justify-end gap-2">
             <Button
-              onClick={() => onClose()}
+              onClick={() => onCloseHandler()}
               type="button"
               size={"sm"}
               variant={"secondary"}
             >
               Cancel
             </Button>
-            <Button size={"sm"}>Create</Button>
+            <Button size={"sm"} disabled={isLoading}>
+              {editId ? "Update" : "Create"}
+            </Button>
           </div>
         </form>
       </div>

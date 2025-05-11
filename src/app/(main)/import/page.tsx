@@ -1,3 +1,3 @@
 export default function PurchasePage() {
-  return <div>Purchase</div>;
+  return <div>Import</div>;
 }

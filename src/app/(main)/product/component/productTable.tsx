@@ -1,12 +1,19 @@
-import { ETableSort, MainTable } from "@/components/elements";
+import {
+  Button,
+  ETableSort,
+  MainTable,
+  TTableActionsProps,
+} from "@/components/elements";
 import { GetProductsDTO, TProduct, useGetProducts } from "../api/getProducts";
 import { useLinkParams } from "@/hooks/useLinkParams";
 import { ColumnDef, Row } from "@tanstack/react-table";
 
 export const ProductTable = ({
   onRowClick,
+  actions,
 }: {
   onRowClick: (row: Row<TProduct>) => void;
+  actions?: TTableActionsProps<TProduct>[];
 }) => {
   const paramsDefault: GetProductsDTO = {
     pageNo: 0,
@@ -48,6 +55,7 @@ export const ProductTable = ({
         },
       }}
       onRowClick={onRowClick}
+      actions={actions}
     />
   );
 };
@@ -102,5 +110,30 @@ const columns: ColumnDef<TProduct>[] = [
     accessorKey: "standard",
     header: "Standard",
     cell: (data) => data.renderValue() ?? "-",
+  },
+  {
+    accessorKey: "action",
+    header: "",
+    cell: (data) => {
+      return (
+        <div className="flex gap-2">
+          {data.table.options.meta?.actions.map((action) => {
+            return (
+              <Button
+                key={action.action}
+                variant={"secondary"}
+                size="sm"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  action.onClick?.(data.row);
+                }}
+              >
+                {action.icon}
+              </Button>
+            );
+          })}
+        </div>
+      );
+    },
   },
 ];

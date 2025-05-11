@@ -30,10 +30,10 @@ export function MainLayout({ children }: { children: ReactNode }) {
       header: "Order",
     },
     {
-      name: "Purchase",
+      name: "Import",
       icon: <CreditCard />,
-      route: "/purchase",
-      header: "Purchase",
+      route: "/import",
+      header: "Import",
     },
     {
       name: "Partner",

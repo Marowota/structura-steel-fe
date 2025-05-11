@@ -6,15 +6,28 @@ import {
   flexRender,
   getCoreRowModel,
   Row,
+  RowData,
   useReactTable,
 } from "@tanstack/react-table";
 import { ArrowDown } from "lucide-react";
 import { ReactNode } from "react";
 import ReactPaginate from "react-paginate";
 
+declare module "@tanstack/react-table" {
+  interface TableMeta<TData extends RowData> {
+    actions: TTableActionsProps<TData>[];
+  }
+}
+
 export enum ETableSort {
   ASC = "asc",
   DESC = "desc",
+}
+
+export enum EBaseActions {
+  EDIT = "Edit",
+  DELETE = "Delete",
+  VIEW = "View",
 }
 
 export type TTablePaginateProps = {
@@ -32,6 +45,12 @@ export type TTableFilterProps = {
   onFilterChange?: (filter: TTableFilterProps) => void;
 };
 
+export type TTableActionsProps<T> = {
+  onClick: (row: Row<T>) => void;
+  icon: ReactNode;
+  action: EBaseActions;
+};
+
 export const MainTable = <T,>(
   {
     columns,
@@ -41,6 +60,7 @@ export const MainTable = <T,>(
     paginateProps,
     filterProps,
     onRowClick,
+    actions,
   }: {
     columns: ColumnDef<T>[];
     data: T[];
@@ -49,6 +69,7 @@ export const MainTable = <T,>(
     paginateProps?: TTablePaginateProps;
     filterProps?: TTableFilterProps;
     onRowClick?: (row: Row<T>) => void;
+    actions?: TTableActionsProps<T>[];
   } = {
     columns: [],
     data: [],
@@ -62,12 +83,16 @@ export const MainTable = <T,>(
       last: true,
       onPageChange: () => {},
     },
+    actions: [],
   },
 ) => {
   const table = useReactTable({
     columns,
     data,
     getCoreRowModel: getCoreRowModel(),
+    meta: {
+      actions: actions ?? [],
+    },
   });
   console.log(filterProps?.sortBy, filterProps?.sortDir);
 

@@ -33,7 +33,7 @@ class ExtendedAxios {
     return this.instance.post<T, AxiosResponse<T, DTO>, DTO>(url, data, config);
   }
 
-  public async put<T, DTO>(
+  public async put<T, DTO = unknown>(
     url: string,
     data?: DTO,
     config?: AxiosRequestConfig<DTO>,
