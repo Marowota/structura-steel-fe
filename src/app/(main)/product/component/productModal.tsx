@@ -3,7 +3,7 @@ import { Modal } from "@/components/elements/modal";
 import { ModalHeader } from "@/components/elements/modalHeader";
 import { ModalSection } from "@/components/elements/modalSection";
 import { useForm } from "react-hook-form";
-import { PostProductDTO, usePostProduct } from "./api/postProducts";
+import { PostProductDTO, usePostProduct } from "../api/postProducts";
 
 export const NewProductModal = ({
   isOpen,
@@ -20,20 +20,24 @@ export const NewProductModal = ({
   } = useForm<PostProductDTO>();
   const { mutateAsync: createProduct } = usePostProduct();
 
+  const onClose = () => {
+    reset();
+    setIsOpen(false);
+  };
+
   const onSubmit = async (data: PostProductDTO) => {
     try {
       await createProduct(data);
-      setIsOpen(false);
-      reset();
+      onClose();
     } catch {}
   };
 
   return (
-    <Modal isOpen={isOpen} setIsOpen={setIsOpen}>
+    <Modal isOpen={isOpen} onClose={onClose}>
       <div className="flex flex-col gap-2">
         <ModalHeader title="New Product" />
-        <form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
-          <ModalSection title="General Info">
+        <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+          <ModalSection title="General Information">
             <div className="grid grid-cols-2 gap-2">
               <div className="col-span-2">
                 <Input
@@ -132,9 +136,9 @@ export const NewProductModal = ({
               </div>
             </div>
           </ModalSection>
-          <div className="mt-2 flex justify-end gap-2">
+          <div className="flex justify-end gap-2">
             <Button
-              onClick={() => setIsOpen(false)}
+              onClick={() => onClose()}
               type="button"
               size={"sm"}
               variant={"secondary"}

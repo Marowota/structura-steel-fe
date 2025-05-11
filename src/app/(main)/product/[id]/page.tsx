@@ -13,7 +13,7 @@ export default function ProductDetailPage() {
     <div>
       {id}
       <Button onClick={() => setIsOpen(true)} />
-      <Modal isOpen={isOpen} setIsOpen={setIsOpen}></Modal>
+      <Modal isOpen={isOpen} onClose={setIsOpen}></Modal>
     </div>
   );
 }

@@ -12,5 +12,6 @@ export const API_URL = {
   },
   productService: {
     index: API_BASE_URL.productService,
+    detail: (id: string) => `${API_BASE_URL.productService}/${id}`,
   },
 };

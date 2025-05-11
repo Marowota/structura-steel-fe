@@ -1,88 +1,32 @@
 "use client";
 
-import { Button, ETableSort, Input, MainTable } from "@/components/elements";
-import { ColumnDef, Row } from "@tanstack/react-table";
-import { GetProductsDTO, TProduct, useGetProducts } from "./api/getProducts";
-import { useRouter } from "next/navigation";
-import { useLinkParams } from "@/hooks/useLinkParams";
-import { useState } from "react";
-import { NewProductModal } from "./productModal";
-const columns: ColumnDef<TProduct>[] = [
-  {
-    accessorKey: "id",
-    header: "ID",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "code",
-    header: "Code",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "name",
-    header: "Name",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "unitWeight",
-    header: "Unit Weight",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "length",
-    header: "Length",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "width",
-    header: "Width",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "height",
-    header: "Height",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "thickness",
-    header: "Thickness",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "diameter",
-    header: "Diameter",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "standard",
-    header: "Standard",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-];
+import { Button, Input } from "@/components/elements";
+import { Row } from "@tanstack/react-table";
+import { TProduct } from "./api/getProducts";
+
+import { Suspense, useState } from "react";
+import { NewProductModal } from "./component/productModal";
+import { ProductDetailModal } from "./component/productDetailModal";
+import { ProductTable } from "./component/productTable";
 
 export default function ProductPage() {
-  const paramsDefault: GetProductsDTO = {
-    pageNo: 0,
-    pageSize: 10,
-    sortBy: "id",
-    sortDir: "asc",
-  };
-
-  const { params, setNewParams } = useLinkParams<GetProductsDTO>(paramsDefault);
-
-  const { data } = useGetProducts({ params });
-  const router = useRouter();
-
   const onRowClick = (row: Row<TProduct>) => {
     console.log(row.getValue("id"));
-    router.push(`/product/${row.getValue("id")}`);
+    setOpenDetailId(row.getValue("id"));
+    // router.push(`/product/${row.getValue("id")}`);
   };
 
   const [isOpenCreate, setIsOpenCreate] = useState(false);
+  const [openDetailId, setOpenDetailId] = useState();
 
   return (
     <>
       <NewProductModal isOpen={isOpenCreate} setIsOpen={setIsOpenCreate} />
+      <ProductDetailModal
+        isOpen={openDetailId ?? false}
+        onClose={() => setOpenDetailId(undefined)}
+        id={openDetailId}
+      />
       <div className="flex h-full flex-col gap-3 pt-3">
         <div className="flex">
           <Input placeholder="Search product" className="min-w-64" />
@@ -92,35 +36,9 @@ export default function ProductPage() {
             </Button>
           </div>
         </div>
-        <MainTable
-          columns={columns}
-          data={data?.content ?? []}
-          heading={"Number of Products: " + data?.totalElements}
-          paginateProps={{
-            pageNo: (data?.pageNo ?? -1) + 1,
-            pageSize: data?.pageSize ?? 0,
-            totalElements: data?.totalElements ?? 0,
-            totalPages: data?.totalPages ?? -1,
-            last: data?.last ?? true,
-            onPageChange: (page) => {
-              const newParams = { ...params, pageNo: page };
-              setNewParams(newParams);
-            },
-          }}
-          filterProps={{
-            sortBy: params.sortBy,
-            sortDir: params.sortDir as ETableSort,
-            onFilterChange: (filter) => {
-              const newParams = {
-                ...params,
-                sortBy: filter.sortBy,
-                sortDir: filter.sortDir,
-              };
-              setNewParams(newParams);
-            },
-          }}
-          onRowClick={onRowClick}
-        />
+        <Suspense>
+          <ProductTable onRowClick={onRowClick} />
+        </Suspense>
       </div>
     </>
   );

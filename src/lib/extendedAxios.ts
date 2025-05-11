@@ -112,3 +112,17 @@ class ExtendedAxios {
 }
 
 export const extendedAxios = Object.freeze(new ExtendedAxios());
+
+export const axiosRequestHandler = async <T, DTO>(
+  axiosRequest: () => Promise<AxiosResponse<T, DTO>>,
+): Promise<AxiosResponse<T, DTO>> => {
+  try {
+    const response = await axiosRequest();
+    return response;
+  } catch (error) {
+    if (axios.isAxiosError(error)) {
+      throw error.response?.data ?? error;
+    }
+    throw error;
+  }
+};

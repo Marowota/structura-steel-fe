@@ -7,7 +7,7 @@ export const ModalSection = ({
   children,
 }: {
   title: string;
-  children: ReactNode;
+  children?: ReactNode;
 }) => {
   return (
     <>

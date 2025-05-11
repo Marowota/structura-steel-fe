@@ -1,7 +1,11 @@
-import { EToastType, extendedAxios, toastNotification } from "@/lib";
+import {
+  axiosRequestHandler,
+  EToastType,
+  extendedAxios,
+  toastNotification,
+} from "@/lib";
 import { TProduct } from "./getProducts";
 import { API_URL } from "@/constant/apiURL";
-import axios, { AxiosResponse } from "axios";
 import {
   MutationOptions,
   useMutation,
@@ -30,20 +34,6 @@ export type TUsePostProductParams = {
   options?: MutationOptions<TProduct, TCreateError, PostProductDTO>;
 };
 
-export const axiosRequestHandler = async <T, DTO>(
-  axiosRequest: () => Promise<AxiosResponse<T, DTO>>,
-): Promise<T> => {
-  try {
-    const response = await axiosRequest();
-    return response.data;
-  } catch (error) {
-    if (axios.isAxiosError(error)) {
-      throw error.response?.data ?? error;
-    }
-    throw error;
-  }
-};
-
 const postProduct = async (data: PostProductDTO) => {
   const response = await axiosRequestHandler(() =>
     extendedAxios.post<TProduct, PostProductDTO>(
@@ -51,7 +41,7 @@ const postProduct = async (data: PostProductDTO) => {
       data,
     ),
   );
-  return response;
+  return response.data;
 };
 
 export const usePostProduct = ({ options }: TUsePostProductParams = {}) => {
