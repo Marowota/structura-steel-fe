@@ -14,6 +14,7 @@ import { NewProductModal } from "./component/productModal";
 import { ProductDetailModal } from "./component/productDetailModal";
 import { ProductTable } from "./component/productTable";
 import { Edit, Trash } from "lucide-react";
+import { ProductDeleteModal } from "./component/productDeleteModal";
 
 export default function ProductPage() {
   const onRowClick = (row: Row<TProduct>) => {
@@ -30,7 +31,7 @@ export default function ProductPage() {
   };
 
   const onDelete = (row: Row<TProduct>) => {
-    console.log(row.getValue("id"));
+    setOpenDeleteId(row.getValue("id"));
   };
 
   const [isOpenCreate, setIsOpenCreate] = useState({
@@ -38,6 +39,7 @@ export default function ProductPage() {
     editId: undefined,
   });
   const [openDetailId, setOpenDetailId] = useState();
+  const [openDeleteId, setOpenDeleteId] = useState();
 
   const tableActions: TTableActionsProps<TProduct>[] = [
     {
@@ -68,6 +70,11 @@ export default function ProductPage() {
         isOpen={openDetailId ?? false}
         onClose={() => setOpenDetailId(undefined)}
         id={openDetailId}
+      />
+      <ProductDeleteModal
+        isOpen={openDeleteId ?? false}
+        onClose={() => setOpenDeleteId(undefined)}
+        deleteId={openDeleteId}
       />
       <div className="flex h-full flex-col gap-3 pt-3">
         <div className="flex">

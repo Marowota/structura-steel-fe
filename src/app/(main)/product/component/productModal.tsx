@@ -52,7 +52,7 @@ export const NewProductModal = ({
   return (
     <Modal isOpen={isOpen} onClose={onCloseHandler}>
       <div className="flex flex-col gap-2">
-        <ModalHeader title="New Product" />
+        <ModalHeader title={`${editId ? "Edit" : "New"} Product`} />
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <ModalSection title="General Information">
             <div className="grid grid-cols-2 gap-2">
