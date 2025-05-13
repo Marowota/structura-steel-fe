@@ -62,8 +62,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
   };
 
   return (
-    <div className="bg-white-200 flex h-screen w-full">
-      <div className="group flex w-20 flex-col items-center overflow-hidden bg-white px-3 py-2 text-nowrap shadow-xl transition-all duration-300 select-none hover:w-72">
+    <div className="bg-white-200 flex h-screen w-screen">
+      <div className="group flex w-20 min-w-20 flex-col items-center overflow-hidden bg-white px-3 py-2 text-nowrap shadow-xl transition-all duration-300 select-none hover:w-64 hover:min-w-64">
         <div className="flex min-h-28 w-full items-center justify-center">
           <Image
             src="/structura-steel-icon.png"
@@ -105,7 +105,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="mx-6 flex h-full w-full flex-col gap-1 bg-white p-6 shadow-md">
+      <div className="mx-6 flex h-full flex-1 flex-col gap-1 overflow-auto bg-white p-6 shadow-md">
         <div className="text-headline-sm-semibold text-brand-800">
           {selectedTab?.header}
         </div>

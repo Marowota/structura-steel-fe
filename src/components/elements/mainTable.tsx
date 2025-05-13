@@ -94,7 +94,6 @@ export const MainTable = <T,>(
       actions: actions ?? [],
     },
   });
-  console.log(filterProps?.sortBy, filterProps?.sortDir);
 
   return (
     <div className="border-brand-300 flex h-[78vh] w-full flex-col rounded-md border py-2">
