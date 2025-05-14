@@ -10,14 +10,15 @@ import { OrderTable } from "./component/orderTable";
 import { Row } from "@tanstack/react-table";
 import { TOrder } from "./api/getOrders";
 import { Edit, Trash } from "lucide-react";
+import { OrderCreateModal } from "./component/orderCreateModal";
 
 export default function OrderPage() {
-  const [, setIsOpenCreate] = useState({
+  const [isOpenCreate, setIsOpenCreate] = useState({
     isOpen: false,
     editId: undefined,
   });
-  const [, setOpenDetailId] = useState();
-  const [, setOpenDeleteId] = useState();
+  const [openDetailId, setOpenDetailId] = useState();
+  const [openDeleteId, setOpenDeleteId] = useState();
 
   const onRowClick = (row: Row<TOrder>) => {
     setOpenDetailId(row.getValue("id"));
@@ -48,26 +49,33 @@ export default function OrderPage() {
     },
   ];
   return (
-    <div className="flex h-full flex-col gap-3 pt-3">
-      <div className="flex">
-        <Input placeholder="Search order" className="min-w-64" />
-        <div className="ml-auto">
-          <Button
-            size={"md"}
-            onClick={() =>
-              setIsOpenCreate({
-                isOpen: true,
-                editId: undefined,
-              })
-            }
-          >
-            New order
-          </Button>
+    <>
+      <OrderCreateModal
+        isOpen={isOpenCreate.isOpen}
+        onClose={() => setIsOpenCreate({ isOpen: false, editId: undefined })}
+        editId={isOpenCreate.editId}
+      />
+      <div className="flex h-full flex-col gap-3 pt-3">
+        <div className="flex">
+          <Input placeholder="Search order" className="min-w-64" />
+          <div className="ml-auto">
+            <Button
+              size={"md"}
+              onClick={() =>
+                setIsOpenCreate({
+                  isOpen: true,
+                  editId: undefined,
+                })
+              }
+            >
+              New order
+            </Button>
+          </div>
         </div>
+        <Suspense>
+          <OrderTable onRowClick={onRowClick} actions={tableActions} />
+        </Suspense>
       </div>
-      <Suspense>
-        <OrderTable onRowClick={onRowClick} actions={tableActions} />
-      </Suspense>
-    </div>
+    </>
   );
 }

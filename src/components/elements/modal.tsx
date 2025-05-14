@@ -20,7 +20,7 @@ export const Modal = ({
         onClick={() => {
           onClose(false);
         }}
-      ></div>
+      />
       <div className={cn("absolute rounded-md bg-white px-3 py-4", className)}>
         {children}
       </div>

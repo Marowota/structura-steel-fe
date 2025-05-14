@@ -7,24 +7,32 @@ import {
 import { GetProductsDTO, TProduct, useGetProducts } from "../api/getProducts";
 import { useLinkParams } from "@/hooks/useLinkParams";
 import { ColumnDef, Row } from "@tanstack/react-table";
+import { useEffect } from "react";
 
 export const ProductTable = ({
   onRowClick,
   actions,
+  search = "",
 }: {
   onRowClick: (row: Row<TProduct>) => void;
   actions?: TTableActionsProps<TProduct>[];
+  search?: string;
 }) => {
   const paramsDefault: GetProductsDTO = {
     pageNo: 0,
     pageSize: 10,
     sortBy: "id",
     sortDir: "asc",
+    search: "",
   };
 
   const { params, setNewParams } = useLinkParams<GetProductsDTO>(paramsDefault);
 
   const { data } = useGetProducts({ params });
+
+  useEffect(() => {
+    setNewParams({ ...params, search });
+  }, [search]);
 
   return (
     <MainTable

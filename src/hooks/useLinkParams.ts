@@ -1,8 +1,9 @@
-import { useSearchParams } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import { useRouter } from "next/navigation";
 
 export const useLinkParams = <T extends object>(paramsDefault: T) => {
   const searchParams = useSearchParams();
+  const pathname = usePathname();
   const router = useRouter();
 
   const params: T = {
@@ -15,7 +16,7 @@ export const useLinkParams = <T extends object>(paramsDefault: T) => {
       .filter(([key, value]) => paramsDefault[key as keyof T] !== value)
       .map(([key, value]) => "" + key + "=" + value)
       .join("&");
-    router.push("/product?" + stringParams);
+    router.push(pathname + "?" + stringParams);
   };
 
   return { params, setNewParams };

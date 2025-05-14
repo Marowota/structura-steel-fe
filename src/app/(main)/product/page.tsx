@@ -10,7 +10,7 @@ import { Row } from "@tanstack/react-table";
 import { TProduct } from "./api/getProducts";
 
 import { Suspense, useState } from "react";
-import { NewProductModal } from "./component/productModal";
+import { ProductCreateModal } from "./component/productCreateModal";
 import { ProductDetailModal } from "./component/productDetailModal";
 import { ProductTable } from "./component/productTable";
 import { Edit, Trash } from "lucide-react";
@@ -40,6 +40,7 @@ export default function ProductPage() {
   });
   const [openDetailId, setOpenDetailId] = useState();
   const [openDeleteId, setOpenDeleteId] = useState();
+  const [search, setSearch] = useState("");
 
   const tableActions: TTableActionsProps<TProduct>[] = [
     {
@@ -56,7 +57,7 @@ export default function ProductPage() {
 
   return (
     <>
-      <NewProductModal
+      <ProductCreateModal
         isOpen={isOpenCreate.isOpen}
         onClose={() =>
           setIsOpenCreate({
@@ -78,7 +79,16 @@ export default function ProductPage() {
       />
       <div className="flex h-full flex-col gap-3 pt-3">
         <div className="flex">
-          <Input placeholder="Search product" className="min-w-64" />
+          <Input
+            placeholder="Search product"
+            className="min-w-64"
+            onKeyDownCapture={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                setSearch((e.target as HTMLInputElement).value);
+              }
+            }}
+          />
           <div className="ml-auto">
             <Button
               size={"md"}
@@ -94,7 +104,11 @@ export default function ProductPage() {
           </div>
         </div>
         <Suspense>
-          <ProductTable onRowClick={onRowClick} actions={tableActions} />
+          <ProductTable
+            search={search}
+            onRowClick={onRowClick}
+            actions={tableActions}
+          />
         </Suspense>
       </div>
     </>

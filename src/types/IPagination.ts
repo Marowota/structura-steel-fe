@@ -3,6 +3,7 @@ export interface IPagination {
   pageSize: number;
   sortBy: string;
   sortDir: string;
+  search: string;
 }
 
 export interface IPaginationResponse<T> {
