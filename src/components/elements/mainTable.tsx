@@ -163,7 +163,10 @@ export const MainTable = <T,>(
                 >
                   {row.getVisibleCells().map((cell) => {
                     return (
-                      <td className="px-3 py-4" key={cell.id}>
+                      <td
+                        className="max-w-40 px-3 py-4 break-words"
+                        key={cell.id}
+                      >
                         {flexRender(
                           cell.column.columnDef.cell,
                           cell.getContext(),

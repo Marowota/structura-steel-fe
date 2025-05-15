@@ -21,6 +21,7 @@ export const OrderTable = ({
     pageSize: 10,
     sortBy: "id",
     sortDir: "asc",
+    search: "",
   };
 
   const { params, setNewParams } = useLinkParams<GetOrdersDTO>(paramsDefault);

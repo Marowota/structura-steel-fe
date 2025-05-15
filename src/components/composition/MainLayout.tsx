@@ -94,8 +94,8 @@ export function MainLayout({ children }: { children: ReactNode }) {
           <div className="flex h-10 min-w-10 items-center justify-center rounded-full bg-gray-500 text-white">
             {nameToTwoText(userInfo?.name)}
           </div>
-          <div className="text-md-semibold flex w-full flex-col overflow-hidden">
-            <div>{userInfo?.name}</div>
+          <div className="text-md-semibold flex w-full flex-col truncate">
+            <div className="truncate">{userInfo?.name}</div>
           </div>
           <div
             className="ml-auto rounded-md p-2 hover:cursor-pointer hover:bg-gray-200 active:bg-gray-300"

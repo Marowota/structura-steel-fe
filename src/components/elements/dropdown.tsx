@@ -53,7 +53,7 @@ export type TDropdownProps = {
   required?: boolean;
   errorMessage?: string;
   initialValue?: string;
-  onSelect?: (value: string) => void;
+  onItemSelect?: (value: string) => void;
   onSearch?: (value: string) => void;
   triggerChildren?: (open: boolean) => React.ReactNode;
 };
@@ -80,7 +80,7 @@ export function Dropdown({
   required,
   errorMessage,
   initialValue,
-  onSelect,
+  onItemSelect,
   onSearch,
   triggerChildren,
 }: TDropdownProps & VariantProps<typeof dropdownVariant>) {
@@ -89,6 +89,8 @@ export function Dropdown({
 
   variant = isError ? "error" : variant;
 
+  console.log(options);
+
   return (
     <div className="flex w-full flex-col gap-1">
       {label && (
@@ -96,8 +98,12 @@ export function Dropdown({
           {label} {required && <span className="text-error-600">*</span>}
         </div>
       )}
-      <Popover open={open} onOpenChange={setOpen} modal={true}>
-        <PopoverTrigger asChild={!triggerChildren}>
+      <Popover open={open}>
+        <PopoverTrigger
+          asChild={!triggerChildren}
+          onFocusCapture={() => setOpen(true)}
+          onBlurCapture={() => setOpen(false)}
+        >
           {triggerChildren ? (
             triggerChildren(open)
           ) : (
@@ -123,7 +129,7 @@ export function Dropdown({
         </PopoverTrigger>
         <PopoverContent
           onOpenAutoFocus={(e) => e.preventDefault()}
-          className="border-brand-300 w-[var(--radix-popover-trigger-width)] bg-white p-0"
+          className="border-brand-300 pointer-events-auto w-[var(--radix-popover-trigger-width)] bg-white p-0"
         >
           <Command>
             {onSearch && (
@@ -149,9 +155,9 @@ export function Dropdown({
                     )}
                     key={item.value}
                     value={item.value}
-                    onSelect={(currentValue) => {
-                      setValue(currentValue === value ? "" : currentValue);
-                      onSelect?.(currentValue === value ? "" : currentValue);
+                    onSelect={() => {
+                      setValue(item.value === value ? "" : item.value);
+                      onItemSelect?.(item.value === value ? "" : item.value);
                       setOpen(false);
                     }}
                   >

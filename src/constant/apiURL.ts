@@ -4,6 +4,7 @@ const API_BASE_URL = {
   authService: API_DOMAIN + "/api/auth",
   productService: API_DOMAIN + "/api/v1/products",
   orderService: API_DOMAIN + "/api/v1/core/sale",
+  partnerService: API_DOMAIN + "/api/v1/partners",
 };
 
 export const API_URL = {
@@ -18,5 +19,9 @@ export const API_URL = {
   orderService: {
     index: API_BASE_URL.orderService,
     detail: (id: string) => `${API_BASE_URL.orderService}/${id}`,
+  },
+  partnerService: {
+    index: API_BASE_URL.partnerService,
+    detail: (id: string) => `${API_BASE_URL.partnerService}/${id}`,
   },
 };
