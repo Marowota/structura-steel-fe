@@ -43,34 +43,6 @@ export const OrderCreateModal = ({
     resetField,
     formState: { errors },
   } = useForm<PostOrderDTO>();
-
-  const defaultParams: IPagination = {
-    pageNo: 0,
-    pageSize: 10,
-    sortBy: "partnerName",
-    sortDir: "asc",
-    search: "",
-  };
-
-  const [partnerParams, setPartnerParams] =
-    useState<IPagination>(defaultParams);
-
-  const { data: partners } = useGetPartners({ params: partnerParams });
-
-  const currentPartnerId = watch("partnerId");
-  const currentProjectId = watch("projectId");
-
-  useEffect(() => {
-    resetField("projectId");
-  }, [currentPartnerId]);
-
-  const onSubmit = () => {};
-
-  const onCloseHandler = () => {
-    reset({});
-    onClose();
-  };
-
   const itemSelectNumberHandler = (
     value: string,
     field: keyof PostOrderDTO,
@@ -85,8 +57,56 @@ export const OrderCreateModal = ({
     }
   };
 
+  const currentPartnerId = watch("partnerId");
+  const currentProjectId = watch("projectId");
+
+  const defaultParams: IPagination = {
+    pageNo: 0,
+    pageSize: 10,
+    sortBy: "partnerName",
+    sortDir: "asc",
+    search: "",
+  };
+
+  const [partnerParams, setPartnerParams] =
+    useState<IPagination>(defaultParams);
+  const [projectParams, setProjectParams] = useState({ search: "" });
+
+  const { data: partners } = useGetPartners({ params: partnerParams });
+  const projects =
+    partners?.content
+      .find((partner) => partner.id === currentPartnerId)
+      ?.partnerProjects.filter((project) =>
+        project.projectName.match(projectParams.search),
+      ) ?? [];
+
+  useEffect(() => {
+    resetField("projectId");
+  }, [currentPartnerId]);
+
+  const searchPartnersHandler = (value: string) => {
+    setPartnerParams((prev) => ({
+      ...prev,
+      search: value,
+    }));
+  };
+
+  const onSubmit = () => {
+    // Handle form submission
+    console.log("Form submitted");
+  };
+
+  const onCloseHandler = () => {
+    reset({});
+    onClose();
+  };
+
   return (
-    <Modal isOpen={isOpen} onClose={onClose} className="flex flex-col gap-2">
+    <Modal
+      isOpen={isOpen}
+      onClose={onCloseHandler}
+      className="flex flex-col gap-2"
+    >
       <ModalHeader title="Create Order" />
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <div className="flex min-h-96 flex-row gap-4">
@@ -99,12 +119,7 @@ export const OrderCreateModal = ({
                   "partnerName",
                   "id",
                 )}
-                onSearch={(value) => {
-                  setPartnerParams((prev) => ({
-                    ...prev,
-                    search: value,
-                  }));
-                }}
+                onSearch={searchPartnersHandler}
                 onItemSelect={(value) => {
                   itemSelectNumberHandler(value, "partnerId");
                 }}
@@ -117,13 +132,13 @@ export const OrderCreateModal = ({
               />
               <InputSearch
                 label="Project"
-                options={mapArrayToTDropdown(
-                  partners?.content.find(
-                    (partner) => partner.id === currentPartnerId,
-                  )?.partnerProjects ?? [],
-                  "projectName",
-                  "id",
-                )}
+                options={mapArrayToTDropdown(projects, "projectName", "id")}
+                onSearch={(value) => {
+                  setProjectParams((prev) => ({
+                    ...prev,
+                    search: value,
+                  }));
+                }}
                 onItemSelect={(value) => {
                   itemSelectNumberHandler(value, "projectId");
                 }}

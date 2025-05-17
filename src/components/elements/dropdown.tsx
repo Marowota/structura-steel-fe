@@ -1,6 +1,5 @@
 "use client";
 
-import * as React from "react";
 import { ChevronDown } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -19,6 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cva, VariantProps } from "class-variance-authority";
+import { useEffect, useRef, useState } from "react";
 
 export const dropdownVariant = cva(
   "text-md-regular rounded-md border-1 w-full px-3 py-2 active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
@@ -55,8 +55,9 @@ export type TDropdownProps = {
   initialValue?: string;
   onItemSelect?: (value: string) => void;
   onSearch?: (value: string) => void;
-  triggerChildren?: (open: boolean) => React.ReactNode;
+  triggerChildren?: (open: boolean, value: string) => React.ReactNode;
   disabled?: boolean;
+  triggerSelectOnEnter?: boolean;
 };
 
 export const getDropdownVariant = (open: boolean, variant?: string | null) =>
@@ -86,15 +87,23 @@ export function Dropdown({
   triggerChildren,
   disabled = false,
 }: TDropdownProps & VariantProps<typeof dropdownVariant>) {
-  const [open, setOpen] = React.useState(false);
-  const [value, setValue] = React.useState(initialValue || "");
+  const [open, setOpen] = useState(false);
+  const [value, setValue] = useState(initialValue || "");
+  const [selectingIndex, setSelectingIndex] = useState<number>(0);
+  const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const popoverRef = useRef<HTMLButtonElement>(null);
+  useEffect(() => {
+    itemRefs.current = itemRefs.current.slice(0, options.length);
+    setSelectingIndex(0);
+  }, [options]);
 
   variant = isError ? "error" : variant;
 
-  console.log(options);
-
   return (
-    <div className="flex w-full flex-col gap-1">
+    <div
+      className="flex w-full flex-col gap-1"
+      onBlurCapture={() => setOpen(false)}
+    >
       {label && (
         <div className={cn("text-sm-regular", labelClassName)}>
           {label} {required && <span className="text-error-600">*</span>}
@@ -102,13 +111,58 @@ export function Dropdown({
       )}
       <Popover open={open}>
         <PopoverTrigger
+          ref={popoverRef}
           disabled={disabled}
           asChild={!triggerChildren}
-          onFocusCapture={() => setOpen(true)}
+          onClickCapture={() => setOpen(true)}
           onBlurCapture={() => setOpen(false)}
+          onKeyDownCapture={(e) => {
+            if (e.key === "Enter") {
+              e.preventDefault();
+              let selectedValue = options[selectingIndex].value;
+              if (value === selectedValue && !open) {
+                if (document.activeElement instanceof HTMLElement)
+                  document.activeElement.blur();
+                document.body.focus();
+                return;
+              }
+              selectedValue = value === selectedValue ? "" : selectedValue;
+              onItemSelect?.(selectedValue);
+              setValue(selectedValue);
+              console.log("selected", selectedValue);
+              if (document.activeElement instanceof HTMLElement)
+                document.activeElement.blur();
+              document.body.focus();
+              return;
+            }
+            if (e.key === "ArrowDown") {
+              console.log("ArrowDown");
+              const newIndex =
+                selectingIndex + 1 < options.length ? selectingIndex + 1 : 0;
+              setSelectingIndex(newIndex);
+              setTimeout(() => {
+                itemRefs.current[newIndex]?.scrollIntoView({
+                  block: "nearest",
+                });
+              }, 0);
+            }
+            if (e.key === "ArrowUp") {
+              console.log("ArrowUp");
+              const newIndex =
+                selectingIndex - 1 >= 0
+                  ? selectingIndex - 1
+                  : options.length - 1;
+              setSelectingIndex(newIndex);
+              setTimeout(() => {
+                itemRefs.current[newIndex]?.scrollIntoView({
+                  block: "nearest",
+                });
+              }, 0);
+            }
+          }}
         >
           {triggerChildren ? (
-            triggerChildren(open)
+            triggerChildren(open, value)
           ) : (
             <Button
               disabled={disabled}
@@ -151,11 +205,15 @@ export function Dropdown({
             <CommandList>
               <CommandEmpty>No matched found.</CommandEmpty>
               <CommandGroup className="max-h-40 overflow-y-auto">
-                {options.map((item) => (
+                {options.map((item, index) => (
                   <CommandItem
+                    ref={(ref) => {
+                      itemRefs.current[index] = ref;
+                    }}
                     className={cn(
-                      "hover:bg-info-50",
+                      "",
                       value === item.value && "bg-brand-50",
+                      selectingIndex === index && "bg-info-50",
                     )}
                     key={item.value}
                     value={item.value}
@@ -164,6 +222,7 @@ export function Dropdown({
                       setValue(item.value === value ? "" : item.value);
                       setOpen(false);
                     }}
+                    onMouseMove={() => setSelectingIndex(index)}
                   >
                     {item.label}
                   </CommandItem>

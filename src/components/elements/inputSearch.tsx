@@ -8,6 +8,7 @@ import {
 import { Input } from "./input";
 import { cn } from "@/lib";
 import { useRef } from "react";
+import { useDebouncedCallback } from "use-debounce";
 
 export const InputSearch = ({
   onSearch,
@@ -22,6 +23,8 @@ export const InputSearch = ({
     disabledMessage?: string;
   }) => {
   const inputRef = useRef<HTMLInputElement>(null);
+  const onSearchInput = onSearch ?? (() => {});
+  const debouncedSearch = useDebouncedCallback(onSearchInput, 300);
 
   return (
     <>
@@ -33,21 +36,29 @@ export const InputSearch = ({
               props.options.find((option) => option.value === value)?.label ??
               "";
           }
+          debouncedSearch(inputRef.current?.value ?? "");
           onItemSelect?.(value);
         }}
-        triggerChildren={(open) => (
+        triggerChildren={(open, value) => (
           <Input
+            onBlur={() => {
+              if (inputRef.current) {
+                inputRef.current.value =
+                  props.options.find((option) => option.value === value)
+                    ?.label ?? "";
+              }
+            }}
             required={props.required}
             disabled={props.disabled}
             isError={props.isError}
             ref={inputRef}
             className={cn(getDropdownVariant(open, variant), "w-full")}
             placeholder={props.disabled ? disabledMessage : placeholder}
-            onKeyDownCapture={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                onSearch?.((e.target as HTMLInputElement).value);
-              }
+            onChange={(e) => {
+              debouncedSearch(e.target.value);
+            }}
+            onFocusCapture={() => {
+              debouncedSearch(inputRef.current?.value ?? "");
             }}
           />
         )}
