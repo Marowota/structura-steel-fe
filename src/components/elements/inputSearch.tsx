@@ -7,7 +7,7 @@ import {
 } from "./dropdown";
 import { Input } from "./input";
 import { cn } from "@/lib";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useDebouncedCallback } from "use-debounce";
 
 export const InputSearch = ({
@@ -24,19 +24,24 @@ export const InputSearch = ({
   }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSearchInput = onSearch ?? (() => {});
-  const debouncedSearch = useDebouncedCallback(onSearchInput, 300);
+  const debouncedSearch = useDebouncedCallback(onSearchInput, 100);
+  const [pendingChange, setPendingChange] = useState<string>();
+
+  useEffect(() => {
+    if (inputRef.current && pendingChange !== undefined && props.options) {
+      inputRef.current.value =
+        props.options.find((option) => option.value === pendingChange)?.label ??
+        "";
+      setPendingChange(undefined);
+    }
+  }, [pendingChange, inputRef.current]);
 
   return (
     <>
       <Dropdown
         {...props}
         onItemSelect={(value) => {
-          if (inputRef.current) {
-            inputRef.current.value =
-              props.options.find((option) => option.value === value)?.label ??
-              "";
-          }
-          debouncedSearch(inputRef.current?.value ?? "");
+          setPendingChange(value);
           onItemSelect?.(value);
         }}
         triggerChildren={(open, value) => (
@@ -58,7 +63,7 @@ export const InputSearch = ({
               debouncedSearch(e.target.value);
             }}
             onFocusCapture={() => {
-              debouncedSearch(inputRef.current?.value ?? "");
+              onSearchInput(inputRef.current?.value ?? "");
             }}
           />
         )}

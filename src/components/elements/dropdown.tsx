@@ -114,18 +114,14 @@ export function Dropdown({
           ref={popoverRef}
           disabled={disabled}
           asChild={!triggerChildren}
-          onClickCapture={() => setOpen(true)}
+          onMouseDownCapture={() => setOpen(true)}
           onBlurCapture={() => setOpen(false)}
           onKeyDownCapture={(e) => {
+            if (!open) return;
             if (e.key === "Enter") {
               e.preventDefault();
+              console.log("selectingIndex", selectingIndex);
               let selectedValue = options[selectingIndex].value;
-              if (value === selectedValue && !open) {
-                if (document.activeElement instanceof HTMLElement)
-                  document.activeElement.blur();
-                document.body.focus();
-                return;
-              }
               selectedValue = value === selectedValue ? "" : selectedValue;
               onItemSelect?.(selectedValue);
               setValue(selectedValue);
