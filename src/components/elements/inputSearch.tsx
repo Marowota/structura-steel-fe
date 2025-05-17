@@ -13,10 +13,13 @@ export const InputSearch = ({
   onSearch,
   placeholder,
   variant,
+  disabledMessage,
+  onItemSelect,
   ...props
 }: TDropdownProps &
   VariantProps<typeof dropdownVariant> & {
     placeholder?: string;
+    disabledMessage?: string;
   }) => {
   const inputRef = useRef<HTMLInputElement>(null);
 
@@ -30,12 +33,16 @@ export const InputSearch = ({
               props.options.find((option) => option.value === value)?.label ??
               "";
           }
+          onItemSelect?.(value);
         }}
         triggerChildren={(open) => (
           <Input
+            required={props.required}
+            disabled={props.disabled}
+            isError={props.isError}
             ref={inputRef}
             className={cn(getDropdownVariant(open, variant), "w-full")}
-            placeholder={placeholder}
+            placeholder={props.disabled ? disabledMessage : placeholder}
             onKeyDownCapture={(e) => {
               if (e.key === "Enter") {
                 e.preventDefault();

@@ -3,36 +3,35 @@ import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
-import { TProject } from "./getProjectByPartner";
+import { TProduct } from "../../product/api/getProducts";
 
-export type TPartner = {
+export type TProject = {
   id: number;
-  partnerType: string;
-  partnerName: string;
-  partnerCode: string;
-  taxCode: string;
-  legalRepresentative: string;
-  legalRepresentativePhone: string;
+  partnerId: number;
+  projectCode: string;
+  projectName: string;
+  projectAddress: string;
+  projectRepresentative: string;
+  projectRepresentativePhone: string;
   contactPerson: string;
   contactPersonPhone: string;
-  bankName: string;
-  bankAccountNumber: string;
-  partnerProjects: TProject[];
+  address: string;
+  products: TProduct[];
 };
 
-export type GetPartnersDTO = IPagination & {};
+export type GetProjectDTO = IPagination & { partnerId?: string };
 
-type TResult = IPaginationResponse<TPartner>;
+type TResult = IPaginationResponse<TProject>;
 
-export type TUseGetPartnersParams = {
-  params?: GetPartnersDTO;
+export type TUseGetProjectByPartnerParams = {
+  params?: GetProjectDTO;
   options?: UseQueryOptions<TResult>;
 };
 
-const getPartners = async (params?: GetPartnersDTO) => {
+const getProjectByPartner = async (params?: GetProjectDTO) => {
   try {
     const response = await extendedAxios.get<TResult>(
-      API_URL.partnerService.index,
+      API_URL.partnerService.projectIndex(params?.partnerId ?? ""),
       {
         params,
       },
@@ -46,13 +45,13 @@ const getPartners = async (params?: GetPartnersDTO) => {
   }
 };
 
-export const useGetPartners = ({
+export const useGetProjectByPartner = ({
   options,
   params,
-}: TUseGetPartnersParams = {}) => {
+}: TUseGetProjectByPartnerParams = {}) => {
   const query = useQuery({
     queryKey: ["partners", params],
-    queryFn: () => getPartners(params),
+    queryFn: () => getProjectByPartner(params),
     ...options,
   });
 

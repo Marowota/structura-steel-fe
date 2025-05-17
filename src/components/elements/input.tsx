@@ -47,7 +47,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
     ref,
   ) => {
     return (
-      <div className="flex flex-col gap-1">
+      <div className="flex flex-col items-start gap-1">
         {label && (
           <div className={cn("text-sm-regular", labelClassName)}>
             {label} {required && <span className="text-error-600">*</span>}
@@ -62,7 +62,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
           ref={ref}
           {...props}
         />
-        {isError && (
+        {isError && errorMessage && (
           <div className="text-error-600 text-xs-semibold">{errorMessage}</div>
         )}
       </div>

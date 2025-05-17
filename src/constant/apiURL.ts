@@ -23,5 +23,7 @@ export const API_URL = {
   partnerService: {
     index: API_BASE_URL.partnerService,
     detail: (id: string) => `${API_BASE_URL.partnerService}/${id}`,
+    projectIndex: (idPartner: string) =>
+      `${API_BASE_URL.partnerService}/${idPartner}/projects`,
   },
 };

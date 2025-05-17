@@ -1,5 +1,6 @@
 "use client";
 import {
+  Button,
   InputSearch,
   Modal,
   ModalHeader,
@@ -8,7 +9,9 @@ import {
 import { Dropdown } from "@/components/elements/dropdown";
 import { useGetPartners } from "../../partner/api/getPartners";
 import { IPagination } from "@/types/IPagination";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useForm } from "react-hook-form";
+import { EOrderType, PostOrderDTO } from "../api/postOrder";
 
 export const mapArrayToTDropdown = <T,>(
   inputArray: T[],
@@ -31,6 +34,16 @@ export const OrderCreateModal = ({
   onClose: () => void;
   editId?: string;
 }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setValue,
+    watch,
+    resetField,
+    formState: { errors },
+  } = useForm<PostOrderDTO>();
+
   const defaultParams: IPagination = {
     pageNo: 0,
     pageSize: 10,
@@ -43,34 +56,128 @@ export const OrderCreateModal = ({
     useState<IPagination>(defaultParams);
 
   const { data: partners } = useGetPartners({ params: partnerParams });
+
+  const currentPartnerId = watch("partnerId");
+  const currentProjectId = watch("projectId");
+
+  useEffect(() => {
+    resetField("projectId");
+  }, [currentPartnerId]);
+
+  const onSubmit = () => {};
+
+  const onCloseHandler = () => {
+    reset({});
+    onClose();
+  };
+
+  const itemSelectNumberHandler = (
+    value: string,
+    field: keyof PostOrderDTO,
+  ) => {
+    const valueNumber: number = Number.parseInt(value);
+    if (!isNaN(valueNumber)) {
+      setValue(field, valueNumber, {
+        shouldValidate: true,
+      });
+    } else {
+      resetField(field);
+    }
+  };
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} className="flex flex-col gap-2">
       <ModalHeader title="Create Order" />
-      <form className="flex min-h-96 flex-row gap-4">
-        <ModalSection title="General Information">
-          <div className="grid min-w-72 grid-rows-3 gap-2">
-            <InputSearch
-              label="Partner"
-              options={mapArrayToTDropdown(
-                partners?.content ?? [],
-                "partnerName",
-                "id",
-              )}
-              onSearch={(value) => {
-                setPartnerParams((prev) => ({
-                  ...prev,
-                  search: value,
-                }));
-              }}
-            />
-            <InputSearch label="Project" options={[]} />
-            <Dropdown label="Order type" options={[]} />
-          </div>
-        </ModalSection>
-        <ModalSection title="Products">
-          <InputSearch placeholder="Search" options={[]} />
-          <div className="flex min-w-96 flex-col gap-2"></div>
-        </ModalSection>
+      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
+        <div className="flex min-h-96 flex-row gap-4">
+          <ModalSection title="General Information">
+            <div className="flex min-w-72 flex-col gap-2">
+              <InputSearch
+                label="Partner"
+                options={mapArrayToTDropdown(
+                  partners?.content ?? [],
+                  "partnerName",
+                  "id",
+                )}
+                onSearch={(value) => {
+                  setPartnerParams((prev) => ({
+                    ...prev,
+                    search: value,
+                  }));
+                }}
+                onItemSelect={(value) => {
+                  itemSelectNumberHandler(value, "partnerId");
+                }}
+                {...register("partnerId", {
+                  required: "Partner is required",
+                })}
+                required
+                isError={errors.partnerId ? true : false}
+                errorMessage={errors.partnerId?.message}
+              />
+              <InputSearch
+                label="Project"
+                options={mapArrayToTDropdown(
+                  partners?.content.find(
+                    (partner) => partner.id === currentPartnerId,
+                  )?.partnerProjects ?? [],
+                  "projectName",
+                  "id",
+                )}
+                onItemSelect={(value) => {
+                  itemSelectNumberHandler(value, "projectId");
+                }}
+                {...register("projectId", {
+                  required: "Project is required",
+                })}
+                required
+                isError={errors.projectId ? true : false}
+                errorMessage={errors.projectId?.message}
+                disabled={!currentPartnerId}
+                disabledMessage="Please select a partner first"
+                key={currentPartnerId}
+              />
+              <Dropdown
+                label="Order type"
+                options={mapArrayToTDropdown(
+                  Object.entries(EOrderType).map(([key, value]) => ({
+                    label: value,
+                    value: key,
+                  })),
+                  "label",
+                  "value",
+                )}
+                onItemSelect={(value) => {
+                  setValue("orderType", value, {
+                    shouldValidate: true,
+                  });
+                }}
+                {...register("orderType", {
+                  required: "Order type is required",
+                })}
+                required
+                isError={errors.orderType ? true : false}
+                errorMessage={errors.orderType?.message}
+                disabled={!currentProjectId}
+              />
+            </div>
+          </ModalSection>
+          <ModalSection title="Products">
+            <InputSearch placeholder="Search" options={[]} />
+            <div className="flex min-w-96 flex-col gap-2"></div>
+          </ModalSection>
+        </div>
+        <div className="flex justify-end gap-2">
+          <Button
+            onClick={() => onCloseHandler()}
+            type="button"
+            size={"sm"}
+            variant={"secondary"}
+          >
+            Cancel
+          </Button>
+          <Button size={"sm"}>{editId ? "Update" : "Create"}</Button>
+        </div>
       </form>
     </Modal>
   );

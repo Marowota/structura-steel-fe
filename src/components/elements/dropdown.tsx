@@ -56,6 +56,7 @@ export type TDropdownProps = {
   onItemSelect?: (value: string) => void;
   onSearch?: (value: string) => void;
   triggerChildren?: (open: boolean) => React.ReactNode;
+  disabled?: boolean;
 };
 
 export const getDropdownVariant = (open: boolean, variant?: string | null) =>
@@ -83,6 +84,7 @@ export function Dropdown({
   onItemSelect,
   onSearch,
   triggerChildren,
+  disabled = false,
 }: TDropdownProps & VariantProps<typeof dropdownVariant>) {
   const [open, setOpen] = React.useState(false);
   const [value, setValue] = React.useState(initialValue || "");
@@ -100,6 +102,7 @@ export function Dropdown({
       )}
       <Popover open={open}>
         <PopoverTrigger
+          disabled={disabled}
           asChild={!triggerChildren}
           onFocusCapture={() => setOpen(true)}
           onBlurCapture={() => setOpen(false)}
@@ -108,6 +111,7 @@ export function Dropdown({
             triggerChildren(open)
           ) : (
             <Button
+              disabled={disabled}
               noVariant
               role="combobox"
               aria-expanded={open}
@@ -156,8 +160,8 @@ export function Dropdown({
                     key={item.value}
                     value={item.value}
                     onSelect={() => {
-                      setValue(item.value === value ? "" : item.value);
                       onItemSelect?.(item.value === value ? "" : item.value);
+                      setValue(item.value === value ? "" : item.value);
                       setOpen(false);
                     }}
                   >
@@ -169,7 +173,7 @@ export function Dropdown({
           </Command>
         </PopoverContent>
       </Popover>
-      {isError && (
+      {isError && errorMessage && (
         <div className="text-error-600 text-xs-semibold">{errorMessage}</div>
       )}
     </div>
