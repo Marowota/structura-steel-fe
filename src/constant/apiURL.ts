@@ -19,6 +19,7 @@ export const API_URL = {
   orderService: {
     index: API_BASE_URL.orderService,
     detail: (id: string) => `${API_BASE_URL.orderService}/${id}`,
+    orderDetail: (id: string) => `${API_BASE_URL.orderService}/${id}/details`,
   },
   partnerService: {
     index: API_BASE_URL.partnerService,

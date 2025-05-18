@@ -3,7 +3,7 @@ import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
-import { TProject } from "./getProjectByPartner";
+import { TProject } from "./getProjectsByPartner";
 
 export type TPartner = {
   id: string;

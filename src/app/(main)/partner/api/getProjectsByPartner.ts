@@ -19,16 +19,16 @@ export type TProject = {
   products: TProduct[];
 };
 
-export type GetProjectDTO = IPagination & { partnerId?: string };
+export type GetProjectsDTO = IPagination & { partnerId?: string };
 
 type TResult = IPaginationResponse<TProject>;
 
-export type TUseGetProjectByPartnerParams = {
-  params?: GetProjectDTO;
+export type TUseGetProjectsByPartnerParams = {
+  params?: GetProjectsDTO;
   options?: UseQueryOptions<TResult>;
 };
 
-const getProjectByPartner = async (params?: GetProjectDTO) => {
+const getProjectsByPartner = async (params?: GetProjectsDTO) => {
   try {
     if (params?.partnerId == undefined) return {} as TResult;
     const response = await extendedAxios.get<TResult>(
@@ -46,13 +46,13 @@ const getProjectByPartner = async (params?: GetProjectDTO) => {
   }
 };
 
-export const useGetProjectByPartner = ({
+export const useGetProjectsByPartner = ({
   options,
   params,
-}: TUseGetProjectByPartnerParams = {}) => {
+}: TUseGetProjectsByPartnerParams = {}) => {
   const query = useQuery({
     queryKey: ["partners", "detail", params],
-    queryFn: () => getProjectByPartner(params),
+    queryFn: () => getProjectsByPartner(params),
     ...options,
   });
 

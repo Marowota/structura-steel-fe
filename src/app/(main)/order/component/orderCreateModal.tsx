@@ -9,22 +9,26 @@ import {
 import { Dropdown } from "@/components/elements/dropdown";
 import { GetPartnersDTO, useGetPartners } from "../../partner/api/getPartners";
 import { IPagination } from "@/types/IPagination";
-import { useEffect, useState } from "react";
+import { ReactNode, useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EOrderType, PostOrderDTO } from "../api/postOrder";
 import {
-  GetProjectDTO,
-  useGetProjectByPartner,
-} from "../../partner/api/getProjectByPartner";
+  GetProjectsDTO,
+  useGetProjectsByPartner,
+} from "../../partner/api/getProjectsByPartner";
+import { GetProductsDTO, useGetProducts } from "../../product/api/getProducts";
+import { PostOrderProductDTO } from "../api/postOrderProduct";
 
 export const mapArrayToTDropdown = <T,>(
   inputArray: T[],
   labelField: keyof T,
   valueField: keyof T,
+  selectionLabel?: ReactNode,
 ) => {
   const mappedArray = inputArray.map((item: T) => ({
     label: item[labelField] as string,
     value: item[valueField] as string,
+    selectionLabel: selectionLabel ?? (item[labelField] as string),
   }));
   return mappedArray;
 };
@@ -46,7 +50,7 @@ export const OrderCreateModal = ({
     watch,
     resetField,
     formState: { errors },
-  } = useForm<PostOrderDTO>();
+  } = useForm<PostOrderDTO & { products: PostOrderProductDTO[] }>();
 
   const itemSelectHandler = (value: string, field: keyof PostOrderDTO) => {
     if (value) {
@@ -60,6 +64,7 @@ export const OrderCreateModal = ({
 
   const currentPartnerId = watch("partnerId");
   const currentProjectId = watch("projectId");
+  const currentProducts = watch("products");
 
   const defaultParams: IPagination = {
     pageNo: 0,
@@ -73,13 +78,18 @@ export const OrderCreateModal = ({
     ...defaultParams,
     sortBy: "partnerName",
   });
-  const [projectParams, setProjectParams] = useState<GetProjectDTO>({
+  const [projectParams, setProjectParams] = useState<GetProjectsDTO>({
     ...defaultParams,
     partnerId: currentPartnerId,
   });
+  const [productParams, setProductParams] = useState<GetProductsDTO>({
+    ...defaultParams,
+    sortBy: "name",
+  });
 
   const { data: partners } = useGetPartners({ params: partnerParams });
-  const { data: projects } = useGetProjectByPartner({ params: projectParams });
+  const { data: projects } = useGetProjectsByPartner({ params: projectParams });
+  const { data: products } = useGetProducts({ params: productParams });
 
   useEffect(() => {
     resetField("projectId");
@@ -191,7 +201,28 @@ export const OrderCreateModal = ({
             </div>
           </ModalSection>
           <ModalSection title="Products">
-            <InputSearch placeholder="Search" options={[]} />
+            <InputSearch
+              placeholder="Search"
+              options={mapArrayToTDropdown(
+                products?.content ?? [],
+                "name",
+                "id",
+              )}
+              onSearch={(value) => {
+                setProductParams((prev) => ({
+                  ...prev,
+                  search: value,
+                }));
+              }}
+              onItemSelect={(value) => {
+                if (value) {
+                  setValue("products", [...(currentProducts ?? [])]);
+                }
+              }}
+              {...register("products", {
+                required: "Product is required",
+              })}
+            />
             <div className="flex min-w-96 flex-col gap-2"></div>
           </ModalSection>
         </div>

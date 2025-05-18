@@ -18,7 +18,7 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover";
 import { cva, VariantProps } from "class-variance-authority";
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 
 export const dropdownVariant = cva(
   "text-md-regular rounded-md border-1 w-full px-3 py-2 active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
@@ -41,6 +41,7 @@ export const dropdownVariant = cva(
 
 export type TDropdown = {
   label: string;
+  selectionLabel: ReactNode;
   value: string;
 };
 
@@ -117,7 +118,7 @@ export function Dropdown({
           onMouseDownCapture={() => setOpen(true)}
           onBlurCapture={() => setOpen(false)}
           onKeyDownCapture={(e) => {
-            if (!open) return;
+            if (!open || options.length < 1) return;
             if (e.key === "Enter") {
               e.preventDefault();
               console.log("selectingIndex", selectingIndex);
@@ -223,7 +224,7 @@ export function Dropdown({
                     }}
                     onMouseMove={() => setSelectingIndex(index)}
                   >
-                    {item.label}
+                    {item.selectionLabel}
                   </CommandItem>
                 ))}
               </CommandGroup>
