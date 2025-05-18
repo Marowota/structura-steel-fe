@@ -5,7 +5,7 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
 
 export type TProduct = {
-  id: number;
+  id: string;
   code: string;
   name: string;
   unitWeight: number;

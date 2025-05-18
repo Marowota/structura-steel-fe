@@ -24,7 +24,7 @@ export const InputSearch = ({
   }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSearchInput = onSearch ?? (() => {});
-  const debouncedSearch = useDebouncedCallback(onSearchInput, 100);
+  const debouncedSearch = useDebouncedCallback(onSearchInput, 200);
   const [pendingChange, setPendingChange] = useState<string>();
 
   useEffect(() => {

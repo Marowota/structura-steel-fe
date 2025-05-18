@@ -28,7 +28,7 @@ export const useGetProductDetail = ({
   params,
 }: UseGetProductDetailParams = {}) => {
   const query = useQuery({
-    queryKey: ["product", params],
+    queryKey: ["products", "detail", params],
     queryFn: () => getProductDetail(params),
     ...options,
   });

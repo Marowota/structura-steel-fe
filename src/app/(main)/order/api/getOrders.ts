@@ -12,9 +12,9 @@ export enum EOrderStatus {
 }
 
 export type TOrder = {
-  id: number;
-  partnerId: number;
-  projectId: number;
+  id: string;
+  partnerId: string;
+  projectId: string;
   orderDate: string;
   status: EOrderStatus;
   orderType: string;

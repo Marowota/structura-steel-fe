@@ -7,11 +7,15 @@ import {
   ModalSection,
 } from "@/components/elements";
 import { Dropdown } from "@/components/elements/dropdown";
-import { useGetPartners } from "../../partner/api/getPartners";
+import { GetPartnersDTO, useGetPartners } from "../../partner/api/getPartners";
 import { IPagination } from "@/types/IPagination";
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EOrderType, PostOrderDTO } from "../api/postOrder";
+import {
+  GetProjectDTO,
+  useGetProjectByPartner,
+} from "../../partner/api/getProjectByPartner";
 
 export const mapArrayToTDropdown = <T,>(
   inputArray: T[],
@@ -43,13 +47,10 @@ export const OrderCreateModal = ({
     resetField,
     formState: { errors },
   } = useForm<PostOrderDTO>();
-  const itemSelectNumberHandler = (
-    value: string,
-    field: keyof PostOrderDTO,
-  ) => {
-    const valueNumber: number = Number.parseInt(value);
-    if (!isNaN(valueNumber)) {
-      setValue(field, valueNumber, {
+
+  const itemSelectHandler = (value: string, field: keyof PostOrderDTO) => {
+    if (value) {
+      setValue(field, value, {
         shouldValidate: true,
       });
     } else {
@@ -63,31 +64,31 @@ export const OrderCreateModal = ({
   const defaultParams: IPagination = {
     pageNo: 0,
     pageSize: 10,
-    sortBy: "partnerName",
+    sortBy: "",
     sortDir: "asc",
     search: "",
   };
 
-  const [partnerParams, setPartnerParams] =
-    useState<IPagination>(defaultParams);
-  const [projectParams, setProjectParams] = useState({ search: "" });
+  const [partnerParams, setPartnerParams] = useState<GetPartnersDTO>({
+    ...defaultParams,
+    sortBy: "partnerName",
+  });
+  const [projectParams, setProjectParams] = useState<GetProjectDTO>({
+    ...defaultParams,
+    partnerId: currentPartnerId,
+  });
 
   const { data: partners } = useGetPartners({ params: partnerParams });
-  const projects =
-    partners?.content
-      .find((partner) => partner.id === currentPartnerId)
-      ?.partnerProjects.filter((project) =>
-        project.projectName.match(projectParams.search),
-      ) ?? [];
+  const { data: projects } = useGetProjectByPartner({ params: projectParams });
 
   useEffect(() => {
     resetField("projectId");
   }, [currentPartnerId]);
 
-  const searchPartnersHandler = (value: string) => {
+  const searchPartnersHandler = (label: string) => {
     setPartnerParams((prev) => ({
       ...prev,
-      search: value,
+      search: label,
     }));
   };
 
@@ -121,7 +122,15 @@ export const OrderCreateModal = ({
                 )}
                 onSearch={searchPartnersHandler}
                 onItemSelect={(value) => {
-                  itemSelectNumberHandler(value, "partnerId");
+                  itemSelectHandler(value, "partnerId");
+                  setProjectParams((prev) => {
+                    return {
+                      ...prev,
+                      pageNo: 0,
+                      search: "",
+                      partnerId: value,
+                    };
+                  });
                 }}
                 {...register("partnerId", {
                   required: "Partner is required",
@@ -132,7 +141,11 @@ export const OrderCreateModal = ({
               />
               <InputSearch
                 label="Project"
-                options={mapArrayToTDropdown(projects, "projectName", "id")}
+                options={mapArrayToTDropdown(
+                  projects?.content ?? [],
+                  "projectName",
+                  "id",
+                )}
                 onSearch={(value) => {
                   setProjectParams((prev) => ({
                     ...prev,
@@ -140,7 +153,7 @@ export const OrderCreateModal = ({
                   }));
                 }}
                 onItemSelect={(value) => {
-                  itemSelectNumberHandler(value, "projectId");
+                  itemSelectHandler(value, "projectId");
                 }}
                 {...register("projectId", {
                   required: "Project is required",

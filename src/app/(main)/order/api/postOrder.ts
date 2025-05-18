@@ -13,8 +13,8 @@ import {
 import { TOrder } from "./getOrders";
 
 export type PostOrderDTO = {
-  partnerId: number;
-  projectId: number;
+  partnerId: string;
+  projectId: string;
   status: string;
   orderType: string;
   saleOrdersNote?: string;

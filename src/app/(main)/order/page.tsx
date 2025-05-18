@@ -17,8 +17,8 @@ export default function OrderPage() {
     isOpen: false,
     editId: undefined,
   });
-  const [openDetailId, setOpenDetailId] = useState();
-  const [openDeleteId, setOpenDeleteId] = useState();
+  const [, setOpenDetailId] = useState();
+  const [, setOpenDeleteId] = useState();
 
   const onRowClick = (row: Row<TOrder>) => {
     setOpenDetailId(row.getValue("id"));

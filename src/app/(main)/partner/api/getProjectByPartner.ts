@@ -6,8 +6,8 @@ import axios from "axios";
 import { TProduct } from "../../product/api/getProducts";
 
 export type TProject = {
-  id: number;
-  partnerId: number;
+  id: string;
+  partnerId: string;
   projectCode: string;
   projectName: string;
   projectAddress: string;
@@ -30,8 +30,9 @@ export type TUseGetProjectByPartnerParams = {
 
 const getProjectByPartner = async (params?: GetProjectDTO) => {
   try {
+    if (params?.partnerId == undefined) return {} as TResult;
     const response = await extendedAxios.get<TResult>(
-      API_URL.partnerService.projectIndex(params?.partnerId ?? ""),
+      API_URL.partnerService.projectIndex(params?.partnerId),
       {
         params,
       },
@@ -50,7 +51,7 @@ export const useGetProjectByPartner = ({
   params,
 }: TUseGetProjectByPartnerParams = {}) => {
   const query = useQuery({
-    queryKey: ["partners", params],
+    queryKey: ["partners", "detail", params],
     queryFn: () => getProjectByPartner(params),
     ...options,
   });

@@ -210,6 +210,9 @@ export function Dropdown({
                       "",
                       value === item.value && "bg-brand-50",
                       selectingIndex === index && "bg-info-50",
+                      value === item.value &&
+                        selectingIndex === index &&
+                        "bg-error-50",
                     )}
                     key={item.value}
                     value={item.value}

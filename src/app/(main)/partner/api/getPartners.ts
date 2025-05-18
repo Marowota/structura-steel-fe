@@ -6,7 +6,7 @@ import axios from "axios";
 import { TProject } from "./getProjectByPartner";
 
 export type TPartner = {
-  id: number;
+  id: string;
   partnerType: string;
   partnerName: string;
   partnerCode: string;
