@@ -17,7 +17,6 @@ export default function LoginForm() {
   const authenticated = useSelector(selectIsAuthenticated);
 
   useEffect(() => {
-    console.log("authenticated login", authenticated);
     if (authenticated) {
       redirect("/");
     }

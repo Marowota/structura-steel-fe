@@ -11,14 +11,7 @@ import {
   useQueryClient,
 } from "@tanstack/react-query";
 import { TOrder } from "./getOrders";
-
-export type PostOrderDTO = {
-  partnerId: string;
-  projectId: string;
-  status: string;
-  orderType: string;
-  saleOrdersNote?: string;
-};
+import { PostOrderProductDTO } from "./postOrderProduct";
 
 export type TCreateError = {
   timestamp: string;
@@ -26,30 +19,30 @@ export type TCreateError = {
   details: string;
 };
 
-export enum EOrderType {
-  BAN_SI = "Bán sỉ",
-  BAN_LE = "Bán lẻ",
-}
-
-export type TUsePostOrderParams = {
-  options?: MutationOptions<TOrder, TCreateError, PostOrderDTO>;
+export type TUsePostOrderProductBatchParams = {
+  options?: MutationOptions<TOrder, TCreateError, PostOrderProductDTO[]>;
 };
 
-const postOrder = async (data: PostOrderDTO) => {
+const postOrderProductBatch = async (data: PostOrderProductDTO[]) => {
   const response = await axiosRequestHandler(() =>
-    extendedAxios.post<TOrder, PostOrderDTO>(API_URL.orderService.index, data),
+    extendedAxios.post<TOrder, PostOrderProductDTO[]>(
+      API_URL.orderService.orderDetailBatch(data[0].orderId),
+      data,
+    ),
   );
   return response.data;
 };
 
-export const usePostOrder = ({ options }: TUsePostOrderParams = {}) => {
+export const usePostOrderProductBatch = ({
+  options,
+}: TUsePostOrderProductBatchParams = {}) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationKey: ["orders"],
-    mutationFn: postOrder,
+    mutationKey: ["orders", "batch"],
+    mutationFn: postOrderProductBatch,
     onSuccess: () => {
-      //toastNotification("Order created successfully", EToastType.SUCCESS);
+      toastNotification("Order created successfully", EToastType.SUCCESS);
       queryClient.invalidateQueries({ queryKey: ["orders"] });
     },
     onError: (error: TCreateError) => {

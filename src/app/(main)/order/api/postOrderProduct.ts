@@ -47,7 +47,7 @@ export const usePostOrderProduct = ({
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationKey: ["orders"],
+    mutationKey: ["orders", "single"],
     mutationFn: postOrderProduct,
     onSuccess: () => {
       toastNotification("Order created successfully", EToastType.SUCCESS);

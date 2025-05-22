@@ -6,6 +6,7 @@ import {
   Modal,
   ModalHeader,
   ModalSection,
+  Textarea,
 } from "@/components/elements";
 import { Dropdown } from "@/components/elements/dropdown";
 import {
@@ -15,7 +16,7 @@ import {
 import { DEFAULT_PAGINATION_RESPONSE, IPagination } from "@/types/IPagination";
 import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
-import { EOrderType, PostOrderDTO } from "../api/postOrder";
+import { EOrderType, PostOrderDTO, usePostOrder } from "../api/postOrder";
 import {
   GetProjectsDTO,
   useGetInfiniteProjectsByPartner,
@@ -26,6 +27,8 @@ import {
 } from "../../product/api/getProducts";
 import { PostOrderProductDTO } from "../api/postOrderProduct";
 import { X } from "lucide-react";
+import { usePostOrderProductBatch } from "../api/postOrderProductBatch";
+import { EToastType, toastNotification } from "@/lib";
 
 export const mapArrayToTDropdown = <T,>(
   inputArray: T[],
@@ -33,9 +36,6 @@ export const mapArrayToTDropdown = <T,>(
   valueField: keyof T,
   selectionLabel?: ReactNode,
 ) => {
-  console.log("inputArray", inputArray);
-  console.log("labelField", labelField);
-  console.log("valueField", valueField);
   const mappedArray = inputArray.map((item: T) => ({
     label: item[labelField] as string,
     value: item[valueField] as string,
@@ -62,6 +62,9 @@ export const OrderCreateModal = ({
     resetField,
     formState: { errors },
   } = useForm<PostOrderDTO & { products: PostOrderProductDTO[] }>();
+
+  const { mutateAsync: createOrder } = usePostOrder();
+  const { mutateAsync: createOrderProduct } = usePostOrderProductBatch();
 
   const itemSelectHandler = (value: string, field: keyof PostOrderDTO) => {
     if (value) {
@@ -158,9 +161,22 @@ export const OrderCreateModal = ({
     resetField("projectId");
   }, [currentPartnerId]);
 
-  const onSubmit = () => {
-    // Handle form submission
-    console.log("Form submitted");
+  const onSubmit = async (
+    data: PostOrderDTO & { products: PostOrderProductDTO[] },
+  ) => {
+    const { products, ...rest } = data;
+    const result = await createOrder(rest);
+    if (result) {
+      console.log(result);
+      products[0].orderId = result.id;
+      await createOrderProduct(products);
+      onCloseHandler();
+    } else {
+      toastNotification(
+        "failed to create order, please try again",
+        EToastType.ERROR,
+      );
+    }
   };
 
   const onCloseHandler = () => {
@@ -179,8 +195,8 @@ export const OrderCreateModal = ({
         className="flex h-full flex-col gap-4"
         onSubmit={handleSubmit(onSubmit)}
       >
-        <div className="flex h-full flex-row gap-4">
-          <ModalSection title="General Information">
+        <div className="flex h-full min-h-0 flex-row gap-4">
+          <ModalSection title="General Information" className="overflow-auto">
             <div className="flex min-w-72 flex-col gap-2">
               <InputSearch
                 label="Partner"
@@ -274,6 +290,7 @@ export const OrderCreateModal = ({
                 errorMessage={errors.orderType?.message}
                 disabled={!currentProjectId}
               />
+              <Textarea label="Note" {...register("saleOrdersNote")} />
             </div>
           </ModalSection>
           <ModalSection title="Products" className="w-[40vw]">
@@ -371,8 +388,9 @@ export const OrderCreateModal = ({
                           );
                           setValue("products", updatedProducts);
                         }}
+                        type="button"
                       >
-                        <X className="h-4 w-4" type="button" />
+                        <X className="h-4 w-4" />
                       </Button>
                     </div>
                   </div>
