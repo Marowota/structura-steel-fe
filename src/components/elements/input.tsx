@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils";
 import { cva, VariantProps } from "class-variance-authority";
 
 const inputVariant = cva(
-  "text-md-regular rounded-md border-1 w-full px-3 py-2 active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
+  "rounded-md border-1 w-full active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
   {
     variants: {
       variant: {
@@ -15,9 +15,15 @@ const inputVariant = cva(
         error: "border-error-300 focus-visible:border-error-500 ring-error-50",
         nothing: "",
       },
+      inputSize: {
+        sm: "text-sm-regular px-2 py-1",
+        md: "text-md-regular px-3 py-2",
+        lg: "text-lg-regular px-3 py-2",
+      },
     },
     defaultVariants: {
       variant: "normal",
+      inputSize: "md",
     },
   },
 );
@@ -35,6 +41,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
   (
     {
       variant,
+      inputSize,
       className,
       type,
       label,
@@ -56,7 +63,11 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
         <input
           type={type}
           className={cn(
-            inputVariant({ variant: isError ? "error" : variant, className }),
+            inputVariant({
+              variant: isError ? "error" : variant,
+              className,
+              inputSize,
+            }),
             "",
           )}
           ref={ref}

@@ -19,6 +19,8 @@ import {
 } from "@/components/ui/popover";
 import { cva, VariantProps } from "class-variance-authority";
 import { ReactNode, useEffect, useRef, useState } from "react";
+import { IPaginationResponse } from "@/types/IPagination";
+import { useInView } from "react-intersection-observer";
 
 export const dropdownVariant = cva(
   "text-md-regular rounded-md border-1 w-full px-3 py-2 active:ring-4 focus-visible:ring-2 focus-visible:outline-none disabled:opacity-50",
@@ -45,6 +47,12 @@ export type TDropdown = {
   value: string;
 };
 
+export const dropdownDefault: TDropdown = {
+  label: "",
+  selectionLabel: "",
+  value: "",
+};
+
 export type TDropdownProps = {
   className?: string;
   isError?: boolean;
@@ -54,11 +62,15 @@ export type TDropdownProps = {
   required?: boolean;
   errorMessage?: string;
   initialValue?: string;
-  onItemSelect?: (value: string) => void;
+  onItemSelect?: (item: TDropdown) => void;
   onSearch?: (value: string) => void;
   triggerChildren?: (open: boolean, value: string) => React.ReactNode;
   disabled?: boolean;
   triggerSelectOnEnter?: boolean;
+  resetOnSelect?: boolean;
+  paginationInfo?: IPaginationResponse<unknown>;
+  onPageChange?: (page: number) => void;
+  isLoading?: boolean;
 };
 
 export const getDropdownVariant = (open: boolean, variant?: string | null) =>
@@ -87,18 +99,36 @@ export function Dropdown({
   onSearch,
   triggerChildren,
   disabled = false,
+  resetOnSelect = false,
+  paginationInfo,
+  onPageChange,
+  isLoading = false,
 }: TDropdownProps & VariantProps<typeof dropdownVariant>) {
   const [open, setOpen] = useState(false);
   const [value, setValue] = useState(initialValue || "");
   const [selectingIndex, setSelectingIndex] = useState<number>(0);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const popoverRef = useRef<HTMLButtonElement>(null);
+  const { ref: inViewRef, inView } = useInView();
+
   useEffect(() => {
     itemRefs.current = itemRefs.current.slice(0, options.length);
     setSelectingIndex(0);
   }, [options]);
 
+  useEffect(() => {
+    if (inView && paginationInfo && !paginationInfo.last) {
+      onPageChange?.(paginationInfo.pageNo + 1);
+    }
+  }, [inView]);
+
   variant = isError ? "error" : variant;
+
+  const onSelectHandler = (item: TDropdown) => {
+    const selectedItem = value === item.value ? dropdownDefault : item;
+    onItemSelect?.(selectedItem);
+    setValue(resetOnSelect ? "" : selectedItem.value);
+  };
 
   return (
     <div
@@ -121,19 +151,14 @@ export function Dropdown({
             if (!open || options.length < 1) return;
             if (e.key === "Enter") {
               e.preventDefault();
-              console.log("selectingIndex", selectingIndex);
-              let selectedValue = options[selectingIndex].value;
-              selectedValue = value === selectedValue ? "" : selectedValue;
-              onItemSelect?.(selectedValue);
-              setValue(selectedValue);
-              console.log("selected", selectedValue);
+              onSelectHandler(options[selectingIndex]);
               if (document.activeElement instanceof HTMLElement)
                 document.activeElement.blur();
               document.body.focus();
               return;
             }
+
             if (e.key === "ArrowDown") {
-              console.log("ArrowDown");
               const newIndex =
                 selectingIndex + 1 < options.length ? selectingIndex + 1 : 0;
               setSelectingIndex(newIndex);
@@ -143,8 +168,8 @@ export function Dropdown({
                 });
               }, 0);
             }
+
             if (e.key === "ArrowUp") {
-              console.log("ArrowUp");
               const newIndex =
                 selectingIndex - 1 >= 0
                   ? selectingIndex - 1
@@ -218,8 +243,7 @@ export function Dropdown({
                     key={item.value}
                     value={item.value}
                     onSelect={() => {
-                      onItemSelect?.(item.value === value ? "" : item.value);
-                      setValue(item.value === value ? "" : item.value);
+                      onSelectHandler(item);
                       setOpen(false);
                     }}
                     onMouseMove={() => setSelectingIndex(index)}
@@ -227,6 +251,27 @@ export function Dropdown({
                     {item.selectionLabel}
                   </CommandItem>
                 ))}
+                {paginationInfo && isLoading && (
+                  <div
+                    className={cn(
+                      "text-xs-regular text-center",
+                      paginationInfo.last && "hidden",
+                    )}
+                  >
+                    Loading...
+                  </div>
+                )}
+                {paginationInfo && !isLoading && (
+                  <div
+                    ref={inViewRef}
+                    className={cn(
+                      "text-xs-regular text-center",
+                      paginationInfo.last && "hidden",
+                    )}
+                  >
+                    Next Page
+                  </div>
+                )}
               </CommandGroup>
             </CommandList>
           </Command>

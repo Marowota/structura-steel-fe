@@ -1,7 +1,15 @@
 import { API_URL } from "@/constant/apiURL";
 import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import {
+  DefaultError,
+  InfiniteData,
+  QueryKey,
+  UndefinedInitialDataInfiniteOptions,
+  useInfiniteQuery,
+  useQuery,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 import { TProject } from "./getProjectsByPartner";
 
@@ -27,6 +35,17 @@ type TResult = IPaginationResponse<TPartner>;
 export type TUseGetPartnersParams = {
   params?: GetPartnersDTO;
   options?: UseQueryOptions<TResult>;
+};
+
+export type TUseGetInfinitePartnersParams = {
+  params: GetPartnersDTO;
+  options?: UndefinedInitialDataInfiniteOptions<
+    TResult,
+    DefaultError,
+    InfiniteData<TResult>,
+    QueryKey,
+    GetPartnersDTO
+  >;
 };
 
 const getPartners = async (params?: GetPartnersDTO) => {
@@ -57,4 +76,20 @@ export const useGetPartners = ({
   });
 
   return { ...query };
+};
+
+export const useGetInfinitePartners = ({
+  options,
+  params,
+}: TUseGetInfinitePartnersParams) => {
+  return useInfiniteQuery({
+    queryKey: ["partners", "infinite", params],
+    queryFn: ({ pageParam }) => getPartners(pageParam),
+    getNextPageParam: (lastPage) => ({
+      ...params,
+      pageNo: lastPage.pageNo + 1,
+    }),
+    initialPageParam: params,
+    ...options,
+  });
 };

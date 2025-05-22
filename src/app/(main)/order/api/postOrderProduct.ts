@@ -18,6 +18,7 @@ export type PostOrderProductDTO = {
   quantity: number;
   weight: number;
   unitPrice: number;
+  name?: string;
 };
 
 export type TCreateError = {

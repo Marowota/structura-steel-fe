@@ -1,7 +1,15 @@
 import { API_URL } from "@/constant/apiURL";
 import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import {
+  DefaultError,
+  InfiniteData,
+  QueryKey,
+  UndefinedInitialDataInfiniteOptions,
+  useInfiniteQuery,
+  useQuery,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 export type TProduct = {
@@ -22,6 +30,17 @@ export type GetProductsDTO = IPagination & {};
 export type TUseGetProductsParams = {
   params?: GetProductsDTO;
   options?: UseQueryOptions<TResult>;
+};
+
+export type TUseGetInfiniteProductsParams = {
+  params: GetProductsDTO;
+  options?: UndefinedInitialDataInfiniteOptions<
+    TResult,
+    DefaultError,
+    InfiniteData<TResult>,
+    QueryKey,
+    GetProductsDTO
+  >;
 };
 
 type TResult = IPaginationResponse<TProduct>;
@@ -54,4 +73,20 @@ export const useGetProducts = ({
   });
 
   return { ...query };
+};
+
+export const useGetInfiniteProducts = ({
+  options,
+  params,
+}: TUseGetInfiniteProductsParams) => {
+  return useInfiniteQuery({
+    queryKey: ["products", "infinite", params],
+    queryFn: ({ pageParam }) => getProduct(pageParam),
+    getNextPageParam: (lastPage) => ({
+      ...params,
+      pageNo: lastPage.pageNo + 1,
+    }),
+    initialPageParam: params,
+    ...options,
+  });
 };

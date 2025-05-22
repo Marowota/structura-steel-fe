@@ -14,3 +14,12 @@ export interface IPaginationResponse<T> {
   totalPages: number;
   last: boolean;
 }
+
+export const DEFAULT_PAGINATION_RESPONSE: IPaginationResponse<unknown> = {
+  pageNo: 0,
+  pageSize: 0,
+  totalElements: 0,
+  totalPages: 0,
+  last: true,
+  content: [],
+};

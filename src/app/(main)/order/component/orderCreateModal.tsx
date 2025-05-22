@@ -1,23 +1,31 @@
 "use client";
 import {
   Button,
+  Input,
   InputSearch,
   Modal,
   ModalHeader,
   ModalSection,
 } from "@/components/elements";
 import { Dropdown } from "@/components/elements/dropdown";
-import { GetPartnersDTO, useGetPartners } from "../../partner/api/getPartners";
-import { IPagination } from "@/types/IPagination";
-import { ReactNode, useEffect, useState } from "react";
+import {
+  GetPartnersDTO,
+  useGetInfinitePartners,
+} from "../../partner/api/getPartners";
+import { DEFAULT_PAGINATION_RESPONSE, IPagination } from "@/types/IPagination";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { useForm } from "react-hook-form";
 import { EOrderType, PostOrderDTO } from "../api/postOrder";
 import {
   GetProjectsDTO,
-  useGetProjectsByPartner,
+  useGetInfiniteProjectsByPartner,
 } from "../../partner/api/getProjectsByPartner";
-import { GetProductsDTO, useGetProducts } from "../../product/api/getProducts";
+import {
+  GetProductsDTO,
+  useGetInfiniteProducts,
+} from "../../product/api/getProducts";
 import { PostOrderProductDTO } from "../api/postOrderProduct";
+import { X } from "lucide-react";
 
 export const mapArrayToTDropdown = <T,>(
   inputArray: T[],
@@ -25,6 +33,9 @@ export const mapArrayToTDropdown = <T,>(
   valueField: keyof T,
   selectionLabel?: ReactNode,
 ) => {
+  console.log("inputArray", inputArray);
+  console.log("labelField", labelField);
+  console.log("valueField", valueField);
   const mappedArray = inputArray.map((item: T) => ({
     label: item[labelField] as string,
     value: item[valueField] as string,
@@ -87,20 +98,56 @@ export const OrderCreateModal = ({
     sortBy: "name",
   });
 
-  const { data: partners } = useGetPartners({ params: partnerParams });
-  const { data: projects } = useGetProjectsByPartner({ params: projectParams });
-  const { data: products } = useGetProducts({ params: productParams });
+  const { data: infinitePartners, fetchNextPage: fetchNextPagePartners } =
+    useGetInfinitePartners({
+      params: partnerParams,
+    });
+
+  const { data: infiniteProjects, fetchNextPage: fetchNextPageProject } =
+    useGetInfiniteProjectsByPartner({ params: projectParams });
+
+  const { data: infiniteProducts, fetchNextPage: fetchNextPageProducts } =
+    useGetInfiniteProducts({ params: productParams });
+
+  const partners = useMemo(() => {
+    const lastPage =
+      infinitePartners?.pages?.[infinitePartners.pages.length - 1] ??
+      DEFAULT_PAGINATION_RESPONSE;
+    return {
+      ...lastPage,
+      content: infinitePartners?.pages
+        ? infinitePartners.pages.map((page) => page.content).flat()
+        : [],
+    };
+  }, [infinitePartners]);
+
+  const projects = useMemo(() => {
+    const lastPage =
+      infiniteProjects?.pages?.[infiniteProjects.pages.length - 1] ??
+      DEFAULT_PAGINATION_RESPONSE;
+    return {
+      ...lastPage,
+      content: infiniteProjects?.pages
+        ? infiniteProjects.pages.map((page) => page.content).flat()
+        : [],
+    };
+  }, [infiniteProjects]);
+
+  const products = useMemo(() => {
+    const lastPage =
+      infiniteProducts?.pages?.[infiniteProducts.pages.length - 1] ??
+      DEFAULT_PAGINATION_RESPONSE;
+    return {
+      ...lastPage,
+      content: infiniteProducts?.pages
+        ? infiniteProducts.pages.map((page) => page.content).flat()
+        : [],
+    };
+  }, [infiniteProducts]);
 
   useEffect(() => {
     resetField("projectId");
   }, [currentPartnerId]);
-
-  const searchPartnersHandler = (label: string) => {
-    setPartnerParams((prev) => ({
-      ...prev,
-      search: label,
-    }));
-  };
 
   const onSubmit = () => {
     // Handle form submission
@@ -116,11 +163,14 @@ export const OrderCreateModal = ({
     <Modal
       isOpen={isOpen}
       onClose={onCloseHandler}
-      className="flex flex-col gap-2"
+      className="flex h-[70vh] min-h-fit flex-col gap-2"
     >
       <ModalHeader title="Create Order" />
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex min-h-96 flex-row gap-4">
+      <form
+        className="flex h-full flex-col gap-4"
+        onSubmit={handleSubmit(onSubmit)}
+      >
+        <div className="flex h-full flex-row gap-4">
           <ModalSection title="General Information">
             <div className="flex min-w-72 flex-col gap-2">
               <InputSearch
@@ -130,15 +180,25 @@ export const OrderCreateModal = ({
                   "partnerName",
                   "id",
                 )}
-                onSearch={searchPartnersHandler}
-                onItemSelect={(value) => {
-                  itemSelectHandler(value, "partnerId");
+                paginationInfo={partners}
+                onSearch={(label) => {
+                  setPartnerParams((prev) => ({
+                    ...prev,
+                    search: label,
+                    pageNo: 0,
+                  }));
+                }}
+                onPageChange={() => {
+                  fetchNextPagePartners();
+                }}
+                onItemSelect={(item) => {
+                  itemSelectHandler(item.value, "partnerId");
                   setProjectParams((prev) => {
                     return {
                       ...prev,
                       pageNo: 0,
                       search: "",
-                      partnerId: value,
+                      partnerId: item.value,
                     };
                   });
                 }}
@@ -156,14 +216,19 @@ export const OrderCreateModal = ({
                   "projectName",
                   "id",
                 )}
+                paginationInfo={projects}
                 onSearch={(value) => {
                   setProjectParams((prev) => ({
                     ...prev,
                     search: value,
+                    pageNo: 0,
                   }));
                 }}
-                onItemSelect={(value) => {
-                  itemSelectHandler(value, "projectId");
+                onPageChange={() => {
+                  fetchNextPageProject();
+                }}
+                onItemSelect={(item) => {
+                  itemSelectHandler(item.value, "projectId");
                 }}
                 {...register("projectId", {
                   required: "Project is required",
@@ -185,8 +250,8 @@ export const OrderCreateModal = ({
                   "label",
                   "value",
                 )}
-                onItemSelect={(value) => {
-                  setValue("orderType", value, {
+                onItemSelect={(item) => {
+                  setValue("orderType", item.value, {
                     shouldValidate: true,
                   });
                 }}
@@ -200,7 +265,7 @@ export const OrderCreateModal = ({
               />
             </div>
           </ModalSection>
-          <ModalSection title="Products">
+          <ModalSection title="Products" className="w-[40vw]">
             <InputSearch
               placeholder="Search"
               options={mapArrayToTDropdown(
@@ -208,22 +273,100 @@ export const OrderCreateModal = ({
                 "name",
                 "id",
               )}
+              paginationInfo={products}
               onSearch={(value) => {
                 setProductParams((prev) => ({
                   ...prev,
                   search: value,
+                  pageNo: 0,
                 }));
               }}
-              onItemSelect={(value) => {
-                if (value) {
-                  setValue("products", [...(currentProducts ?? [])]);
+              onPageChange={() => {
+                fetchNextPageProducts();
+              }}
+              onItemSelect={(item) => {
+                if (item.value) {
+                  const existingProduct = currentProducts?.find(
+                    (p) => p.productId === item.value,
+                  );
+                  if (existingProduct) {
+                    setValue(
+                      `products.${currentProducts?.indexOf(existingProduct)}.quantity`,
+                      existingProduct.quantity + 1,
+                    );
+                    return;
+                  } else {
+                    const selectedProduct: PostOrderProductDTO = {
+                      orderId: "",
+                      productId: item.value,
+                      quantity: 1,
+                      unitPrice: 0,
+                      weight: 1,
+                      name: item.label,
+                    };
+                    setValue("products", [
+                      ...(currentProducts ?? []),
+                      selectedProduct,
+                    ]);
+                  }
                 }
               }}
               {...register("products", {
                 required: "Product is required",
               })}
+              resetOnSelect
             />
-            <div className="flex min-w-96 flex-col gap-2"></div>
+            <div className="mt-2 flex h-0 flex-grow flex-col overflow-auto">
+              {currentProducts?.map((product, index) => (
+                <div key={index} className="flex flex-col gap-2 px-3">
+                  <div className="border-brand-300 flex items-center gap-2 border-b py-2">
+                    <div className="text-sm-medium">{product.name}</div>
+                    <div className="ml-auto flex items-end gap-2">
+                      <Input
+                        type="number"
+                        className="w-20"
+                        label="Quantity"
+                        inputSize={"sm"}
+                        {...register(`products.${index}.quantity`, {
+                          required: "Quantity is required",
+                          min: 1,
+                        })}
+                        required
+                        isError={
+                          errors.products?.[index]?.quantity ? true : false
+                        }
+                      />
+                      <Input
+                        type="number"
+                        className="w-20"
+                        label="Unit Price"
+                        inputSize={"sm"}
+                        {...register(`products.${index}.unitPrice`, {
+                          required: "Unit Price is required",
+                          min: 0,
+                        })}
+                        required
+                        isError={
+                          errors.products?.[index]?.unitPrice ? true : false
+                        }
+                      />
+                      <Button
+                        variant={"navbar"}
+                        size="sm"
+                        onClick={() => {
+                          const updatedProducts = currentProducts?.filter(
+                            (_, i) => i !== index,
+                          );
+                          setValue("products", updatedProducts);
+                        }}
+                      >
+                        <X className="h-4 w-4" type="button" />
+                      </Button>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
           </ModalSection>
         </div>
         <div className="flex justify-end gap-2">
