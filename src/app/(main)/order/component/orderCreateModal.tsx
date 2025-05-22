@@ -98,16 +98,25 @@ export const OrderCreateModal = ({
     sortBy: "name",
   });
 
-  const { data: infinitePartners, fetchNextPage: fetchNextPagePartners } =
-    useGetInfinitePartners({
-      params: partnerParams,
-    });
+  const {
+    data: infinitePartners,
+    fetchNextPage: fetchNextPagePartners,
+    isFetchingNextPage: isPartnersLoading,
+  } = useGetInfinitePartners({
+    params: partnerParams,
+  });
 
-  const { data: infiniteProjects, fetchNextPage: fetchNextPageProject } =
-    useGetInfiniteProjectsByPartner({ params: projectParams });
+  const {
+    data: infiniteProjects,
+    fetchNextPage: fetchNextPageProject,
+    isFetchingNextPage: isProjectsLoading,
+  } = useGetInfiniteProjectsByPartner({ params: projectParams });
 
-  const { data: infiniteProducts, fetchNextPage: fetchNextPageProducts } =
-    useGetInfiniteProducts({ params: productParams });
+  const {
+    data: infiniteProducts,
+    fetchNextPage: fetchNextPageProducts,
+    isFetchingNextPage: isProductsLoading,
+  } = useGetInfiniteProducts({ params: productParams });
 
   const partners = useMemo(() => {
     const lastPage =
@@ -208,6 +217,7 @@ export const OrderCreateModal = ({
                 required
                 isError={errors.partnerId ? true : false}
                 errorMessage={errors.partnerId?.message}
+                isLoading={isPartnersLoading}
               />
               <InputSearch
                 label="Project"
@@ -239,6 +249,7 @@ export const OrderCreateModal = ({
                 disabled={!currentPartnerId}
                 disabledMessage="Please select a partner first"
                 key={currentPartnerId}
+                isLoading={isProjectsLoading}
               />
               <Dropdown
                 label="Order type"
@@ -315,6 +326,7 @@ export const OrderCreateModal = ({
                 required: "Product is required",
               })}
               resetOnSelect
+              isLoading={isProductsLoading}
             />
             <div className="mt-2 flex h-0 flex-grow flex-col overflow-auto">
               {currentProducts?.map((product, index) => (

@@ -170,10 +170,7 @@ export function Dropdown({
             }
 
             if (e.key === "ArrowUp") {
-              const newIndex =
-                selectingIndex - 1 >= 0
-                  ? selectingIndex - 1
-                  : options.length - 1;
+              const newIndex = selectingIndex - 1 >= 0 ? selectingIndex - 1 : 0;
               setSelectingIndex(newIndex);
               setTimeout(() => {
                 itemRefs.current[newIndex]?.scrollIntoView({
@@ -242,7 +239,7 @@ export function Dropdown({
                     )}
                     key={item.value}
                     value={item.value}
-                    onSelect={() => {
+                    onMouseDown={() => {
                       onSelectHandler(item);
                       setOpen(false);
                     }}
