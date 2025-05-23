@@ -79,7 +79,7 @@ const columns: ColumnDef<TOrder>[] = [
     cell: (data) => data.renderValue() ?? "-",
   },
   {
-    accessorKey: "orderDate",
+    accessorKey: "createdAt",
     header: "Order Date",
     cell: (data) =>
       dayjs(data.renderValue() as string | undefined).format(
