@@ -61,6 +61,7 @@ export const OrderCreateModal = ({
     watch,
     resetField,
     formState: { errors },
+    clearErrors,
   } = useForm<PostOrderDTO & { products: PostOrderProductDTO[] }>();
 
   const { mutateAsync: createOrder } = usePostOrder();
@@ -336,6 +337,7 @@ export const OrderCreateModal = ({
                       ...(currentProducts ?? []),
                       selectedProduct,
                     ]);
+                    clearErrors("products");
                   }
                 }
               }}
@@ -344,6 +346,8 @@ export const OrderCreateModal = ({
               })}
               resetOnSelect
               isLoading={isProductsLoading}
+              isError={errors.products ? true : false}
+              errorMessage={errors.products?.message}
             />
             <div className="mt-2 flex h-0 flex-grow flex-col overflow-auto">
               {currentProducts?.map((product, index) => (
