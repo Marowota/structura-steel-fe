@@ -76,7 +76,9 @@ export const productColumns: ColumnDef<TProduct>[] = [
   {
     accessorKey: "code",
     header: "Code",
-    cell: (data) => data.renderValue() ?? "-",
+    cell: (data) => (
+      <div className="w-32">{(data.renderValue() as string) ?? "-"}</div>
+    ),
   },
   {
     accessorKey: "name",
