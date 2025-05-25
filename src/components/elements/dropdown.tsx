@@ -71,6 +71,7 @@ export type TDropdownProps = {
   paginationInfo?: IPaginationResponse<unknown>;
   onPageChange?: (page: number) => void;
   isLoading?: boolean;
+  outerValue?: string;
 };
 
 export const getDropdownVariant = (open: boolean, variant?: string | null) =>
@@ -103,13 +104,17 @@ export function Dropdown({
   paginationInfo,
   onPageChange,
   isLoading = false,
+  outerValue,
 }: TDropdownProps & VariantProps<typeof dropdownVariant>) {
   const [open, setOpen] = useState(false);
-  const [value, setValue] = useState(initialValue || "");
+  const [innerValue, setValue] = useState(initialValue || "");
   const [selectingIndex, setSelectingIndex] = useState<number>(0);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
   const popoverRef = useRef<HTMLButtonElement>(null);
   const { ref: inViewRef, inView } = useInView();
+  const value = outerValue || innerValue;
+  console.log("Dropdown value:", value);
+  console.log("Dropdown options:", options);
 
   useEffect(() => {
     itemRefs.current = itemRefs.current.slice(0, options.length);

@@ -15,7 +15,7 @@ import {
 } from "../../partner/api/getPartners";
 import { DEFAULT_PAGINATION_RESPONSE, IPagination } from "@/types/IPagination";
 import { ReactNode, useEffect, useMemo, useState } from "react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { EOrderType, PostOrderDTO, usePostOrder } from "../api/postOrder";
 import {
   GetProjectsDTO,
@@ -29,6 +29,8 @@ import { PostOrderProductDTO } from "../api/postOrderProduct";
 import { X } from "lucide-react";
 import { usePostOrderProductBatch } from "../api/postOrderProductBatch";
 import { EToastType, toastNotification } from "@/lib";
+import { useGetOrderDetail } from "../api/getOrdersDetails";
+import { useGetOrderProduct } from "../api/getOrdersProduct";
 
 export const mapArrayToTDropdown = <T,>(
   inputArray: T[],
@@ -62,7 +64,53 @@ export const OrderCreateModal = ({
     resetField,
     formState: { errors },
     clearErrors,
+    control,
   } = useForm<PostOrderDTO & { products: PostOrderProductDTO[] }>();
+
+  const { data: editOrderData, isLoading: isEditOderLoading } =
+    useGetOrderDetail({
+      params: { id: editId ?? "" },
+    });
+  const { data: editOrderProducts, isLoading: isEditOrderProductsLoading } =
+    useGetOrderProduct({
+      params: { id: editId ?? "" },
+    });
+  const isLoading = isEditOderLoading || isEditOrderProductsLoading;
+
+  useEffect(() => {
+    if (editOrderData && editOrderProducts?.content) {
+      const newData = {
+        partnerId: editOrderData.partner.id,
+        projectId: editOrderData.project.id,
+        orderType: editOrderData.orderType,
+        saleOrdersNote: editOrderData.saleOrdersNote,
+        products: editOrderProducts.content.map((orderProduct) => ({
+          orderId: editOrderData.id,
+          productId: orderProduct.productId,
+          quantity: orderProduct.quantity,
+          unitPrice: orderProduct.unitPrice,
+          weight: orderProduct.weight,
+        })),
+      };
+      setPartnerParams((prev) => {
+        return {
+          ...prev,
+          search: editOrderData.partner.partnerName,
+          pageNo: 0,
+        };
+      });
+
+      setProjectParams((prev) => {
+        return {
+          ...prev,
+          search: editOrderData.project.projectName,
+          pageNo: 0,
+          partnerId: editOrderData.partner.id,
+        };
+      });
+      reset(newData);
+    }
+  }, [editOrderData, editOrderProducts]);
 
   const { mutateAsync: createOrder } = usePostOrder();
   const { mutateAsync: createOrderProduct } = usePostOrderProductBatch();
@@ -199,97 +247,112 @@ export const OrderCreateModal = ({
         <div className="flex h-full min-h-0 flex-row gap-4">
           <ModalSection title="General Information" className="overflow-auto">
             <div className="flex min-w-72 flex-col gap-2">
-              <InputSearch
-                label="Partner"
-                options={mapArrayToTDropdown(
-                  partners?.content ?? [],
-                  "partnerName",
-                  "id",
+              <Controller
+                control={control}
+                name="partnerId"
+                rules={{ required: "Partner is required" }}
+                render={({ field: { onChange, value } }) => (
+                  <InputSearch
+                    label="Partner"
+                    defaultValue={editOrderData?.partner?.partnerName}
+                    outerValue={value}
+                    options={mapArrayToTDropdown(
+                      partners?.content ?? [],
+                      "partnerName",
+                      "id",
+                    )}
+                    paginationInfo={partners}
+                    onSearch={(label) => {
+                      setPartnerParams((prev) => ({
+                        ...prev,
+                        search: label,
+                        pageNo: 0,
+                      }));
+                    }}
+                    onPageChange={() => {
+                      fetchNextPagePartners();
+                    }}
+                    onItemSelect={(item) => {
+                      onChange(item.value);
+                      setProjectParams((prev) => {
+                        return {
+                          ...prev,
+                          pageNo: 0,
+                          search: "",
+                          partnerId: item.value,
+                        };
+                      });
+                    }}
+                    required
+                    isError={errors.partnerId ? true : false}
+                    errorMessage={errors.partnerId?.message}
+                    isLoading={isPartnersLoading}
+                  />
                 )}
-                paginationInfo={partners}
-                onSearch={(label) => {
-                  setPartnerParams((prev) => ({
-                    ...prev,
-                    search: label,
-                    pageNo: 0,
-                  }));
-                }}
-                onPageChange={() => {
-                  fetchNextPagePartners();
-                }}
-                onItemSelect={(item) => {
-                  itemSelectHandler(item.value, "partnerId");
-                  setProjectParams((prev) => {
-                    return {
-                      ...prev,
-                      pageNo: 0,
-                      search: "",
-                      partnerId: item.value,
-                    };
-                  });
-                }}
-                {...register("partnerId", {
-                  required: "Partner is required",
-                })}
-                required
-                isError={errors.partnerId ? true : false}
-                errorMessage={errors.partnerId?.message}
-                isLoading={isPartnersLoading}
               />
-              <InputSearch
-                label="Project"
-                options={mapArrayToTDropdown(
-                  projects?.content ?? [],
-                  "projectName",
-                  "id",
+              <Controller
+                control={control}
+                name="projectId"
+                rules={{ required: "Project is required" }}
+                render={({ field: { onChange, value } }) => (
+                  <InputSearch
+                    label="Project"
+                    outerValue={value}
+                    defaultValue={editOrderData?.project?.projectName}
+                    options={mapArrayToTDropdown(
+                      projects?.content ?? [],
+                      "projectName",
+                      "id",
+                    )}
+                    paginationInfo={projects}
+                    onSearch={(label) => {
+                      setProjectParams((prev) => ({
+                        ...prev,
+                        search: label,
+                        pageNo: 0,
+                      }));
+                    }}
+                    onPageChange={() => {
+                      fetchNextPageProject();
+                    }}
+                    onItemSelect={(item) => {
+                      itemSelectHandler(item.value, "projectId");
+                      onChange(item.value);
+                    }}
+                    required
+                    isError={errors.projectId ? true : false}
+                    errorMessage={errors.projectId?.message}
+                    disabled={!currentPartnerId}
+                    disabledMessage="Please select a partner first"
+                    isLoading={isProjectsLoading}
+                  />
                 )}
-                paginationInfo={projects}
-                onSearch={(value) => {
-                  setProjectParams((prev) => ({
-                    ...prev,
-                    search: value,
-                    pageNo: 0,
-                  }));
-                }}
-                onPageChange={() => {
-                  fetchNextPageProject();
-                }}
-                onItemSelect={(item) => {
-                  itemSelectHandler(item.value, "projectId");
-                }}
-                {...register("projectId", {
-                  required: "Project is required",
-                })}
-                required
-                isError={errors.projectId ? true : false}
-                errorMessage={errors.projectId?.message}
-                disabled={!currentPartnerId}
-                disabledMessage="Please select a partner first"
-                key={currentPartnerId}
-                isLoading={isProjectsLoading}
               />
-              <Dropdown
-                label="Order type"
-                options={mapArrayToTDropdown(
-                  Object.entries(EOrderType).map(([key, value]) => ({
-                    label: value,
-                    value: key,
-                  })),
-                  "label",
-                  "value",
+              <Controller
+                control={control}
+                name="orderType"
+                rules={{ required: "Order type is required" }}
+                render={({ field: { onChange, value } }) => (
+                  <Dropdown
+                    label="Order type"
+                    options={mapArrayToTDropdown(
+                      Object.entries(EOrderType).map(([, value]) => ({
+                        label: value,
+                        value: value,
+                      })),
+                      "label",
+                      "value",
+                    )}
+                    onItemSelect={(item) => {
+                      onChange(item.value);
+                    }}
+                    required
+                    isError={errors.orderType ? true : false}
+                    errorMessage={errors.orderType?.message}
+                    disabled={!currentProjectId}
+                    outerValue={value}
+                  />
                 )}
-                onItemSelect={(item) => {
-                  setValue("orderType", item.value, {
-                    shouldValidate: true,
-                  });
-                }}
-                {...register("orderType", {
-                  required: "Order type is required",
-                })}
-                required
-                isError={errors.orderType ? true : false}
-                errorMessage={errors.orderType?.message}
-                disabled={!currentProjectId}
               />
               <Textarea label="Note" {...register("saleOrdersNote")} />
             </div>
@@ -412,7 +475,9 @@ export const OrderCreateModal = ({
           >
             Cancel
           </Button>
-          <Button size={"sm"}>{editId ? "Update" : "Create"}</Button>
+          <Button disabled={isLoading} size={"sm"}>
+            {editId ? "Update" : "Create"}
+          </Button>
         </div>
       </form>
     </Modal>

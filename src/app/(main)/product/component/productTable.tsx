@@ -1,5 +1,4 @@
 import {
-  Button,
   ETableSort,
   MainTable,
   TTableActionsProps,
@@ -8,6 +7,7 @@ import { GetProductsDTO, TProduct, useGetProducts } from "../api/getProducts";
 import { useLinkParams } from "@/hooks/useLinkParams";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect } from "react";
+import { DEFAULT_PAGINATION_PARAMS } from "@/types/IPagination";
 
 export const ProductTable = ({
   onRowClick,
@@ -18,14 +18,7 @@ export const ProductTable = ({
   actions?: TTableActionsProps<TProduct>[];
   search?: string;
 }) => {
-  const paramsDefault: GetProductsDTO = {
-    pageNo: 0,
-    pageSize: 10,
-    sortBy: "id",
-    sortDir: "asc",
-    search: "",
-  };
-
+  const paramsDefault: GetProductsDTO = DEFAULT_PAGINATION_PARAMS;
   const { params, setNewParams } = useLinkParams<GetProductsDTO>(paramsDefault);
 
   const { data } = useGetProducts({ params });
@@ -36,7 +29,7 @@ export const ProductTable = ({
 
   return (
     <MainTable
-      columns={columns}
+      columns={productColumns}
       data={data?.content ?? []}
       heading={"Number of Products: " + data?.totalElements}
       paginateProps={{
@@ -68,7 +61,7 @@ export const ProductTable = ({
   );
 };
 
-const columns: ColumnDef<TProduct>[] = [
+export const productColumns: ColumnDef<TProduct>[] = [
   {
     accessorKey: "id",
     header: "ID",
@@ -118,30 +111,5 @@ const columns: ColumnDef<TProduct>[] = [
     accessorKey: "standard",
     header: "Standard",
     cell: (data) => data.renderValue() ?? "-",
-  },
-  {
-    accessorKey: "action",
-    header: "",
-    cell: (data) => {
-      return (
-        <div className="flex gap-2">
-          {data.table.options.meta?.actions.map((action) => {
-            return (
-              <Button
-                key={action.action}
-                variant={"secondary"}
-                size="sm"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  action.onClick?.(data.row);
-                }}
-              >
-                {action.icon}
-              </Button>
-            );
-          })}
-        </div>
-      );
-    },
   },
 ];

@@ -6,11 +6,12 @@ import {
   TTableActionsProps,
 } from "@/components/elements";
 import { Suspense, useState } from "react";
-import { OrderTable } from "./component/orderTable";
+import { orderColumns } from "./component/orderTable";
 import { Row } from "@tanstack/react-table";
-import { TOrder } from "./api/getOrders";
+import { TOrder, useGetOrders } from "./api/getOrders";
 import { Edit, Trash } from "lucide-react";
 import { OrderCreateModal } from "./component/orderCreateModal";
+import { TableFilter } from "@/components/elements/tableFilter";
 
 export default function OrderPage() {
   const [isOpenCreate, setIsOpenCreate] = useState({
@@ -19,6 +20,7 @@ export default function OrderPage() {
   });
   const [, setOpenDetailId] = useState();
   const [, setOpenDeleteId] = useState();
+  const [search, setSearch] = useState("");
 
   const onRowClick = (row: Row<TOrder>) => {
     setOpenDetailId(row.getValue("id"));
@@ -54,10 +56,20 @@ export default function OrderPage() {
         isOpen={isOpenCreate.isOpen}
         onClose={() => setIsOpenCreate({ isOpen: false, editId: undefined })}
         editId={isOpenCreate.editId}
+        key={isOpenCreate.editId ? isOpenCreate.editId : "new-order"}
       />
       <div className="flex h-full flex-col gap-3 pt-3">
         <div className="flex">
-          <Input placeholder="Search order" className="min-w-64" />
+          <Input
+            placeholder="Search order"
+            className="min-w-64"
+            onKeyDownCapture={(e) => {
+              if (e.key === "Enter") {
+                e.preventDefault();
+                setSearch((e.target as HTMLInputElement).value);
+              }
+            }}
+          />
           <div className="ml-auto">
             <Button
               size={"md"}
@@ -73,7 +85,14 @@ export default function OrderPage() {
           </div>
         </div>
         <Suspense>
-          <OrderTable onRowClick={onRowClick} actions={tableActions} />
+          <TableFilter
+            numberTitle="Total orders: "
+            columns={orderColumns}
+            dataHook={useGetOrders}
+            search={search}
+            onRowClick={onRowClick}
+            actions={tableActions}
+          />
         </Suspense>
       </div>
     </>

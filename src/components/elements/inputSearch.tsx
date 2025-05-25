@@ -16,11 +16,13 @@ export const InputSearch = ({
   variant,
   disabledMessage,
   onItemSelect,
+  defaultValue,
   ...props
 }: TDropdownProps &
   VariantProps<typeof dropdownVariant> & {
     placeholder?: string;
     disabledMessage?: string;
+    defaultValue?: string;
   }) => {
   const inputRef = useRef<HTMLInputElement>(null);
   const onSearchInput = onSearch ?? (() => {});
@@ -28,25 +30,28 @@ export const InputSearch = ({
   const [pendingChange, setPendingChange] = useState<string>();
 
   useEffect(() => {
-    if (
-      inputRef.current &&
-      pendingChange !== undefined &&
-      props.options &&
-      !props.resetOnSelect
-    ) {
-      inputRef.current.value =
-        props.options.find((option) => option.value === pendingChange)?.label ??
-        "";
+    const value = props.outerValue ?? pendingChange;
+    const label = value
+      ? (props.options.find((option) => option.value === value)?.label ??
+        defaultValue ??
+        "")
+      : "";
+
+    console.log("InputSearch value", value, label);
+    console.log("defaultValue", defaultValue);
+
+    if (inputRef.current && props.options && !props.resetOnSelect) {
+      inputRef.current.value = label;
       setPendingChange(undefined);
     }
-  }, [pendingChange, inputRef.current]);
+  }, [inputRef.current, props.outerValue, defaultValue, pendingChange]);
 
   return (
     <>
       <Dropdown
         {...props}
         onItemSelect={(item) => {
-          setPendingChange(item.value);
+          if (!props.outerValue) setPendingChange(item.value);
           onItemSelect?.(item);
         }}
         triggerChildren={(open, value) => {

@@ -17,12 +17,16 @@ export type TOrder = {
   partnerName: string;
   projectId: string;
   projectName: string;
+  warehouseId: string;
   status: EOrderStatus;
   orderType: string;
   totalAmount: number;
   saleOrdersNote: string;
   createdAt: string;
   updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
+  exportCode: string;
 };
 
 export type GetOrdersDTO = IPagination & {};

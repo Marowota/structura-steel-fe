@@ -7,16 +7,25 @@ import {
   TTableActionsProps,
 } from "@/components/elements";
 import { Row } from "@tanstack/react-table";
-import { TProduct } from "./api/getProducts";
+import { TProduct, useGetProducts } from "./api/getProducts";
 
 import { Suspense, useState } from "react";
 import { ProductCreateModal } from "./component/productCreateModal";
 import { ProductDetailModal } from "./component/productDetailModal";
-import { ProductTable } from "./component/productTable";
+import { productColumns } from "./component/productTable";
 import { Edit, Trash } from "lucide-react";
 import { ProductDeleteModal } from "./component/productDeleteModal";
+import { TableFilter } from "@/components/elements/tableFilter";
 
 export default function ProductPage() {
+  const [isOpenCreate, setIsOpenCreate] = useState({
+    isOpen: false,
+    editId: undefined,
+  });
+  const [openDetailId, setOpenDetailId] = useState();
+  const [openDeleteId, setOpenDeleteId] = useState();
+  const [search, setSearch] = useState("");
+
   const onRowClick = (row: Row<TProduct>) => {
     console.log(row.getValue("id"));
     setOpenDetailId(row.getValue("id"));
@@ -33,14 +42,6 @@ export default function ProductPage() {
   const onDelete = (row: Row<TProduct>) => {
     setOpenDeleteId(row.getValue("id"));
   };
-
-  const [isOpenCreate, setIsOpenCreate] = useState({
-    isOpen: false,
-    editId: undefined,
-  });
-  const [openDetailId, setOpenDetailId] = useState();
-  const [openDeleteId, setOpenDeleteId] = useState();
-  const [search, setSearch] = useState("");
 
   const tableActions: TTableActionsProps<TProduct>[] = [
     {
@@ -104,7 +105,10 @@ export default function ProductPage() {
           </div>
         </div>
         <Suspense>
-          <ProductTable
+          <TableFilter
+            numberTitle="Total product: "
+            columns={productColumns}
+            dataHook={useGetProducts}
             search={search}
             onRowClick={onRowClick}
             actions={tableActions}

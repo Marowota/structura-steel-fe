@@ -26,7 +26,7 @@ export type TUsePostOrderProductBatchParams = {
 const postOrderProductBatch = async (data: PostOrderProductDTO[]) => {
   const response = await axiosRequestHandler(() =>
     extendedAxios.post<TOrder, PostOrderProductDTO[]>(
-      API_URL.orderService.orderDetailBatch(data[0].orderId),
+      API_URL.orderService.orderProductBatch(data[0].orderId),
       data,
     ),
   );
@@ -39,7 +39,7 @@ export const usePostOrderProductBatch = ({
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationKey: ["orders", "batch"],
+    mutationKey: ["orders", "product", "batch"],
     mutationFn: postOrderProductBatch,
     onSuccess: () => {
       toastNotification("Order created successfully", EToastType.SUCCESS);

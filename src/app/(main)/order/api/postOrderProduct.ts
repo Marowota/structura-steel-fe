@@ -34,7 +34,7 @@ export type TUsePostOrderProductParams = {
 const postOrderProduct = async (data: PostOrderProductDTO) => {
   const response = await axiosRequestHandler(() =>
     extendedAxios.post<TOrder, PostOrderProductDTO>(
-      API_URL.orderService.orderDetail(data.orderId),
+      API_URL.orderService.orderProduct(data.orderId),
       data,
     ),
   );
@@ -47,7 +47,7 @@ export const usePostOrderProduct = ({
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationKey: ["orders", "single"],
+    mutationKey: ["orders", "product"],
     mutationFn: postOrderProduct,
     onSuccess: () => {
       toastNotification("Order created successfully", EToastType.SUCCESS);

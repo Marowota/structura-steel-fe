@@ -15,6 +15,14 @@ export interface IPaginationResponse<T> {
   last: boolean;
 }
 
+export const DEFAULT_PAGINATION_PARAMS: IPagination = {
+  pageNo: 0,
+  pageSize: 10,
+  sortBy: "id",
+  sortDir: "asc",
+  search: "",
+};
+
 export const DEFAULT_PAGINATION_RESPONSE: IPaginationResponse<unknown> = {
   pageNo: 0,
   pageSize: 0,

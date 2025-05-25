@@ -12,6 +12,7 @@ import {
 import { ArrowDown } from "lucide-react";
 import { ReactNode } from "react";
 import ReactPaginate from "react-paginate";
+import { Button } from "./button";
 
 declare module "@tanstack/react-table" {
   interface TableMeta<TData extends RowData> {
@@ -86,6 +87,35 @@ export const MainTable = <T,>(
     actions: [],
   },
 ) => {
+  columns = [
+    ...columns,
+    {
+      accessorKey: "action",
+      header: "",
+      cell: (data) => {
+        return (
+          <div className="flex gap-2">
+            {data.table.options.meta?.actions.map((action) => {
+              return (
+                <Button
+                  key={action.action}
+                  variant={"secondary"}
+                  size="sm"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    action.onClick?.(data.row);
+                  }}
+                >
+                  {action.icon}
+                </Button>
+              );
+            })}
+          </div>
+        );
+      },
+    },
+  ];
+
   const table = useReactTable({
     columns,
     data,
