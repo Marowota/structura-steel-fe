@@ -8,13 +8,13 @@ import {
   ModalSection,
   Textarea,
 } from "@/components/elements";
-import { Dropdown } from "@/components/elements/dropdown";
+import { Dropdown, mapArrayToTDropdown } from "@/components/elements/dropdown";
 import {
   GetPartnersDTO,
   useGetInfinitePartners,
 } from "../../partner/api/getPartners";
 import { DEFAULT_PAGINATION_RESPONSE, IPagination } from "@/types/IPagination";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { EOrderType, PostOrderDTO, usePostOrder } from "../api/postOrder";
 import {
@@ -31,20 +31,6 @@ import { usePostOrderProductBatch } from "../api/postOrderProductBatch";
 import { EToastType, toastNotification } from "@/lib";
 import { useGetOrderDetail } from "../api/getOrdersDetails";
 import { useGetOrderProduct } from "../api/getOrdersProduct";
-
-export const mapArrayToTDropdown = <T,>(
-  inputArray: T[],
-  labelField: keyof T,
-  valueField: keyof T,
-  selectionLabel?: ReactNode,
-) => {
-  const mappedArray = inputArray.map((item: T) => ({
-    label: item[labelField] as string,
-    value: item[valueField] as string,
-    selectionLabel: selectionLabel ?? (item[labelField] as string),
-  }));
-  return mappedArray;
-};
 
 export const OrderCreateModal = ({
   isOpen,

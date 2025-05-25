@@ -4,7 +4,7 @@ import {
   extendedAxios,
   toastNotification,
 } from "@/lib";
-import { TProduct } from "./getProducts";
+import { EProductType, TProduct } from "./getProducts";
 import { API_URL } from "@/constant/apiURL";
 import {
   MutationOptions,
@@ -15,8 +15,8 @@ import {
 export type PutProductDTO = {
   id: string;
   data: {
-    code: string;
     name: string;
+    productType: EProductType;
     unitWeight: number;
     length: number;
     width: number | null;

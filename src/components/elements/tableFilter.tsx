@@ -35,7 +35,7 @@ export const TableFilter = <T, TDTO extends IPagination>({
   const { data } = dataHook({ params });
 
   useEffect(() => {
-    setNewParams({ ...params, search });
+    setNewParams({ ...params, search, pageNo: 0 });
   }, [search]);
 
   return (
@@ -58,10 +58,11 @@ export const TableFilter = <T, TDTO extends IPagination>({
         sortBy: params.sortBy,
         sortDir: params.sortDir as ETableSort,
         onFilterChange: (filter) => {
-          const newParams = {
+          const newParams: TDTO = {
             ...params,
             sortBy: filter.sortBy,
             sortDir: filter.sortDir,
+            pageNo: 0,
           };
           setNewParams(newParams);
         },

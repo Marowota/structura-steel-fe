@@ -1,12 +1,18 @@
-import { Button, Input } from "@/components/elements";
+import {
+  Button,
+  Dropdown,
+  Input,
+  mapArrayToTDropdown,
+} from "@/components/elements";
 import { Modal } from "@/components/elements/modal";
 import { ModalHeader } from "@/components/elements/modalHeader";
 import { ModalSection } from "@/components/elements/modalSection";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { PostProductDTO, usePostProduct } from "../api/postProducts";
 import { useGetProductDetail } from "../api/getProductsDetail";
 import { useEffect } from "react";
 import { usePutProduct } from "../api/putProducts";
+import { EProductType, PRODUCT_TYPE_OPTIONS } from "../api/getProducts";
 
 export const ProductCreateModal = ({
   isOpen,
@@ -22,12 +28,17 @@ export const ProductCreateModal = ({
     handleSubmit,
     reset,
     formState: { errors },
+    control,
+    watch,
+    resetField,
   } = useForm<PostProductDTO>();
   const { data: editData, isLoading } = useGetProductDetail({
     params: { id: editId },
   });
   const { mutateAsync: createProduct } = usePostProduct();
   const { mutateAsync: updateProduct } = usePutProduct();
+
+  const currentProductType = watch("productType");
 
   const onCloseHandler = () => {
     reset({});
@@ -44,6 +55,37 @@ export const ProductCreateModal = ({
       onCloseHandler();
     } catch {}
   };
+
+  const mappingProductTypeToDisabledFields = (productType?: EProductType) => {
+    switch (productType) {
+      case EProductType.RIBBED_BAR:
+        return new Set(["width", "height", "thickness", "unitWeight"]);
+      case EProductType.COIL:
+        return new Set(["height", "diameter", "unitWeight"]);
+      case EProductType.WIRE_COIL:
+        return new Set(["width", "height", "thickness", "unitWeight"]);
+      case EProductType.PLATE:
+        return new Set(["height", "diameter", "unitWeight"]);
+      case EProductType.PIPE:
+        return new Set(["width", "height", "unitWeight"]);
+      case EProductType.BOX:
+        return new Set(["diameter", "unitWeight"]);
+      case EProductType.SHAPED:
+        return new Set(["width", "height", "thickness", "diameter"]);
+      default:
+        return new Set([
+          "length",
+          "width",
+          "height",
+          "thickness",
+          "diameter",
+          "unitWeight",
+        ]);
+    }
+  };
+
+  const currentDisabledFields =
+    mappingProductTypeToDisabledFields(currentProductType);
 
   useEffect(() => {
     reset(editData);
@@ -71,12 +113,33 @@ export const ProductCreateModal = ({
                   errorMessage={errors.name?.message}
                 />
               </div>
-              <Input
-                label="Code"
-                required
-                {...register("code", { required: "Code is required" })}
-                isError={errors.code ? true : false}
-                errorMessage={errors.code?.message}
+              <Controller
+                control={control}
+                name="productType"
+                rules={{ required: "Product type is required" }}
+                render={({ field: { onChange, value } }) => (
+                  <Dropdown
+                    label="Product Type"
+                    required
+                    options={mapArrayToTDropdown(
+                      Object.entries(EProductType).map(([, value]) => ({
+                        label: PRODUCT_TYPE_OPTIONS.get(value) || value,
+                        value: value,
+                      })),
+                      "label",
+                      "value",
+                    )}
+                    outerValue={value}
+                    onItemSelect={(item) => {
+                      onChange(item.value);
+                      mappingProductTypeToDisabledFields().forEach((field) => {
+                        resetField(field as keyof PostProductDTO);
+                      });
+                    }}
+                    isError={errors.productType ? true : false}
+                    errorMessage={errors.productType?.message}
+                  />
+                )}
               />
               <Input label="Standard" {...register("standard")} />
             </div>
@@ -89,45 +152,90 @@ export const ProductCreateModal = ({
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                required
                 isError={errors.length ? true : false}
                 errorMessage={errors.length?.message}
-                {...register("length", { required: "Length is required" })}
+                {...register("length", {
+                  required: currentDisabledFields.has("length")
+                    ? false
+                    : "Length is required",
+                })}
+                required={!currentDisabledFields.has("length")}
+                disabled={currentDisabledFields.has("length")}
               />
               <Input
                 label="Width"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                {...register("width")}
+                isError={errors.width ? true : false}
+                errorMessage={errors.width?.message}
+                {...register("width", {
+                  required: currentDisabledFields.has("width")
+                    ? false
+                    : "Width is required",
+                })}
+                required={!currentDisabledFields.has("width")}
+                disabled={currentDisabledFields.has("width")}
               />
               <Input
                 label="Height"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                {...register("height")}
+                isError={errors.height ? true : false}
+                errorMessage={errors.height?.message}
+                {...register("height", {
+                  required: currentDisabledFields.has("height")
+                    ? false
+                    : "Height is required",
+                })}
+                required={!currentDisabledFields.has("height")}
+                disabled={currentDisabledFields.has("height")}
               />
               <Input
                 label="Unit Weight"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                {...register("unitWeight")}
+                isError={errors.unitWeight ? true : false}
+                errorMessage={errors.unitWeight?.message}
+                {...register("unitWeight", {
+                  required: currentDisabledFields.has("unitWeight")
+                    ? false
+                    : "Unit Weight is required",
+                })}
+                required={!currentDisabledFields.has("unitWeight")}
+                disabled={currentDisabledFields.has("unitWeight")}
               />
               <Input
                 label="Thickness"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                {...register("thickness")}
+                isError={errors.thickness ? true : false}
+                errorMessage={errors.thickness?.message}
+                {...register("thickness", {
+                  required: currentDisabledFields.has("thickness")
+                    ? false
+                    : "Thickness is required",
+                })}
+                required={!currentDisabledFields.has("thickness")}
+                disabled={currentDisabledFields.has("thickness")}
               />
               <Input
                 label="Diameter"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                {...register("diameter")}
+                isError={errors.diameter ? true : false}
+                errorMessage={errors.diameter?.message}
+                {...register("diameter", {
+                  required: currentDisabledFields.has("diameter")
+                    ? false
+                    : "Diameter is required",
+                })}
+                required={!currentDisabledFields.has("diameter")}
+                disabled={currentDisabledFields.has("diameter")}
               />
             </div>
           </ModalSection>

@@ -91,7 +91,7 @@ export const MainTable = <T,>(
     ...columns,
     {
       accessorKey: "action",
-      header: "",
+      header: "Action",
       cell: (data) => {
         return (
           <div className="flex gap-2">
@@ -134,14 +134,22 @@ export const MainTable = <T,>(
       <div className="bg-brand-300 h-[1px]" />
 
       <div className="h-full w-full overflow-auto">
-        <table className="text-md-regular w-full text-left">
-          <thead className="bg-info-100 sticky top-0 z-10 w-full">
+        <table
+          className="text-md-regular w-full border-separate text-left"
+          cellSpacing="0"
+          cellPadding="0"
+        >
+          <thead className="w-full">
             {table.getHeaderGroups().map((headerGroup) => {
               return (
-                <tr key={headerGroup.id}>
+                <tr className="bg-info-100" key={headerGroup.id}>
                   {headerGroup.headers.map((header) => (
                     <th
-                      className="px-3 py-2"
+                      className={cn(
+                        "px-3 py-2",
+                        (actions?.length ?? 0) > 0 &&
+                          "last:border-brand-200 sticky top-0 z-10 border-0 bg-inherit last:right-0 last:z-20 last:border-l",
+                      )}
                       key={header.id}
                       colSpan={header.colSpan}
                     >
@@ -194,7 +202,11 @@ export const MainTable = <T,>(
                   {row.getVisibleCells().map((cell) => {
                     return (
                       <td
-                        className="max-w-40 px-3 py-4 break-words"
+                        className={cn(
+                          "px-3 py-4 break-words",
+                          (actions?.length ?? 0) > 0 &&
+                            "last:border-brand-200 border-0 last:sticky last:right-0 last:z-10 last:border-l last:bg-inherit",
+                        )}
                         key={cell.id}
                       >
                         {flexRender(

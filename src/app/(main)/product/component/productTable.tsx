@@ -3,7 +3,13 @@ import {
   MainTable,
   TTableActionsProps,
 } from "@/components/elements";
-import { GetProductsDTO, TProduct, useGetProducts } from "../api/getProducts";
+import {
+  EProductType,
+  GetProductsDTO,
+  PRODUCT_TYPE_OPTIONS,
+  TProduct,
+  useGetProducts,
+} from "../api/getProducts";
 import { useLinkParams } from "@/hooks/useLinkParams";
 import { ColumnDef, Row } from "@tanstack/react-table";
 import { useEffect } from "react";
@@ -75,7 +81,15 @@ export const productColumns: ColumnDef<TProduct>[] = [
   {
     accessorKey: "name",
     header: "Name",
-    cell: (data) => data.renderValue() ?? "-",
+    cell: (data) => (
+      <div className="w-[300px]">{(data.renderValue() as string) ?? "-"}</div>
+    ),
+  },
+  {
+    accessorKey: "productType",
+    header: "Product Type",
+    cell: (data) =>
+      PRODUCT_TYPE_OPTIONS.get(data.renderValue() as EProductType) ?? "-",
   },
   {
     accessorKey: "length",

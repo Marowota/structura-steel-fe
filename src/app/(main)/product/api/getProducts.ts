@@ -12,9 +12,30 @@ import {
 } from "@tanstack/react-query";
 import axios from "axios";
 
+export enum EProductType {
+  RIBBED_BAR = "RIBBED_BAR",
+  COIL = "COIL",
+  WIRE_COIL = "WIRE_COIL",
+  PLATE = "PLATE",
+  PIPE = "PIPE",
+  BOX = "BOX",
+  SHAPED = "SHAPED",
+}
+
+export const PRODUCT_TYPE_OPTIONS = new Map<EProductType, string>([
+  [EProductType.RIBBED_BAR, "Ribbed Bar"],
+  [EProductType.COIL, "Coil"],
+  [EProductType.WIRE_COIL, "Wire Coil"],
+  [EProductType.PLATE, "Plate"],
+  [EProductType.PIPE, "Pipe"],
+  [EProductType.BOX, "Box"],
+  [EProductType.SHAPED, "Shaped"],
+]);
+
 export type TProduct = {
   id: string;
   code: string;
+  productType: EProductType;
   name: string;
   unitWeight: number;
   length: number;

@@ -74,6 +74,20 @@ export type TDropdownProps = {
   outerValue?: string;
 };
 
+export const mapArrayToTDropdown = <T,>(
+  inputArray: T[],
+  labelField: keyof T,
+  valueField: keyof T,
+  selectionLabel?: ReactNode,
+) => {
+  const mappedArray = inputArray.map((item: T) => ({
+    label: item[labelField] as string,
+    value: item[valueField] as string,
+    selectionLabel: selectionLabel ?? (item[labelField] as string),
+  }));
+  return mappedArray;
+};
+
 export const getDropdownVariant = (open: boolean, variant?: string | null) =>
   cn(
     open && "ring-2 outline-none",
