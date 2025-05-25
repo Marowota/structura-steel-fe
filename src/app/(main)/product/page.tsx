@@ -16,6 +16,7 @@ import { productColumns } from "./component/productTable";
 import { Edit, Trash } from "lucide-react";
 import { ProductDeleteModal } from "./component/productDeleteModal";
 import { TableFilter } from "@/components/elements/tableFilter";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function ProductPage() {
   const [isOpenCreate, setIsOpenCreate] = useState({
@@ -25,6 +26,9 @@ export default function ProductPage() {
   const [openDetailId, setOpenDetailId] = useState();
   const [openDeleteId, setOpenDeleteId] = useState();
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    setSearch(value);
+  }, 300);
 
   const onRowClick = (row: Row<TProduct>) => {
     console.log(row.getValue("id"));
@@ -83,11 +87,8 @@ export default function ProductPage() {
           <Input
             placeholder="Search product"
             className="min-w-64"
-            onKeyDownCapture={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                setSearch((e.target as HTMLInputElement).value);
-              }
+            onChange={(e) => {
+              debouncedSearch(e.currentTarget.value);
             }}
           />
           <div className="ml-auto">

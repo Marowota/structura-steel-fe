@@ -1,11 +1,13 @@
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import { axiosRequestHandler, extendedAxios } from "@/lib";
 import { API_URL } from "@/constant/apiURL";
-import { IPaginationResponse } from "@/types/IPagination";
+import { IPagination, IPaginationResponse } from "@/types/IPagination";
+import { TProduct } from "../../product/api/getProducts";
 
 export type TOrderProduct = {
   id: string;
   productId: string;
+  product: TProduct;
   quantity: number;
   weight: number;
   unitPrice: number;
@@ -17,7 +19,7 @@ export type TOrderProduct = {
   updatedBy: string;
 };
 
-export type GetOrderProductDTO = {
+export type GetOrderProductDTO = IPagination & {
   id?: string;
 };
 

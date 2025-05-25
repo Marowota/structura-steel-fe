@@ -55,7 +55,7 @@ export const TableFilter = <T, TDTO extends IPagination>({
         },
       }}
       filterProps={{
-        sortBy: params.sortBy,
+        sortBy: params.sortBy ?? "id",
         sortDir: params.sortDir as ETableSort,
         onFilterChange: (filter) => {
           const newParams: TDTO = {

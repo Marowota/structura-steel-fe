@@ -12,6 +12,7 @@ import { TOrder, useGetOrders } from "./api/getOrders";
 import { Edit, Trash } from "lucide-react";
 import { OrderCreateModal } from "./component/orderCreateModal";
 import { TableFilter } from "@/components/elements/tableFilter";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function OrderPage() {
   const [isOpenCreate, setIsOpenCreate] = useState({
@@ -21,6 +22,9 @@ export default function OrderPage() {
   const [, setOpenDetailId] = useState();
   const [, setOpenDeleteId] = useState();
   const [search, setSearch] = useState("");
+  const debouncedSearch = useDebouncedCallback((value: string) => {
+    setSearch(value);
+  }, 300);
 
   const onRowClick = (row: Row<TOrder>) => {
     setOpenDetailId(row.getValue("id"));
@@ -63,11 +67,8 @@ export default function OrderPage() {
           <Input
             placeholder="Search order"
             className="min-w-64"
-            onKeyDownCapture={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                setSearch((e.target as HTMLInputElement).value);
-              }
+            onChange={(e) => {
+              debouncedSearch(e.currentTarget.value);
             }}
           />
           <div className="ml-auto">

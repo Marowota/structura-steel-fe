@@ -1,9 +1,10 @@
 export interface IPagination {
-  pageNo: number;
-  pageSize: number;
-  sortBy: string;
-  sortDir: string;
-  search: string;
+  pageNo?: number;
+  pageSize?: number;
+  sortBy?: string;
+  sortDir?: string;
+  search?: string;
+  all?: boolean;
 }
 
 export interface IPaginationResponse<T> {
@@ -21,6 +22,7 @@ export const DEFAULT_PAGINATION_PARAMS: IPagination = {
   sortBy: "id",
   sortDir: "asc",
   search: "",
+  all: false,
 };
 
 export const DEFAULT_PAGINATION_RESPONSE: IPaginationResponse<unknown> = {

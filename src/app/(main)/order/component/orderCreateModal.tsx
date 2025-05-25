@@ -59,7 +59,7 @@ export const OrderCreateModal = ({
     });
   const { data: editOrderProducts, isLoading: isEditOrderProductsLoading } =
     useGetOrderProduct({
-      params: { id: editId ?? "" },
+      params: { id: editId ?? "", all: true },
     });
   const isLoading = isEditOderLoading || isEditOrderProductsLoading;
 
@@ -72,7 +72,8 @@ export const OrderCreateModal = ({
         saleOrdersNote: editOrderData.saleOrdersNote,
         products: editOrderProducts.content.map((orderProduct) => ({
           orderId: editOrderData.id,
-          productId: orderProduct.productId,
+          name: orderProduct.product.name,
+          productId: orderProduct.product.id,
           quantity: orderProduct.quantity,
           unitPrice: orderProduct.unitPrice,
           weight: orderProduct.weight,
