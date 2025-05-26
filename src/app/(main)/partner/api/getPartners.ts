@@ -13,9 +13,21 @@ import {
 import axios from "axios";
 import { TProject } from "./getProjectsByPartner";
 
+export enum EPartnerType {
+  SUPPLIER = "SUPPLIER",
+  CUSTOMER = "CUSTOMER",
+  TRANSPORTER = "TRANSPORTER",
+}
+
+export const EPartnerTypeLabel: Map<EPartnerType, string> = new Map([
+  [EPartnerType.SUPPLIER, "Supplier"],
+  [EPartnerType.CUSTOMER, "Customer"],
+  [EPartnerType.TRANSPORTER, "Transporter"],
+]);
+
 export type TPartner = {
   id: string;
-  partnerType: string;
+  partnerType: EPartnerType;
   partnerName: string;
   partnerCode: string;
   taxCode: string;
@@ -26,6 +38,10 @@ export type TPartner = {
   bankName: string;
   bankAccountNumber: string;
   partnerProjects: TProject[];
+  createdAt: string;
+  updatedAt: string;
+  createdBy: string;
+  updatedBy: string;
 };
 
 export type GetPartnersDTO = IPagination & {};

@@ -20,6 +20,8 @@ export const TableFilter = <T, TDTO extends IPagination>({
   columns,
   dataHook,
   numberTitle,
+  paramsDefault = DEFAULT_PAGINATION_PARAMS as TDTO,
+  paramsKey,
 }: {
   search: string;
   onRowClick: (row: Row<T>) => void;
@@ -29,9 +31,15 @@ export const TableFilter = <T, TDTO extends IPagination>({
     data: IPaginationResponse<T> | undefined;
   };
   numberTitle?: string;
+  paramsDefault?: TDTO;
+  paramsKey?: string;
 }) => {
-  const paramsDefault = DEFAULT_PAGINATION_PARAMS as TDTO;
-  const { params, setNewParams } = useLinkParams<TDTO>(paramsDefault);
+  const { params, setNewParams } = useLinkParams<TDTO>(
+    paramsDefault,
+    paramsKey,
+  );
+
+  console.log("useLinkParams", params);
   const { data } = dataHook({ params });
 
   useEffect(() => {

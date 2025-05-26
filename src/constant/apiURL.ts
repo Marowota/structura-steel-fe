@@ -28,5 +28,9 @@ export const API_URL = {
     detail: (id: string) => `${API_BASE_URL.partnerService}/${id}`,
     projectIndex: (idPartner: string) =>
       `${API_BASE_URL.partnerService}/${idPartner}/projects`,
+    projectDetail: (idPartner: string, idProject: string) =>
+      `${API_BASE_URL.partnerService}/${idPartner}/projects/${idProject}`,
+    projectSoftDelete: (idPartner: string, idProject: string) =>
+      `${API_BASE_URL.partnerService}/${idPartner}/projects/soft-delete/${idProject}`,
   },
 };

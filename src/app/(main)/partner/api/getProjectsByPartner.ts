@@ -89,7 +89,7 @@ export const useGetProjectsByPartner = ({
   params,
 }: TUseGetProjectsByPartnerParams = {}) => {
   const query = useQuery({
-    queryKey: ["partners", "detail", "project", params],
+    queryKey: ["projects", params],
     queryFn: () => getProjectsByPartner(params),
     ...options,
   });
@@ -102,7 +102,7 @@ export const useGetInfiniteProjectsByPartner = ({
   params,
 }: TUseGetInfiniteProjectsByPartnerParams) => {
   return useInfiniteQuery({
-    queryKey: ["partners", "detail", "project", "infinite", params],
+    queryKey: ["projects", "infinite", params],
     queryFn: ({ pageParam }) => getProjectsByPartner(pageParam),
     getNextPageParam: (lastPage) => ({
       ...params,

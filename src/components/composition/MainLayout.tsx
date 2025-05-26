@@ -105,12 +105,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="mx-6 flex h-full flex-1 flex-col gap-1 overflow-x-auto overflow-y-hidden bg-white p-6 shadow-md">
+      <div className="mx-6 flex h-full flex-1 flex-col gap-1 overflow-x-auto bg-white p-6 shadow-md">
         <div className="text-headline-sm-semibold text-brand-800">
           {selectedTab?.header}
         </div>
         <div className="border-info-300 border" />
-        <div className="w-full flex-1">{children}</div>
+        <div className="min-h-0 w-full flex-1">{children}</div>
       </div>
     </div>
   );
