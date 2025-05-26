@@ -95,7 +95,7 @@ export default function ProjectPageComponent({
         deleteId={openDeleteId}
         partnerId={partnerId}
       />
-      <div className="flex flex-col gap-3 pt-3">
+      <div id={paramsKey} className="flex flex-col gap-3 pt-3">
         <div className="flex">
           <Input
             placeholder="Search project"

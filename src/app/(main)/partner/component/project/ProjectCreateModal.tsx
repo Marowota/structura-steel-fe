@@ -42,7 +42,7 @@ export const ProjectCreateModal = ({
           partnerId: partnerId,
         });
       } else {
-        await createProject(data);
+        await createProject({ ...data, partnerId: partnerId });
       }
       onCloseHandler();
     } catch {}

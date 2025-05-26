@@ -24,7 +24,12 @@ export const useLinkParams = <T extends object>(
       .filter(([key, value]) => paramsDefault[key as keyof T] !== value)
       .map(([key, value]) => paramsKey + key + "=" + value)
       .join("&");
-    router.push(pathname + "?" + stringParams);
+    router.push(
+      pathname +
+        "?" +
+        stringParams +
+        (paramsKey && stringParams ? "#" + paramsKey : ""),
+    );
   };
 
   return { params, setNewParams };
