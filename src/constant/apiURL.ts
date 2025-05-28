@@ -15,6 +15,8 @@ export const API_URL = {
   productService: {
     index: API_BASE_URL.productService,
     detail: (id: string) => `${API_BASE_URL.productService}/${id}`,
+    softDelete: (id: string) =>
+      `${API_BASE_URL.productService}/soft-delete/${id}`,
   },
   orderService: {
     index: API_BASE_URL.orderService,
@@ -32,5 +34,11 @@ export const API_URL = {
       `${API_BASE_URL.partnerService}/${idPartner}/projects/${idProject}`,
     projectSoftDelete: (idPartner: string, idProject: string) =>
       `${API_BASE_URL.partnerService}/${idPartner}/projects/soft-delete/${idProject}`,
+    vehicleIndex: (idPartner: string) =>
+      `${API_BASE_URL.partnerService}/${idPartner}/vehicles`,
+    vehicleDetail: (idPartner: string, idProject: string) =>
+      `${API_BASE_URL.partnerService}/${idPartner}/vehicles/${idProject}`,
+    vehicleSoftDelete: (idPartner: string, idProject: string) =>
+      `${API_BASE_URL.partnerService}/${idPartner}/vehicles/soft-delete/${idProject}`,
   },
 };

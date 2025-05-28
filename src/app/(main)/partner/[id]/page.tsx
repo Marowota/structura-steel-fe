@@ -3,6 +3,7 @@ import { Phone, User } from "lucide-react";
 import { useGetPartnerDetail } from "../api/getPartnersDetail";
 import { useParams } from "next/navigation";
 import ProjectPageComponent from "../component/project/projectPage";
+import VehiclePageComponent from "../component/vehicle/vehiclePage";
 
 export default function PartnerDetailPage() {
   const params = useParams();
@@ -67,7 +68,13 @@ export default function PartnerDetailPage() {
         <div className="text-lg-bold text-brand-800 mb-2">Projects</div>
         <ProjectPageComponent paramsKey="prj" partnerId={partnerId} />
       </div>
-
+      <div className="w-full rounded-md border border-gray-200 px-3 py-2 shadow-md">
+        <div className="text-lg-bold text-brand-800 mb-2">Vehicles</div>
+        <VehiclePageComponent paramsKey="vhc" partnerId={partnerId} />
+      </div>
+      <div className="w-full rounded-md border border-gray-200 px-3 py-2 shadow-md">
+        <div className="text-lg-bold text-brand-800 mb-2">Warehouse</div>
+      </div>
       {/* <div className="w-1/2 min-w-[600px] rounded-md border border-gray-200 px-3 py-2 shadow-md">
         <div className="text-lg-bold text-brand-800 mb-2">Projects</div>
         <div className="bg-info-50 border-brand-200 rounded-md border p-2">
