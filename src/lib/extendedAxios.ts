@@ -69,7 +69,7 @@ class ExtendedAxios {
       case 400:
         return Promise.reject(error);
       case 401:
-        if (error.request.url?.includes(API_URL.AuthService.login)) {
+        if (error.config?.url?.includes(API_URL.AuthService.login)) {
           return Promise.reject(error);
         }
         store.dispatch(authSlice.actions.expireToken());
