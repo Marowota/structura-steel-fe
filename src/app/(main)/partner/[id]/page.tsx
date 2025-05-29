@@ -4,6 +4,7 @@ import { useGetPartnerDetail } from "../api/getPartnersDetail";
 import { useParams } from "next/navigation";
 import ProjectPageComponent from "../component/project/projectPage";
 import VehiclePageComponent from "../component/vehicle/vehiclePage";
+import WarehousePageComponent from "../component/warehouse/warehousePage";
 
 export default function PartnerDetailPage() {
   const params = useParams();
@@ -74,6 +75,7 @@ export default function PartnerDetailPage() {
       </div>
       <div className="w-full rounded-md border border-gray-200 px-3 py-2 shadow-md">
         <div className="text-lg-bold text-brand-800 mb-2">Warehouse</div>
+        <WarehousePageComponent paramsKey="wh" partnerId={partnerId} />
       </div>
       {/* <div className="w-1/2 min-w-[600px] rounded-md border border-gray-200 px-3 py-2 shadow-md">
         <div className="text-lg-bold text-brand-800 mb-2">Projects</div>
