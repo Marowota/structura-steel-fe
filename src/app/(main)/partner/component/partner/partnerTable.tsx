@@ -1,55 +1,76 @@
 import { ColumnDef } from "@tanstack/react-table";
-import { TPartner } from "../../api/getPartners";
+import {
+  EPartnerType,
+  EPartnerTypeLabel,
+  TPartner,
+} from "../../api/getPartners";
+import dayjs from "dayjs";
 
 export const partnerColumn: ColumnDef<TPartner>[] = [
   {
     accessorKey: "id",
     header: "ID",
-    cell: (data) => data.renderValue() ?? "-",
+    cell: (info) => info.getValue(),
   },
   {
     accessorKey: "partnerName",
-    header: "Name",
-    cell: (data) => data.renderValue() ?? "-",
+    header: "Partner Name",
+    cell: (info) => <div className="min-w-60">{info.getValue() as string}</div>,
+  },
+  {
+    accessorKey: "partnerType",
+    header: "Partner Type",
+    cell: (info) =>
+      EPartnerTypeLabel.get(
+        (info.getValue() as EPartnerType) ?? EPartnerType.UNKNOWN,
+      ),
   },
   {
     accessorKey: "partnerCode",
     header: "Partner Code",
-    cell: (data) => data.renderValue() ?? "-",
+    cell: (info) => info.getValue(),
   },
   {
     accessorKey: "taxCode",
     header: "Tax Code",
-    cell: (data) => data.renderValue() ?? "-",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "email",
-    header: "Email",
-    cell: (data) => data.renderValue() ?? "-",
+    accessorKey: "legalRepresentative",
+    header: "Legal Representative",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "phone",
-    header: "Phone",
-    cell: (data) => data.renderValue() ?? "-",
+    accessorKey: "legalRepresentativePhone",
+    header: "Legal Representative Phone",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "address",
-    header: "Address",
-    cell: (data) => data.renderValue() ?? "-",
+    accessorKey: "contactPerson",
+    header: "Contact Person",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "city",
-    header: "City",
-    cell: (data) => data.renderValue() ?? "-",
+    accessorKey: "contactPersonPhone",
+    header: "Contact Person Phone",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "country",
-    header: "Country",
-    cell: (data) => data.renderValue() ?? "-",
+    accessorKey: "bankName",
+    header: "Bank Name",
+    cell: (info) => info.getValue(),
   },
   {
-    accessorKey: "status",
-    header: "Status",
-    cell: (data) => data.renderValue() ?? "-",
+    accessorKey: "bankAccountNumber",
+    header: "Bank Account Number",
+    cell: (info) => info.getValue(),
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: (data) =>
+      dayjs(data.renderValue() as string | undefined).format(
+        "HH:mm:ss - DD/MM/YYYY",
+      ) ?? "-",
   },
 ];

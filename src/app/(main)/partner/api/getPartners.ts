@@ -17,12 +17,14 @@ export enum EPartnerType {
   SUPPLIER = "SUPPLIER",
   CUSTOMER = "CUSTOMER",
   TRANSPORTER = "TRANSPORTER",
+  UNKNOWN = "UNKNOWN",
 }
 
 export const EPartnerTypeLabel: Map<EPartnerType, string> = new Map([
   [EPartnerType.SUPPLIER, "Supplier"],
   [EPartnerType.CUSTOMER, "Customer"],
   [EPartnerType.TRANSPORTER, "Transporter"],
+  [EPartnerType.UNKNOWN, "Unknown"],
 ]);
 
 export type TPartner = {
