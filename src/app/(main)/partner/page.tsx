@@ -13,13 +13,14 @@ import { TableFilter } from "@/components/elements/tableFilter";
 import { useDebouncedCallback } from "use-debounce";
 import { partnerColumn } from "./component/partner/partnerTable";
 import { useRouter } from "next/navigation";
+import { PartnerCreateModal } from "./component/partner/partnerCreateModal";
+import { PartnerDeleteModal } from "./component/partner/partnerDeleteModal";
 
 export default function PartnerPage() {
   const [isOpenCreate, setIsOpenCreate] = useState({
     isOpen: false,
     editId: undefined,
   });
-  const [openDetailId, setOpenDetailId] = useState();
   const [openDeleteId, setOpenDeleteId] = useState();
   const [search, setSearch] = useState("");
   const router = useRouter();
@@ -29,9 +30,7 @@ export default function PartnerPage() {
 
   const onRowClick = (row: Row<TPartner>) => {
     console.log(row.getValue("id"));
-    setOpenDetailId(row.getValue("id"));
     router.push(`/partner/${row.getValue("id")}`);
-    // router.push(`/partner/${row.getValue("id")}`);
   };
 
   const onEdit = (row: Row<TPartner>) => {
@@ -60,7 +59,7 @@ export default function PartnerPage() {
 
   return (
     <>
-      {/* <PartnerCreateModal
+      <PartnerCreateModal
         isOpen={isOpenCreate.isOpen}
         onClose={() =>
           setIsOpenCreate({
@@ -70,16 +69,12 @@ export default function PartnerPage() {
         }
         editId={isOpenCreate.editId}
       />
-      <PartnerDetailModal
-        isOpen={openDetailId ?? false}
-        onClose={() => setOpenDetailId(undefined)}
-        id={openDetailId}
-      />
+
       <PartnerDeleteModal
         isOpen={openDeleteId ?? false}
         onClose={() => setOpenDeleteId(undefined)}
         deleteId={openDeleteId}
-      /> */}
+      />
       <div className="flex h-full flex-col gap-3 pt-3">
         <div className="flex">
           <Input

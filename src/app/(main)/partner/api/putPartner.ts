@@ -10,19 +10,19 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { TProject } from "./getProjectsByPartner";
+import { EPartnerType, TPartner } from "./getPartners";
 
-export type PutProjectDTO = {
+export type PutPartnerDTO = {
   partnerId: string;
-  projectId: string;
-  projectName: string;
-  projectAddress: string;
-  projectRepresentative: string;
-  projectRepresentativePhone: string;
+  partnerType: EPartnerType;
+  partnerName: string;
+  taxCode: string;
+  legalRepresentative: string;
+  legalRepresentativePhone: string;
   contactPerson: string;
   contactPersonPhone: string;
-  address: string;
-  productIds?: number[];
+  bankName: string;
+  bankAccountNumber: string;
 };
 
 export type TCreateError = {
@@ -31,30 +31,30 @@ export type TCreateError = {
   details: string;
 };
 
-export type TUsePutProjectParams = {
-  options?: MutationOptions<TProject, TCreateError, PutProjectDTO>;
+export type TUsePutPartnerParams = {
+  options?: MutationOptions<TPartner, TCreateError, PutPartnerDTO>;
 };
 
-const putProject = async (data: PutProjectDTO) => {
+const putPartner = async (data: PutPartnerDTO) => {
   const response = await axiosRequestHandler(() =>
-    extendedAxios.put<TProject, PutProjectDTO>(
-      API_URL.partnerService.projectDetail(data.partnerId, data.projectId),
+    extendedAxios.put<TPartner, PutPartnerDTO>(
+      API_URL.partnerService.detail(data.partnerId),
       data,
     ),
   );
   return response.data;
 };
 
-export const usePutProject = ({ options }: TUsePutProjectParams = {}) => {
+export const usePutPartner = ({ options }: TUsePutPartnerParams = {}) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationKey: ["projects"],
-    mutationFn: putProject,
+    mutationKey: ["partners"],
+    mutationFn: putPartner,
     onSuccess: () => {
-      toastNotification("Project updated successfully", EToastType.SUCCESS);
+      toastNotification("Partner updated successfully", EToastType.SUCCESS);
       queryClient.invalidateQueries({
-        queryKey: ["projects"],
+        queryKey: ["partners"],
       });
     },
     onError: (error: TCreateError) => {

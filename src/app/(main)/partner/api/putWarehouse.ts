@@ -46,7 +46,7 @@ export const usePutWarehouse = ({ options }: TUsePutWarehouseParams = {}) => {
     mutationKey: ["warehouses"],
     mutationFn: putWarehouse,
     onSuccess: () => {
-      toastNotification("Warehouse created successfully", EToastType.SUCCESS);
+      toastNotification("Warehouse updated successfully", EToastType.SUCCESS);
       queryClient.invalidateQueries({
         queryKey: ["warehouses"],
       });

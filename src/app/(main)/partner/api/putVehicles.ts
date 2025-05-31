@@ -49,7 +49,7 @@ export const usePutVehicle = ({ options }: TUsePutVehicleParams = {}) => {
     mutationKey: ["vehicles"],
     mutationFn: putVehicle,
     onSuccess: () => {
-      toastNotification("Vehicle created successfully", EToastType.SUCCESS);
+      toastNotification("Vehicle updated successfully", EToastType.SUCCESS);
       queryClient.invalidateQueries({
         queryKey: ["vehicles"],
       });

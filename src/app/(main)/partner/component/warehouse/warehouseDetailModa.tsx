@@ -1,5 +1,6 @@
 import { Modal, ModalHeader, ModalSection } from "@/components/elements";
 import { useGetWarehouseDetailByPartner } from "../../api/getWarehouseDetailByPartner";
+import dayjs from "dayjs";
 
 export const WarehouseDetailModal = ({
   isOpen,
@@ -36,7 +37,9 @@ export const WarehouseDetailModal = ({
             </div>{" "}
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold">Created At:</span>
-              <span className="text-sm">{data?.createdAt ?? "-"}</span>
+              <span className="text-sm">
+                {dayjs(data?.createdAt).format("HH:mm:ss - DD/MM/YYYY") ?? "-"}
+              </span>
             </div>
           </div>
         </ModalSection>
