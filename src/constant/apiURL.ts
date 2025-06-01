@@ -5,6 +5,7 @@ const API_BASE_URL = {
   productService: API_DOMAIN + "/api/v1/products",
   orderService: API_DOMAIN + "/api/v1/core/sale",
   partnerService: API_DOMAIN + "/api/v1/partners",
+  userService: API_DOMAIN + "/api/v1/core/users",
 };
 
 export const API_URL = {
@@ -48,5 +49,11 @@ export const API_URL = {
       `${API_BASE_URL.partnerService}/${idPartner}/warehouses/${idProject}`,
     warehouseSoftDelete: (idPartner: string, idProject: string) =>
       `${API_BASE_URL.partnerService}/${idPartner}/warehouses/soft-delete/${idProject}`,
+  },
+  userService: {
+    index: API_BASE_URL.userService,
+    detail: (id: string) => `${API_BASE_URL.userService}/${id}`,
+    signUp: API_BASE_URL.userService + "/sign-up",
+    softDelete: (id: string) => `${API_BASE_URL.userService}/soft-delete/${id}`,
   },
 };

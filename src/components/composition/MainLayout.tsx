@@ -9,6 +9,7 @@ import {
   Handshake,
   LogOut,
   ReceiptText,
+  User,
 } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
 import { EToastType, toastNotification } from "@/lib/toastNotification";
@@ -16,9 +17,19 @@ import { nameToTwoText } from "@/mapper/nameToTwoText";
 import { authSlice } from "@/lib";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
+import { useGetUserDetail } from "@/app/(main)/user/api/getUsersDetail";
+import { EUserRole } from "@/app/(main)/user/api/getUsers";
+import { ProtectedFeature } from "./ProtectedFeature";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
+  const userDetail = useGetUserDetail({
+    params: { username: userInfo?.preferred_username },
+  });
+  const displayName =
+    (userDetail?.data?.firstName ?? "") +
+    " " +
+    (userDetail?.data?.lastName ?? "");
   const pathname = usePathname();
   const dispatch = useDispatch();
 
@@ -46,6 +57,13 @@ export function MainLayout({ children }: { children: ReactNode }) {
       icon: <Barcode />,
       route: "/product",
       header: "Product",
+    },
+    {
+      name: "User",
+      icon: <User />,
+      route: "/user",
+      header: "User",
+      protected: [EUserRole.ROLE_ADMIN],
     },
   ];
 
@@ -75,27 +93,28 @@ export function MainLayout({ children }: { children: ReactNode }) {
           />
         </div>
         {Tabs.map((tab) => (
-          <Button
-            key={tab.name}
-            variant={"navbar"}
-            size="nav"
-            className={`flex gap-2 ${pathname.match(tab.route) ? "text-brand-600 bg-info-50 hover:bg-brand-50 active:bg-info-50" : "text-gray-900"}`}
-            asChild
-          >
-            <Link href={tab.route}>
-              <div className="flex h-6 w-6">{tab.icon}</div>
-              <div className="w-0 overflow-hidden text-left text-inherit opacity-0 group-hover:w-full group-hover:opacity-100">
-                {tab.name}
-              </div>
-            </Link>
-          </Button>
+          <ProtectedFeature key={tab.name} acceptedRoles={tab.protected}>
+            <Button
+              variant={"navbar"}
+              size="nav"
+              className={`flex gap-2 ${pathname.match(tab.route) ? "text-brand-600 bg-info-50 hover:bg-brand-50 active:bg-info-50" : "text-gray-900"}`}
+              asChild
+            >
+              <Link href={tab.route}>
+                <div className="flex h-6 w-6">{tab.icon}</div>
+                <div className="w-0 overflow-hidden text-left text-inherit opacity-0 group-hover:w-full group-hover:opacity-100">
+                  {tab.name}
+                </div>
+              </Link>
+            </Button>
+          </ProtectedFeature>
         ))}
         <div className="mt-auto flex min-h-10 w-full items-center gap-4 border-t-[1px] border-gray-500 px-2 py-2">
           <div className="flex h-10 min-w-10 items-center justify-center rounded-full bg-gray-500 text-white">
-            {nameToTwoText(userInfo?.name)}
+            {nameToTwoText(displayName)}
           </div>
           <div className="text-md-semibold flex w-full flex-col truncate">
-            <div className="truncate">{userInfo?.name}</div>
+            <div className="truncate">{displayName}</div>
           </div>
           <div
             className="ml-auto rounded-md p-2 hover:cursor-pointer hover:bg-gray-200 active:bg-gray-300"

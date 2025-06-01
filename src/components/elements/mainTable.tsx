@@ -50,6 +50,8 @@ export type TTableActionsProps<T> = {
   onClick: (row: Row<T>) => void;
   icon: ReactNode;
   action: EBaseActions;
+  disableRule?: (row: Row<T>) => boolean;
+  hiddenRule?: (row: Row<T>) => boolean;
 };
 
 export const MainTable = <T,>(
@@ -87,34 +89,42 @@ export const MainTable = <T,>(
     actions: [],
   },
 ) => {
-  columns = [
-    ...columns,
-    {
-      accessorKey: "action",
-      header: "Action",
-      cell: (data) => {
-        return (
-          <div className="flex gap-2">
-            {data.table.options.meta?.actions.map((action) => {
+  columns = columns.concat(
+    actions?.length
+      ? [
+          {
+            accessorKey: "action",
+            header: "Action",
+            cell: (data) => {
               return (
-                <Button
-                  key={action.action}
-                  variant={"secondary"}
-                  size="sm"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    action.onClick?.(data.row);
-                  }}
-                >
-                  {action.icon}
-                </Button>
+                <div className="flex gap-2">
+                  {data.table.options.meta?.actions.map((action) => {
+                    const hidden = action.hiddenRule
+                      ? action.hiddenRule(data.row)
+                      : false;
+                    return (
+                      !hidden && (
+                        <Button
+                          key={action.action}
+                          variant={"secondary"}
+                          size="sm"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            action.onClick?.(data.row);
+                          }}
+                        >
+                          {action.icon}
+                        </Button>
+                      )
+                    );
+                  })}
+                </div>
               );
-            })}
-          </div>
-        );
-      },
-    },
-  ];
+            },
+          },
+        ]
+      : [],
+  );
 
   const table = useReactTable({
     columns,

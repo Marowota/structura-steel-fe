@@ -80,7 +80,12 @@ class ExtendedAxios {
       case 404:
         toastNotification("Resource not found", EToastType.ERROR);
         return;
+      case 409:
+        return Promise.reject(error);
       case 500:
+        if (error.config?.url?.includes(API_URL.userService.signUp)) {
+          return Promise.reject(error);
+        }
         toastNotification("Internal server error", EToastType.ERROR);
         return;
       default:
