@@ -32,11 +32,6 @@ export const orderColumns: ColumnDef<TOrder>[] = [
     cell: (data) => data.renderValue() ?? "-",
   },
   {
-    accessorKey: "orderType",
-    header: "Order Type",
-    cell: (data) => data.renderValue() ?? "-",
-  },
-  {
     accessorKey: "totalAmount",
     header: "Total Amount",
     cell: (data) => data.renderValue() ?? "-",

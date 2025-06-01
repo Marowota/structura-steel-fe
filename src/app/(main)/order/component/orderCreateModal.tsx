@@ -8,7 +8,7 @@ import {
   ModalSection,
   Textarea,
 } from "@/components/elements";
-import { Dropdown, mapArrayToTDropdown } from "@/components/elements/dropdown";
+import { mapArrayToTDropdown } from "@/components/elements/dropdown";
 import {
   GetPartnersDTO,
   useGetInfinitePartners,
@@ -16,7 +16,7 @@ import {
 import { DEFAULT_PAGINATION_RESPONSE, IPagination } from "@/types/IPagination";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { EOrderType, PostOrderDTO, usePostOrder } from "../api/postOrder";
+import { PostOrderDTO, usePostOrder } from "../api/postOrder";
 import {
   GetProjectsDTO,
   useGetInfiniteProjectsByPartner,
@@ -113,7 +113,6 @@ export const OrderCreateModal = ({
   };
 
   const currentPartnerId = watch("partnerId");
-  const currentProjectId = watch("projectId");
   const currentProducts = watch("products");
 
   const defaultParams: IPagination = {
@@ -315,7 +314,7 @@ export const OrderCreateModal = ({
                   />
                 )}
               />
-              <Controller
+              {/* <Controller
                 control={control}
                 name="orderType"
                 rules={{ required: "Order type is required" }}
@@ -340,7 +339,7 @@ export const OrderCreateModal = ({
                     outerValue={value}
                   />
                 )}
-              />
+              /> */}
               <Textarea label="Note" {...register("saleOrdersNote")} />
             </div>
           </ModalSection>
