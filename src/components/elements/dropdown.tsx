@@ -72,6 +72,7 @@ export type TDropdownProps = {
   onPageChange?: (page: number) => void;
   isLoading?: boolean;
   outerValue?: string;
+  placeholder?: string;
 };
 
 export const mapArrayToTDropdown = <T,>(
@@ -119,6 +120,7 @@ export function Dropdown({
   onPageChange,
   isLoading = false,
   outerValue,
+  placeholder = "Select...",
 }: TDropdownProps & VariantProps<typeof dropdownVariant>) {
   const [open, setOpen] = useState(false);
   const [innerValue, setValue] = useState(initialValue || "");
@@ -218,7 +220,7 @@ export function Dropdown({
             >
               {value
                 ? options.find((item) => item.value === value)?.label
-                : "Select..."}
+                : placeholder}
               <ChevronDown className="ml-auto opacity-50" />
             </Button>
           )}

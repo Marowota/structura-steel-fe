@@ -41,6 +41,7 @@ export const InputSearch = ({
     console.log("defaultValue", defaultValue);
 
     if (inputRef.current && props.options && !props.resetOnSelect) {
+      console.log("Setting input value to:", label);
       inputRef.current.value = label;
       setPendingChange(undefined);
     }

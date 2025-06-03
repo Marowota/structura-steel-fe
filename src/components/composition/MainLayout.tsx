@@ -4,6 +4,7 @@ import { Button } from "@/components/elements";
 import Image from "next/image";
 import { UserContext } from "./AuthorizedLayout";
 import {
+  ArchiveRestore,
   Barcode,
   CreditCard,
   Handshake,
@@ -64,6 +65,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
       route: "/user",
       header: "User",
       protected: [EUserRole.ROLE_ADMIN],
+    },
+    {
+      name: "Restore",
+      icon: <ArchiveRestore />,
+      route: "/restore",
+      header: "Restore",
     },
   ];
 

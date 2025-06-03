@@ -5,6 +5,7 @@ export interface IPagination {
   sortDir?: string;
   search?: string;
   all?: boolean;
+  deleted?: boolean;
 }
 
 export interface IPaginationResponse<T> {
@@ -23,6 +24,7 @@ export const DEFAULT_PAGINATION_PARAMS: IPagination = {
   sortDir: "asc",
   search: "",
   all: false,
+  deleted: false,
 };
 
 export const DEFAULT_PAGINATION_RESPONSE: IPaginationResponse<unknown> = {
