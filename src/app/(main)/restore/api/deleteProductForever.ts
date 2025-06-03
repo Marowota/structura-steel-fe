@@ -17,22 +17,24 @@ export type TDeleteError = {
   details: string;
 };
 
-export type TUseDeleteProductParams = {
+export type TUseDeleteProductForeverParams = {
   options?: MutationOptions<unknown, TDeleteError, string>;
 };
 
-const deleteProduct = async (productId: string = "") => {
+const deleteProductForever = async (productId: string = "") => {
   const response = await axiosRequestHandler(() =>
-    extendedAxios.delete<string>(API_URL.productService.softDelete(productId)),
+    extendedAxios.delete<string>(API_URL.productService.detail(productId)),
   );
   return response;
 };
 
-export const useDeleteProduct = ({ options }: TUseDeleteProductParams = {}) => {
+export const useDeleteProductForever = ({
+  options,
+}: TUseDeleteProductForeverParams = {}) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationFn: deleteProduct,
+    mutationFn: deleteProductForever,
     onSuccess: () => {
       toastNotification("Product deleted successfully", EToastType.SUCCESS);
       queryClient.invalidateQueries({ queryKey: ["products"] });

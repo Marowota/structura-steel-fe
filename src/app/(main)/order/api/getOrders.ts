@@ -7,7 +7,9 @@ import axios from "axios";
 export enum EOrderStatus {
   NEW = "New",
   PROCESSING = "Processing",
-  COMPLETED = "Completed",
+  IN_TRANSIT = "In Transit",
+  DELIVERED = "Delivered",
+  DONE = "Done",
   CANCELLED = "Cancelled",
 }
 

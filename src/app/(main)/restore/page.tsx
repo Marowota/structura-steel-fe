@@ -51,6 +51,16 @@ import {
 } from "../product/api/getProducts";
 import { orderColumns } from "../order/component/orderTable";
 import { GetOrdersDTO, TOrder, useGetOrders } from "../order/api/getOrders";
+import { usePutPartnerRestore } from "./api/putPartnerRestore";
+import { usePutProjectRestore } from "./api/putProjectRestore";
+import { usePutVehicleRestore } from "./api/putVehicleRestore";
+import { usePutWarehouseRestore } from "./api/putWarehouseRestore";
+import { usePutProductRestore } from "./api/putProductRestore";
+import { useDeletePartnerForever } from "./api/deletePartnerForever";
+import { useDeleteProjectForever } from "./api/deleteProjectForever";
+import { useDeleteVehicleForever } from "./api/deleteVehicleForever";
+import { useDeleteWarehouseForever } from "./api/deleteWarehouseForever";
+import { useDeleteProductForever } from "./api/deleteProductForever";
 
 export enum ERestoreType {
   PARTNER = "Partner",
@@ -137,6 +147,18 @@ export const mapRestoreTypeToAction = new Map<ERestoreType, TRestoreAction>([
 ]);
 
 export default function RestorePage() {
+  const { mutateAsync: restorePartner } = usePutPartnerRestore();
+  const { mutateAsync: restoreProject } = usePutProjectRestore();
+  const { mutateAsync: restoreVehicle } = usePutVehicleRestore();
+  const { mutateAsync: restoreWarehouse } = usePutWarehouseRestore();
+  const { mutateAsync: restoreProduct } = usePutProductRestore();
+
+  const { mutateAsync: deletePartnerForever } = useDeletePartnerForever();
+  const { mutateAsync: deleteProjectForever } = useDeleteProjectForever();
+  const { mutateAsync: deleteVehicleForever } = useDeleteVehicleForever();
+  const { mutateAsync: deleteWarehouseForever } = useDeleteWarehouseForever();
+  const { mutateAsync: deleteProductForever } = useDeleteProductForever();
+
   const [restoreType, setRestoreType] = useState<ERestoreType>(
     ERestoreType.PARTNER,
   );
@@ -196,6 +218,28 @@ export default function RestorePage() {
       action: EBaseActions.EDIT,
       icon: <Upload className="h-4 w-4" />,
       onClick: (row) => {
+        const id = row.getValue("id") as string;
+        const partnerId = selectedPartner ?? "";
+
+        switch (restoreType) {
+          case ERestoreType.PARTNER:
+            restorePartner({ id });
+            break;
+          case ERestoreType.PROJECT:
+            restoreProject({ partnerId, id });
+            break;
+          case ERestoreType.VEHICLE:
+            restoreVehicle({ partnerId, id });
+            break;
+          case ERestoreType.WAREHOUSE:
+            restoreWarehouse({ partnerId, id });
+            break;
+          case ERestoreType.PRODUCT:
+            restoreProduct({ id });
+            break;
+          default:
+            console.warn("Unknown restore type:", restoreType);
+        }
         console.log("Restore action clicked for row:", row);
       },
     },
@@ -203,6 +247,28 @@ export default function RestorePage() {
       action: EBaseActions.DELETE,
       icon: <Trash className="h-4 w-4" />,
       onClick: (row) => {
+        const id = row.getValue("id") as string;
+        const partnerId = selectedPartner ?? "";
+
+        switch (restoreType) {
+          case ERestoreType.PARTNER:
+            deletePartnerForever({ partnerId: id });
+            break;
+          case ERestoreType.PROJECT:
+            deleteProjectForever({ partnerId, projectId: id });
+            break;
+          case ERestoreType.VEHICLE:
+            deleteVehicleForever({ partnerId, vehicleId: id });
+            break;
+          case ERestoreType.WAREHOUSE:
+            deleteWarehouseForever({ partnerId, warehouseId: id });
+            break;
+          case ERestoreType.PRODUCT:
+            deleteProductForever(id);
+            break;
+          default:
+            console.warn("Unknown delete type:", restoreType);
+        }
         console.log("Delete action clicked for row:", row);
       },
     },
