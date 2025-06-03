@@ -16,41 +16,14 @@ import {
   DEFAULT_PAGINATION_PARAMS,
   DEFAULT_PAGINATION_RESPONSE,
   IPagination,
-  IPaginationResponse,
 } from "@/types/IPagination";
 import { partnerColumn } from "../partner/component/partner/partnerTable";
 import {
   GetPartnersDTO,
-  TPartner,
   useGetInfinitePartners,
   useGetPartners,
 } from "../partner/api/getPartners";
-import { projectColumns } from "../partner/component/project/projectTable";
-import {
-  GetProjectsDTO,
-  TProject,
-  useGetProjectsByPartner,
-} from "../partner/api/getProjectsByPartner";
-import { vehicleColumns } from "../partner/component/vehicle/vehicleTable";
-import {
-  GetVehiclesDTO,
-  TVehicle,
-  useGetVehiclesByPartner,
-} from "../partner/api/getVehiclesByPartner";
-import { warehouseColumns } from "../partner/component/warehouse/warehouseTable";
-import {
-  GetWarehousesDTO,
-  TWarehouse,
-  useGetWarehousesByPartner,
-} from "../partner/api/getWarehouseByPartner";
-import { productColumns } from "../product/component/productTable";
-import {
-  GetProductsDTO,
-  TProduct,
-  useGetProducts,
-} from "../product/api/getProducts";
-import { orderColumns } from "../order/component/orderTable";
-import { GetOrdersDTO, TOrder, useGetOrders } from "../order/api/getOrders";
+
 import { usePutPartnerRestore } from "./api/putPartnerRestore";
 import { usePutProjectRestore } from "./api/putProjectRestore";
 import { usePutVehicleRestore } from "./api/putVehicleRestore";
@@ -61,35 +34,19 @@ import { useDeleteProjectForever } from "./api/deleteProjectForever";
 import { useDeleteVehicleForever } from "./api/deleteVehicleForever";
 import { useDeleteWarehouseForever } from "./api/deleteWarehouseForever";
 import { useDeleteProductForever } from "./api/deleteProductForever";
+import { ERestoreType, TRestoreAction, TSoftDel } from "./types";
+import { useGetOrders } from "../order/api/getOrders";
+import { useGetProjectsByPartner } from "../partner/api/getProjectsByPartner";
+import { useGetVehiclesByPartner } from "../partner/api/getVehiclesByPartner";
+import { useGetWarehousesByPartner } from "../partner/api/getWarehouseByPartner";
+import { projectColumns } from "../partner/component/project/projectTable";
+import { vehicleColumns } from "../partner/component/vehicle/vehicleTable";
+import { warehouseColumns } from "../partner/component/warehouse/warehouseTable";
+import { useGetProducts } from "../product/api/getProducts";
+import { productColumns } from "../product/component/productTable";
+import { orderColumns } from "../order/component/orderTable";
 
-export enum ERestoreType {
-  PARTNER = "Partner",
-  PROJECT = "Project",
-  VEHICLE = "Vehicle",
-  WAREHOUSE = "Warehouse",
-  PRODUCT = "Product",
-  SALE_ORDER = "Sale order",
-}
-
-type TSoftDel = TPartner | TProject | TVehicle | TWarehouse | TProduct | TOrder;
-type TSoftDelDTO =
-  | GetPartnersDTO
-  | GetProjectsDTO
-  | GetVehiclesDTO
-  | GetWarehousesDTO
-  | GetProductsDTO
-  | GetOrdersDTO;
-
-export type TRestoreAction = {
-  key: ERestoreType;
-  dataHook: ({ params }: { params: TSoftDelDTO }) => {
-    data: IPaginationResponse<TSoftDel> | undefined;
-  };
-  columns: ColumnDef<TSoftDel>[];
-  paramsKey?: string;
-};
-
-export const mapRestoreTypeToAction = new Map<ERestoreType, TRestoreAction>([
+const mapRestoreTypeToAction = new Map<ERestoreType, TRestoreAction>([
   [
     ERestoreType.PARTNER,
     {
