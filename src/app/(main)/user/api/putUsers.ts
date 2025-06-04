@@ -14,7 +14,7 @@ import { EUserRole, TUser } from "./getUsers";
 
 export type PutUserDTO = {
   userId: string;
-  password: string;
+  password?: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -35,7 +35,7 @@ const putUser = async (data: PutUserDTO) => {
   const response = await axiosRequestHandler(() =>
     extendedAxios.put<TUser, PutUserDTO>(
       API_URL.userService.detail(data.userId),
-      data,
+      { ...data, password: data.password || undefined },
     ),
   );
   return response.data;

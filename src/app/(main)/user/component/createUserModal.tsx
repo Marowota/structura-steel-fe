@@ -62,7 +62,7 @@ export const UserCreateModal = ({
   }, [editData]);
 
   return (
-    <Modal isOpen={isOpen} onClose={onCloseHandler} className="max-w-[800px]">
+    <Modal isOpen={isOpen} onClose={onCloseHandler} className="max-w-[600px]">
       <div className="flex flex-col gap-2">
         <ModalHeader title={`${editId ? "Edit" : "New"} User`} />
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
@@ -74,6 +74,11 @@ export const UserCreateModal = ({
                   required: "Username is required",
                   minLength: { message: "Minimum length is 3", value: 3 },
                   maxLength: { message: "Maximum length is 50", value: 50 },
+                  pattern: {
+                    message:
+                      "Username can only contain letters, numbers, and underscores",
+                    value: /^[a-zA-Z0-9_]+$/,
+                  },
                 })}
                 disabled={isLoading || !!editId}
                 required
