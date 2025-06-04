@@ -89,8 +89,14 @@ export const UserCreateModal = ({
                 label={!!editId ? "New Password" : "Password"}
                 {...register("password", {
                   required: editId ? false : "Password is required",
-                  minLength: { message: "Minimum length is 8", value: 8 },
+                  minLength: { message: "Minimum length is 6", value: 6 },
                   maxLength: { message: "Maximum length is 100", value: 100 },
+                  pattern: {
+                    message:
+                      "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
+                    value:
+                      /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=\[\]{}|;:,.<>?])[A-Za-z\d!@#$%^&*()_+\-=\[\]{}|;:,.<>?]{6,}$/,
+                  },
                 })}
                 type="password"
                 disabled={isLoading}
