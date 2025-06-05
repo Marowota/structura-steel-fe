@@ -71,6 +71,7 @@ const Input = React.forwardRef<HTMLInputElement, InputProps>(
             "",
           )}
           ref={ref}
+          step={type === "number" ? "any" : undefined}
           {...props}
         />
         {isError && errorMessage && (

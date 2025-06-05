@@ -5,6 +5,7 @@ import { EOrderStatus } from "./getOrders";
 import { TPartner } from "../../partner/api/getPartners";
 import { TProject } from "../../partner/api/getProjectsByPartner";
 import { EOrderType } from "./postOrder";
+import { TOrderProduct } from "./getOrdersProduct";
 
 export type TOrderDetail = {
   id: string;
@@ -19,6 +20,7 @@ export type TOrderDetail = {
   createdBy: string;
   updatedBy: string;
   exportCode: string;
+  saleOrderDetails: TOrderProduct[];
 };
 
 export type GetOrderDetailDTO = {

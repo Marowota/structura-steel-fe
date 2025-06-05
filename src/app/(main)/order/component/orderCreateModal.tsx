@@ -452,7 +452,14 @@ export const OrderCreateModal = ({
             </div>
           </ModalSection>
         </div>
-        <div className="flex justify-end gap-2">
+        <div className="flex items-center justify-end gap-2">
+          <div className="text-md-semibold text-info-800">
+            Total amount:{" "}
+            {currentProducts?.reduce(
+              (acc, product) => acc + product.quantity * product.unitPrice,
+              0,
+            ) ?? 0}{" "}
+          </div>
           <Button
             onClick={() => onCloseHandler()}
             type="button"

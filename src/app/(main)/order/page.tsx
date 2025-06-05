@@ -13,14 +13,16 @@ import { Edit, Trash } from "lucide-react";
 import { OrderCreateModal } from "./component/orderCreateModal";
 import { TableFilter } from "@/components/elements/tableFilter";
 import { useDebouncedCallback } from "use-debounce";
+import { OrderDetailModal } from "./component/orderDetailModal";
+import { OrderCancelModal } from "./component/orderCancelModal";
 
 export default function OrderPage() {
   const [isOpenCreate, setIsOpenCreate] = useState({
     isOpen: false,
     editId: undefined,
   });
-  const [, setOpenDetailId] = useState();
-  const [, setOpenDeleteId] = useState();
+  const [openDetailId, setOpenDetailId] = useState();
+  const [openCancelId, setOpenCancelId] = useState();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedCallback((value: string) => {
     setSearch(value);
@@ -38,8 +40,8 @@ export default function OrderPage() {
     });
   };
 
-  const onDelete = (row: Row<TOrder>) => {
-    setOpenDeleteId(row.getValue("id"));
+  const onCancel = (row: Row<TOrder>) => {
+    setOpenCancelId(row.getValue("id"));
   };
 
   const tableActions: TTableActionsProps<TOrder>[] = [
@@ -51,7 +53,7 @@ export default function OrderPage() {
     {
       action: EBaseActions.DELETE,
       icon: <Trash className="h-4 w-4" />,
-      onClick: onDelete,
+      onClick: onCancel,
     },
   ];
   return (
@@ -61,6 +63,16 @@ export default function OrderPage() {
         onClose={() => setIsOpenCreate({ isOpen: false, editId: undefined })}
         editId={isOpenCreate.editId}
         key={isOpenCreate.editId ? isOpenCreate.editId : "new-order"}
+      />
+      <OrderDetailModal
+        isOpen={!!openDetailId}
+        onClose={() => setOpenDetailId(undefined)}
+        id={openDetailId}
+      />
+      <OrderCancelModal
+        isOpen={!!openCancelId}
+        onClose={() => setOpenCancelId(undefined)}
+        cancelId={openCancelId}
       />
       <div className="flex h-full flex-col gap-3 pt-3">
         <div className="flex">
