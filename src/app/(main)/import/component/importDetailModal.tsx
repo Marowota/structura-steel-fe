@@ -1,7 +1,7 @@
 import { Modal, ModalHeader, ModalSection } from "@/components/elements";
-import { useGetOrderDetail } from "../api/getOrdersDetails";
+import { useGetImportDetail } from "../api/getImportsDetails";
 
-export const OrderDetailModal = ({
+export const ImportDetailModal = ({
   isOpen,
   onClose,
   id,
@@ -10,7 +10,7 @@ export const OrderDetailModal = ({
   onClose: () => void;
   id?: string;
 }) => {
-  const { data } = useGetOrderDetail({
+  const { data } = useGetImportDetail({
     params: { id },
   });
 
@@ -20,7 +20,7 @@ export const OrderDetailModal = ({
       onClose={onClose}
       className="h-[60vh] min-h-fit w-[60vw]"
     >
-      <ModalHeader title="Order detail"></ModalHeader>
+      <ModalHeader title="Import detail"></ModalHeader>
       <div className="mt-2 flex h-full flex-col gap-4">
         <div className="flex h-full gap-4">
           <ModalSection
@@ -28,21 +28,21 @@ export const OrderDetailModal = ({
             className="flex w-1/3 flex-col gap-4"
           >
             <div>
-              <span className="text-sm-semibold">Partner: </span>
-              {data?.partner?.partnerName}
+              <span className="text-sm-semibold">Supplier: </span>
+              {data?.supplier?.partnerName}
             </div>
             <div>
               <span className="text-sm-semibold">Project: </span>
               {data?.project?.projectName}
             </div>
             <div>
-              <span className="text-sm-semibold">Order note: </span>
-              {data?.saleOrdersNote}
+              <span className="text-sm-semibold">Import note: </span>
+              {data?.purchaseOrdersNote}
             </div>
           </ModalSection>
           <ModalSection title="Products" className="w-2/3">
             <div className="flex flex-col gap-4 overflow-auto">
-              {data?.saleOrderDetails?.map((detail) => (
+              {data?.purchaseOrderDetails?.map((detail) => (
                 <div className="flex" key={detail.id}>
                   <div className="text-sm-semibold">{detail.product.name}</div>
                   <div className="ml-auto">

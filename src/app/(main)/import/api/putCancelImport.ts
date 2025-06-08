@@ -10,10 +10,10 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { TOrder } from "./getOrders";
+import { TImport } from "./getImports";
 
-export type PutCancelOrderDTO = {
-  orderId: string;
+export type PutCancelImportDTO = {
+  importId: string;
   reason?: string;
 };
 
@@ -23,14 +23,14 @@ export type TCreateError = {
   details: string;
 };
 
-export type TUsePutCancelOrderParams = {
-  options?: MutationOptions<TOrder, TCreateError, PutCancelOrderDTO>;
+export type TUsePutCancelImportParams = {
+  options?: MutationOptions<TImport, TCreateError, PutCancelImportDTO>;
 };
 
-export const putCancelOrder = async (data: PutCancelOrderDTO) => {
+export const putCancelImport = async (data: PutCancelImportDTO) => {
   const response = await axiosRequestHandler(() =>
-    extendedAxios.put<TOrder, PutCancelOrderDTO>(
-      API_URL.orderService.cancel(data.orderId),
+    extendedAxios.put<TImport, PutCancelImportDTO>(
+      API_URL.importService.cancel(data.importId),
       data,
       { params: { reason: data.reason } },
     ),
@@ -38,18 +38,18 @@ export const putCancelOrder = async (data: PutCancelOrderDTO) => {
   return response.data;
 };
 
-export const usePutCancelOrder = ({
+export const usePutCancelImport = ({
   options,
-}: TUsePutCancelOrderParams = {}) => {
+}: TUsePutCancelImportParams = {}) => {
   const queryClient = useQueryClient();
 
   const mutation = useMutation({
-    mutationKey: ["orders"],
-    mutationFn: putCancelOrder,
+    mutationKey: ["imports"],
+    mutationFn: putCancelImport,
     onSuccess: () => {
-      toastNotification("Order cancelled successfully", EToastType.SUCCESS);
+      toastNotification("Import cancelled successfully", EToastType.SUCCESS);
       queryClient.invalidateQueries({
-        queryKey: ["orders"],
+        queryKey: ["imports"],
       });
     },
     onError: (error: TCreateError) => {
