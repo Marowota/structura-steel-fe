@@ -29,6 +29,7 @@ export enum EBaseActions {
   EDIT = "Edit",
   DELETE = "Delete",
   VIEW = "View",
+  CONFIRM = "Confirm",
 }
 
 export type TTablePaginateProps = {

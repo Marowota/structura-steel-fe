@@ -5,6 +5,7 @@ const API_BASE_URL = {
   productService: API_DOMAIN + "/api/v1/products",
   orderService: API_DOMAIN + "/api/v1/core/sale",
   importService: API_DOMAIN + "/api/v1/core/purchase",
+  deliveryService: API_DOMAIN + "/api/v1/core/delivery",
   partnerService: API_DOMAIN + "/api/v1/partners",
   userService: API_DOMAIN + "/api/v1/core/users",
 };
@@ -37,6 +38,15 @@ export const API_URL = {
       `${API_BASE_URL.importService}/${id}/details`,
     importProductBatch: (id: string) =>
       `${API_BASE_URL.importService}/${id}/details/batch`,
+  },
+  deliveryService: {
+    index: API_BASE_URL.deliveryService,
+    detail: (id: string) => `${API_BASE_URL.deliveryService}/${id}`,
+    cancel: (id: string) => `${API_BASE_URL.deliveryService}/${id}/cancel`,
+    deliveryProduct: (id: string) =>
+      `${API_BASE_URL.deliveryService}/${id}/details`,
+    deliveryProductBatch: (id: string) =>
+      `${API_BASE_URL.deliveryService}/${id}/details/batch`,
   },
   partnerService: {
     index: API_BASE_URL.partnerService,

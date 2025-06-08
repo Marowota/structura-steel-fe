@@ -1,7 +1,15 @@
 import { API_URL } from "@/constant/apiURL";
 import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import {
+  DefaultError,
+  InfiniteData,
+  QueryKey,
+  UndefinedInitialDataInfiniteOptions,
+  useInfiniteQuery,
+  useQuery,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 export enum EOrderStatus {
@@ -38,6 +46,17 @@ export type TUseGetOrdersParams = {
   options?: UseQueryOptions<TResult>;
 };
 
+export type TUseGetInfiniteOrdersParams = {
+  params: GetOrdersDTO;
+  options?: UndefinedInitialDataInfiniteOptions<
+    TResult,
+    DefaultError,
+    InfiniteData<TResult>,
+    QueryKey,
+    GetOrdersDTO
+  >;
+};
+
 type TResult = IPaginationResponse<TOrder>;
 
 const getOrders = async (params?: GetOrdersDTO) => {
@@ -65,4 +84,20 @@ export const useGetOrders = ({ options, params }: TUseGetOrdersParams = {}) => {
   });
 
   return { ...query };
+};
+
+export const useGetInfiniteOrders = ({
+  options,
+  params,
+}: TUseGetInfiniteOrdersParams) => {
+  return useInfiniteQuery({
+    queryKey: ["orders", "infinite", params],
+    queryFn: ({ pageParam }) => getOrders(pageParam),
+    getNextPageParam: (lastPage) => ({
+      ...params,
+      pageNo: lastPage.pageNo + 1,
+    }),
+    initialPageParam: params,
+    ...options,
+  });
 };

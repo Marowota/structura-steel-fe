@@ -1,7 +1,15 @@
 import { API_URL } from "@/constant/apiURL";
 import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import {
+  DefaultError,
+  InfiniteData,
+  QueryKey,
+  UndefinedInitialDataInfiniteOptions,
+  useInfiniteQuery,
+  useQuery,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 
 export enum EImportStatus {
@@ -15,6 +23,7 @@ export enum EImportStatus {
 
 export type TImport = {
   id: string;
+  importCode: string;
   supplierId: string;
   confirmationFromSupplier: string;
   supplierName: string;
@@ -36,6 +45,17 @@ export type GetImportsDTO = IPagination & {};
 export type TUseGetImportsParams = {
   params?: GetImportsDTO;
   options?: UseQueryOptions<TResult>;
+};
+
+export type TUseGetInfiniteImportsParams = {
+  params: GetImportsDTO;
+  options?: UndefinedInitialDataInfiniteOptions<
+    TResult,
+    DefaultError,
+    InfiniteData<TResult>,
+    QueryKey,
+    GetImportsDTO
+  >;
 };
 
 type TResult = IPaginationResponse<TImport>;
@@ -68,4 +88,20 @@ export const useGetImports = ({
   });
 
   return { ...query };
+};
+
+export const useGetInfiniteImports = ({
+  options,
+  params,
+}: TUseGetInfiniteImportsParams) => {
+  return useInfiniteQuery({
+    queryKey: ["imports", "infinite", params],
+    queryFn: ({ pageParam }) => getImports(pageParam),
+    getNextPageParam: (lastPage) => ({
+      ...params,
+      pageNo: lastPage.pageNo + 1,
+    }),
+    initialPageParam: params,
+    ...options,
+  });
 };

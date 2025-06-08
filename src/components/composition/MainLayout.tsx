@@ -10,6 +10,7 @@ import {
   Handshake,
   LogOut,
   ReceiptText,
+  Truck,
   User,
 } from "lucide-react";
 import { redirect, usePathname } from "next/navigation";
@@ -46,6 +47,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
       icon: <CreditCard />,
       route: "/import",
       header: "Import",
+    },
+    {
+      name: "Delivery",
+      icon: <Truck />,
+      route: "/delivery",
+      header: "Delivery",
     },
     {
       name: "Partner",
@@ -99,23 +106,25 @@ export function MainLayout({ children }: { children: ReactNode }) {
             draggable={false}
           />
         </div>
-        {Tabs.map((tab) => (
-          <ProtectedFeature key={tab.name} acceptedRoles={tab.protected}>
-            <Button
-              variant={"navbar"}
-              size="nav"
-              className={`flex gap-2 ${pathname.match(tab.route) ? "text-brand-600 bg-info-50 hover:bg-brand-50 active:bg-info-50" : "text-gray-900"}`}
-              asChild
-            >
-              <Link href={tab.route}>
-                <div className="flex h-6 w-6">{tab.icon}</div>
-                <div className="w-0 overflow-hidden text-left text-inherit opacity-0 group-hover:w-full group-hover:opacity-100">
-                  {tab.name}
-                </div>
-              </Link>
-            </Button>
-          </ProtectedFeature>
-        ))}
+        <div className="w-full flex-1 overflow-y-auto">
+          {Tabs.map((tab) => (
+            <ProtectedFeature key={tab.name} acceptedRoles={tab.protected}>
+              <Button
+                variant={"navbar"}
+                size="nav"
+                className={`flex gap-2 ${pathname.match(tab.route) ? "text-brand-600 bg-info-50 hover:bg-brand-50 active:bg-info-50" : "text-gray-900"}`}
+                asChild
+              >
+                <Link href={tab.route}>
+                  <div className="flex h-6 w-6">{tab.icon}</div>
+                  <div className="w-0 overflow-hidden text-left text-inherit opacity-0 group-hover:w-full group-hover:opacity-100">
+                    {tab.name}
+                  </div>
+                </Link>
+              </Button>
+            </ProtectedFeature>
+          ))}
+        </div>
         <div className="mt-auto flex min-h-10 w-full items-center gap-4 border-t-[1px] border-gray-500 px-2 py-2">
           <div className="flex h-10 min-w-10 items-center justify-center rounded-full bg-gray-500 text-white">
             {nameToTwoText(displayName)}
