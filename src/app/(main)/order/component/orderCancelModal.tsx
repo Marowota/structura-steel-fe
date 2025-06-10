@@ -66,7 +66,7 @@ export const OrderCancelModal = ({
             size={"sm"}
             variant={"secondary"}
           >
-            Cancel
+            Close
           </Button>
           <Button size={"sm"} variant={"destructive"} disabled={isLoading}>
             Cancel

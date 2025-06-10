@@ -8,13 +8,14 @@ import {
 import { Suspense, useState } from "react";
 import { Row } from "@tanstack/react-table";
 import { TImport, useGetImports } from "./api/getImports";
-import { Edit, Trash } from "lucide-react";
+import { Edit, PackageCheck, Trash } from "lucide-react";
 import { TableFilter } from "@/components/elements/tableFilter";
 import { useDebouncedCallback } from "use-debounce";
 import { importColumns } from "./component/importTable";
 import { ImportCreateModal } from "./component/importCreateModal";
 import { ImportDetailModal } from "./component/importDetailModal";
 import { ImportCancelModal } from "./component/importCancelModal";
+import { ImportConfirmModal } from "./component/importConfirmModal";
 
 export default function ImportPage() {
   const [isOpenCreate, setIsOpenCreate] = useState({
@@ -22,6 +23,7 @@ export default function ImportPage() {
     editId: undefined,
   });
   const [openDetailId, setOpenDetailId] = useState();
+  const [openConfirmId, setOpenConfirmId] = useState();
   const [openCancelId, setOpenCancelId] = useState();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedCallback((value: string) => {
@@ -30,7 +32,6 @@ export default function ImportPage() {
 
   const onRowClick = (row: Row<TImport>) => {
     setOpenDetailId(row.getValue("id"));
-    // router.push(`/product/${row.getValue("id")}`);
   };
 
   const onEdit = (row: Row<TImport>) => {
@@ -44,7 +45,16 @@ export default function ImportPage() {
     setOpenCancelId(row.getValue("id"));
   };
 
+  const onConfirm = (row: Row<TImport>) => {
+    setOpenConfirmId(row.getValue("id"));
+  };
+
   const tableActions: TTableActionsProps<TImport>[] = [
+    {
+      action: EBaseActions.CONFIRM,
+      icon: <PackageCheck className="h-4 w-4" />,
+      onClick: onConfirm,
+    },
     {
       action: EBaseActions.EDIT,
       icon: <Edit className="h-4 w-4" />,
@@ -73,6 +83,11 @@ export default function ImportPage() {
         isOpen={!!openCancelId}
         onClose={() => setOpenCancelId(undefined)}
         cancelId={openCancelId}
+      />
+      <ImportConfirmModal
+        isOpen={!!openConfirmId}
+        onClose={() => setOpenConfirmId(undefined)}
+        confirmId={openConfirmId}
       />
       <div className="flex h-full flex-col gap-3 pt-3">
         <div className="flex">
