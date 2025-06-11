@@ -8,7 +8,7 @@ import {
 import { Suspense, useState } from "react";
 import { Row } from "@tanstack/react-table";
 import { TImport, useGetImports } from "./api/getImports";
-import { Edit, PackageCheck, Trash } from "lucide-react";
+import { PackageCheck, Trash } from "lucide-react";
 import { TableFilter } from "@/components/elements/tableFilter";
 import { useDebouncedCallback } from "use-debounce";
 import { importColumns } from "./component/importTable";
@@ -34,12 +34,12 @@ export default function ImportPage() {
     setOpenDetailId(row.getValue("id"));
   };
 
-  const onEdit = (row: Row<TImport>) => {
-    setIsOpenCreate({
-      isOpen: true,
-      editId: row.getValue("id"),
-    });
-  };
+  // const onEdit = (row: Row<TImport>) => {
+  //   setIsOpenCreate({
+  //     isOpen: true,
+  //     editId: row.getValue("id"),
+  //   });
+  // };
 
   const onCancel = (row: Row<TImport>) => {
     setOpenCancelId(row.getValue("id"));
@@ -55,11 +55,11 @@ export default function ImportPage() {
       icon: <PackageCheck className="h-4 w-4" />,
       onClick: onConfirm,
     },
-    {
-      action: EBaseActions.EDIT,
-      icon: <Edit className="h-4 w-4" />,
-      onClick: onEdit,
-    },
+    // {
+    //   action: EBaseActions.EDIT,
+    //   icon: <Edit className="h-4 w-4" />,
+    //   onClick: onEdit,
+    // },
     {
       action: EBaseActions.DELETE,
       icon: <Trash className="h-4 w-4" />,

@@ -69,12 +69,17 @@ export const ImportConfirmModal = ({
         </div>
         <div className="flex justify-end gap-2">
           <Button
-            onClick={() => onClose()}
-            type="button"
             size={"sm"}
-            variant={"secondary"}
+            disabled={isLoading}
+            value={EConfirmationFromSupplier.YES}
+            onClick={() =>
+              setValue(
+                "confirmationFromSupplier",
+                EConfirmationFromSupplier.YES,
+              )
+            }
           >
-            Cancel
+            Yes
           </Button>
           <Button
             size={"sm"}
@@ -88,17 +93,12 @@ export const ImportConfirmModal = ({
             No
           </Button>
           <Button
+            onClick={() => onClose()}
+            type="button"
             size={"sm"}
-            disabled={isLoading}
-            value={EConfirmationFromSupplier.YES}
-            onClick={() =>
-              setValue(
-                "confirmationFromSupplier",
-                EConfirmationFromSupplier.YES,
-              )
-            }
+            variant={"secondary"}
           >
-            Yes
+            Cancel
           </Button>
         </div>
       </form>

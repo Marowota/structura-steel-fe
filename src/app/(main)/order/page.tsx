@@ -9,7 +9,7 @@ import { Suspense, useState } from "react";
 import { orderColumns } from "./component/orderTable";
 import { Row } from "@tanstack/react-table";
 import { TOrder, useGetOrders } from "./api/getOrders";
-import { Edit, Trash } from "lucide-react";
+import { Trash } from "lucide-react";
 import { OrderCreateModal } from "./component/orderCreateModal";
 import { TableFilter } from "@/components/elements/tableFilter";
 import { useDebouncedCallback } from "use-debounce";
@@ -33,23 +33,23 @@ export default function OrderPage() {
     // router.push(`/product/${row.getValue("id")}`);
   };
 
-  const onEdit = (row: Row<TOrder>) => {
-    setIsOpenCreate({
-      isOpen: true,
-      editId: row.getValue("id"),
-    });
-  };
+  // const onEdit = (row: Row<TOrder>) => {
+  //   setIsOpenCreate({
+  //     isOpen: true,
+  //     editId: row.getValue("id"),
+  //   });
+  // };
 
   const onCancel = (row: Row<TOrder>) => {
     setOpenCancelId(row.getValue("id"));
   };
 
   const tableActions: TTableActionsProps<TOrder>[] = [
-    {
-      action: EBaseActions.EDIT,
-      icon: <Edit className="h-4 w-4" />,
-      onClick: onEdit,
-    },
+    // {
+    //   action: EBaseActions.EDIT,
+    //   icon: <Edit className="h-4 w-4" />,
+    //   onClick: onEdit,
+    // },
     {
       action: EBaseActions.DELETE,
       icon: <Trash className="h-4 w-4" />,
