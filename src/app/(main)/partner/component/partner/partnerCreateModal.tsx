@@ -69,8 +69,13 @@ export const PartnerCreateModal = ({
               <div className="grid gap-2">
                 <Input
                   label="Partner Name"
-                  {...register("partnerName")}
+                  {...register("partnerName", {
+                    required: "Partner name is required",
+                  })}
+                  required
                   disabled={isLoading}
+                  isError={!!errors.partnerName}
+                  errorMessage={errors.partnerName?.message}
                 />
                 <Controller
                   control={control}
@@ -117,8 +122,13 @@ export const PartnerCreateModal = ({
                 />
                 <Input
                   label="Tax Code"
-                  {...register("taxCode")}
+                  {...register("taxCode", {
+                    required: "Tax code is required",
+                  })}
+                  required
                   disabled={isLoading}
+                  isError={!!errors.taxCode}
+                  errorMessage={errors.taxCode?.message}
                 />
               </div>
             </ModalSection>
@@ -134,8 +144,17 @@ export const PartnerCreateModal = ({
               <Input
                 type="number"
                 label="Legal Representative Phone"
-                {...register("legalRepresentativePhone")}
+                required
+                {...register("legalRepresentativePhone", {
+                  pattern: {
+                    value: /^(0|\+84)(\d{9})$/,
+                    message: "Invalid phone number",
+                  },
+                  required: "Legal representative phone is required",
+                })}
                 disabled={isLoading}
+                isError={!!errors.legalRepresentativePhone}
+                errorMessage={errors.legalRepresentativePhone?.message}
               />
               <Input
                 label="Contact Person"
@@ -145,8 +164,16 @@ export const PartnerCreateModal = ({
               <Input
                 type="number"
                 label="Contact Person Phone"
-                {...register("contactPersonPhone")}
+                {...register("contactPersonPhone", {
+                  pattern: {
+                    value: /^(0|\+84)(\d{9})$/,
+                    message: "Invalid phone number",
+                  },
+                  required: "Contact person phone is required",
+                })}
                 disabled={isLoading}
+                isError={!!errors.legalRepresentativePhone}
+                errorMessage={errors.legalRepresentativePhone?.message}
               />
             </div>
           </ModalSection>

@@ -50,13 +50,16 @@ export const ImportConfirmModal = ({
           <div className="flex flex-col gap-2">
             <span className="text-sm font-bold">
               Did your partner confirm import with ID
-              <span className="text-info-800">
+              <span className="text-info-500">
                 {} {data?.id} {}
               </span>
-              from
-              <span className="text-brand-800">
-                {} ({data?.supplier?.partnerName} to{" "}
-                {data?.project?.projectName}) {}
+              from supplier
+              <span className="text-info-500">
+                {} ({data?.supplier?.partnerName})
+              </span>{" "}
+              to project{" "}
+              <span className="text-info-500">
+                {data?.project?.projectName} {}
               </span>
               ?
             </span>

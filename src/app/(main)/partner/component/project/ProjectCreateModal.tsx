@@ -19,7 +19,12 @@ export const ProjectCreateModal = ({
   editId: undefined | string;
   partnerId: string;
 }) => {
-  const { handleSubmit, reset, register } = useForm<PostProjectDTO>({
+  const {
+    handleSubmit,
+    reset,
+    register,
+    formState: { errors },
+  } = useForm<PostProjectDTO>({
     defaultValues: { partnerId },
   });
   const { data: editData, isLoading } = useGetProjectDetailByPartner({
@@ -60,13 +65,26 @@ export const ProjectCreateModal = ({
           <ModalSection title="Project Information">
             <div className="grid grid-cols-2 gap-2">
               <div className="col-span-2">
-                <Input label="Name" {...register("projectName")} />
+                <Input
+                  label="Name"
+                  {...register("projectName", {
+                    required: "Project name is required",
+                  })}
+                  required
+                  isError={!!errors.projectName}
+                  errorMessage={errors.projectName?.message}
+                />
               </div>
               <div className="col-span-2">
                 <Input
                   label="Address"
                   className="col-span-2"
-                  {...register("projectAddress")}
+                  {...register("projectAddress", {
+                    required: "Project address is required",
+                  })}
+                  required
+                  isError={!!errors.projectAddress}
+                  errorMessage={errors.projectAddress?.message}
                 />
               </div>
               <Input

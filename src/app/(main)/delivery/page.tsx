@@ -6,7 +6,7 @@ import {
   TTableActionsProps,
 } from "@/components/elements";
 import { Row } from "@tanstack/react-table";
-import { Edit, PackageCheck, Trash } from "lucide-react";
+import { PackageCheck, Trash } from "lucide-react";
 import { Suspense, useState } from "react";
 import { TableFilter } from "@/components/elements/tableFilter";
 import { useDebouncedCallback } from "use-debounce";
@@ -19,7 +19,7 @@ export default function DeliveryPage() {
     isOpen: false,
     editId: undefined,
   });
-  const [openDeleteId, setOpenDeleteId] = useState();
+  const [, setOpenDeleteId] = useState();
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedCallback((value: string) => {
     setSearch(value);
@@ -29,12 +29,12 @@ export default function DeliveryPage() {
     console.log(row.getValue("id"));
   };
 
-  const onEdit = (row: Row<TDelivery>) => {
-    setIsOpenCreate({
-      isOpen: true,
-      editId: row.getValue("id"),
-    });
-  };
+  // const onEdit = (row: Row<TDelivery>) => {
+  //   setIsOpenCreate({
+  //     isOpen: true,
+  //     editId: row.getValue("id"),
+  //   });
+  // };
 
   const onConfirm = (row: Row<TDelivery>) => {
     console.log("Confirm delivery with ID:", row.getValue("id"));
