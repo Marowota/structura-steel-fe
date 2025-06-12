@@ -13,6 +13,7 @@ import { useDebouncedCallback } from "use-debounce";
 import { TDelivery, useGetDeliveries } from "./api/getDeliveries";
 import { deliveryColumns } from "./component/deliveryTable";
 import { DeliveryCreateModal } from "./component/deliveryCreateModal";
+import { DeliveryConfirmModal } from "./component/deliveryConfirmModal";
 
 export default function DeliveryPage() {
   const [isOpenCreate, setIsOpenCreate] = useState({
@@ -21,6 +22,7 @@ export default function DeliveryPage() {
   });
   const [, setOpenDeleteId] = useState();
   const [search, setSearch] = useState("");
+  const [openConfirmId, setOpenConfirmId] = useState();
   const debouncedSearch = useDebouncedCallback((value: string) => {
     setSearch(value);
   }, 300);
@@ -29,16 +31,16 @@ export default function DeliveryPage() {
     console.log(row.getValue("id"));
   };
 
+  const onConfirm = (row: Row<TDelivery>) => {
+    setOpenConfirmId(row.getValue("id"));
+  };
+
   // const onEdit = (row: Row<TDelivery>) => {
   //   setIsOpenCreate({
   //     isOpen: true,
   //     editId: row.getValue("id"),
   //   });
   // };
-
-  const onConfirm = (row: Row<TDelivery>) => {
-    console.log("Confirm delivery with ID:", row.getValue("id"));
-  };
 
   const onDelete = (row: Row<TDelivery>) => {
     setOpenDeleteId(row.getValue("id"));
@@ -68,6 +70,11 @@ export default function DeliveryPage() {
           })
         }
         editId={isOpenCreate.editId}
+      />
+      <DeliveryConfirmModal
+        isOpen={!!openConfirmId}
+        onClose={() => setOpenConfirmId(undefined)}
+        confirmId={openConfirmId}
       />
       {/* 
 

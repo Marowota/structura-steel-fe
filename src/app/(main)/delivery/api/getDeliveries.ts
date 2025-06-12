@@ -3,6 +3,7 @@ import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
 import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
+import { EConfirmation } from "./putConfirmDelivery";
 
 export enum EDeliveryStatus {
   NEW = "New",
@@ -19,10 +20,10 @@ export enum EDeliveryType {
 export type TDelivery = {
   id: string;
   status: EDeliveryStatus;
-  deliveryType: string;
-  confirmationFromPartner: string;
-  confirmationFromFactory: string;
-  confirmationFromReceiver: string;
+  deliveryType: EDeliveryType;
+  confirmationFromPartner: EConfirmation;
+  confirmationFromFactory: EConfirmation;
+  confirmationFromReceiver: EConfirmation;
   purchaseOrderId: string;
   saleOrderId: string;
   deliveryDate: string;

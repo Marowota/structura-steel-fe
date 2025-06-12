@@ -15,6 +15,7 @@ import { TImport } from "./getImports";
 export type PutConfirmImportDTO = {
   importId: string;
   confirmationFromSupplier?: EConfirmationFromSupplier;
+  purchaseOrdersNote?: string;
 };
 
 export enum EConfirmationFromSupplier {

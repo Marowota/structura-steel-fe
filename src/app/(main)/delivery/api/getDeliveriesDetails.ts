@@ -3,6 +3,8 @@ import { axiosRequestHandler, extendedAxios } from "@/lib";
 import { API_URL } from "@/constant/apiURL";
 import { TVehicle } from "../../partner/api/getVehiclesByPartner";
 import { TPartner } from "../../partner/api/getPartners";
+import { EDeliveryType } from "./getDeliveries";
+import { EConfirmation } from "./putConfirmDelivery";
 
 export type TDeliveryDetail = {
   id: string;
@@ -15,14 +17,14 @@ export type TDeliveryDetail = {
   partner: TPartner;
   driverName: string;
   deliveryAddress: string;
-  confirmationFromPartner: string;
-  confirmationFromFactory: string;
-  confirmationFromReceiver: string;
+  confirmationFromPartner: EConfirmation;
+  confirmationFromFactory: EConfirmation;
+  confirmationFromReceiver: EConfirmation;
   distance: number;
   deliveryUnitPrice: number;
   additionalFees: number;
   totalDeliveryFee: number;
-  deliveryType: string;
+  deliveryType: EDeliveryType;
   deliveryOrderNote: string;
   deliveryDebts: unknown[];
   version: number;

@@ -16,6 +16,10 @@ export const ImportConfirmModal = ({
   onClose: () => void;
   confirmId?: string;
 }) => {
+  const { data, isLoading } = useGetImportDetail({
+    params: { id: confirmId },
+  });
+
   const { setValue, handleSubmit, reset } = useForm<PutConfirmImportDTO>({
     defaultValues: {
       importId: confirmId ?? "",
@@ -23,16 +27,13 @@ export const ImportConfirmModal = ({
     },
   });
 
-  const { data, isLoading } = useGetImportDetail({
-    params: { id: confirmId },
-  });
-
   const { mutateAsync: confirmImport } = usePutConfirmImport();
 
-  const onCancel = async (data: PutConfirmImportDTO) => {
+  const onCancel = async (formData: PutConfirmImportDTO) => {
     confirmImport({
       importId: confirmId ?? "",
-      confirmationFromSupplier: data.confirmationFromSupplier,
+      confirmationFromSupplier: formData.confirmationFromSupplier,
+      purchaseOrdersNote: data?.purchaseOrdersNote,
     });
     onCloseHandler();
   };

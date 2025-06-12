@@ -27,11 +27,7 @@ import {
   GetImportsDTO,
   useGetInfiniteImports,
 } from "../../import/api/getImports";
-
-export enum EDeliveryType {
-  IMPORT = "Import",
-  EXPORT = "Export",
-}
+import { EDeliveryType } from "../api/getDeliveries";
 
 export const DeliveryCreateModal = ({
   isOpen,
