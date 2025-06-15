@@ -10,8 +10,8 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { TImport } from "./getImports";
 import { PostImportProductDTO } from "./postImportsProduct";
+import { TImportProduct } from "./getImportsProduct";
 
 export type TCreateError = {
   timestamp: string;
@@ -20,12 +20,16 @@ export type TCreateError = {
 };
 
 export type TUsePostImportProductBatchParams = {
-  options?: MutationOptions<TImport, TCreateError, PostImportProductDTO[]>;
+  options?: MutationOptions<
+    TImportProduct[],
+    TCreateError,
+    PostImportProductDTO[]
+  >;
 };
 
 const postImportProductBatch = async (data: PostImportProductDTO[]) => {
   const response = await axiosRequestHandler(() =>
-    extendedAxios.post<TImport, PostImportProductDTO[]>(
+    extendedAxios.post<TImportProduct[], PostImportProductDTO[]>(
       API_URL.importService.importProductBatch(data[0].importId),
       data,
     ),

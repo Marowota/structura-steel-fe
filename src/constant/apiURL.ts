@@ -6,6 +6,7 @@ const API_BASE_URL = {
   orderService: API_DOMAIN + "/api/v1/core/sale",
   importService: API_DOMAIN + "/api/v1/core/purchase",
   deliveryService: API_DOMAIN + "/api/v1/core/delivery",
+  payService: API_DOMAIN + "/api/v1/core/payments",
   partnerService: API_DOMAIN + "/api/v1/partners",
   userService: API_DOMAIN + "/api/v1/core/users",
 };
@@ -29,6 +30,11 @@ export const API_URL = {
     orderProduct: (id: string) => `${API_BASE_URL.orderService}/${id}/details`,
     orderProductBatch: (id: string) =>
       `${API_BASE_URL.orderService}/${id}/details/batch`,
+    debt: (id: string) => `${API_BASE_URL.orderService}/${id}/debts`,
+    debtDetail: (id: string, idDebt: string) =>
+      `${API_BASE_URL.orderService}/${id}/debts/${idDebt}`,
+    debtDetailBatch: (id: string) =>
+      `${API_BASE_URL.orderService}/${id}/debts/batch`,
   },
   importService: {
     index: API_BASE_URL.importService,
@@ -38,6 +44,11 @@ export const API_URL = {
       `${API_BASE_URL.importService}/${id}/details`,
     importProductBatch: (id: string) =>
       `${API_BASE_URL.importService}/${id}/details/batch`,
+    debt: (id: string) => `${API_BASE_URL.importService}/${id}/debts`,
+    debtDetail: (id: string, idDebt: string) =>
+      `${API_BASE_URL.importService}/${id}/debts/${idDebt}`,
+    debtDetailBatch: (id: string) =>
+      `${API_BASE_URL.importService}/${id}/debts/batch`,
   },
   deliveryService: {
     index: API_BASE_URL.deliveryService,
@@ -47,6 +58,14 @@ export const API_URL = {
       `${API_BASE_URL.deliveryService}/${id}/details`,
     deliveryProductBatch: (id: string) =>
       `${API_BASE_URL.deliveryService}/${id}/details/batch`,
+    debt: (id: string) => `${API_BASE_URL.deliveryService}/${id}/debts`,
+    debtDetail: (id: string, idDebt: string) =>
+      `${API_BASE_URL.deliveryService}/${id}/debts/${idDebt}`,
+    debtDetailBatch: (id: string) =>
+      `${API_BASE_URL.deliveryService}/${id}/debts/batch`,
+  },
+  payService: {
+    index: API_BASE_URL.payService,
   },
   partnerService: {
     index: API_BASE_URL.partnerService,

@@ -1,7 +1,15 @@
 import { API_URL } from "@/constant/apiURL";
 import { extendedAxios } from "@/lib";
 import { IPagination, IPaginationResponse } from "@/types/IPagination";
-import { useQuery, UseQueryOptions } from "@tanstack/react-query";
+import {
+  DefaultError,
+  InfiniteData,
+  QueryKey,
+  UndefinedInitialDataInfiniteOptions,
+  useInfiniteQuery,
+  useQuery,
+  UseQueryOptions,
+} from "@tanstack/react-query";
 import axios from "axios";
 import { EConfirmation } from "./putConfirmDelivery";
 
@@ -20,6 +28,7 @@ export enum EDeliveryType {
 export type TDelivery = {
   id: string;
   status: EDeliveryStatus;
+  deliveryCode: string;
   deliveryType: EDeliveryType;
   confirmationFromPartner: EConfirmation;
   confirmationFromFactory: EConfirmation;
@@ -40,6 +49,17 @@ export type GetDeliveriesDTO = IPagination & {};
 export type TUseGetDeliveriesParams = {
   params?: GetDeliveriesDTO;
   options?: UseQueryOptions<TResult>;
+};
+
+export type TUseGetInfiniteOrdersParams = {
+  params: GetDeliveriesDTO;
+  options?: UndefinedInitialDataInfiniteOptions<
+    TResult,
+    DefaultError,
+    InfiniteData<TResult>,
+    QueryKey,
+    GetDeliveriesDTO
+  >;
 };
 
 type TResult = IPaginationResponse<TDelivery>;
@@ -72,4 +92,20 @@ export const useGetDeliveries = ({
   });
 
   return { ...query };
+};
+
+export const useGetInfiniteDeliveries = ({
+  options,
+  params,
+}: TUseGetInfiniteOrdersParams) => {
+  return useInfiniteQuery({
+    queryKey: ["deliveries", "infinite", params],
+    queryFn: ({ pageParam }) => getDeliveries(pageParam),
+    getNextPageParam: (lastPage) => ({
+      ...params,
+      pageNo: lastPage.pageNo + 1,
+    }),
+    initialPageParam: params,
+    ...options,
+  });
 };

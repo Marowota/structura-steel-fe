@@ -199,7 +199,11 @@ export const DeliveryCreateModal = ({
   }, [currentPartnerId]);
 
   const onSubmit = async (data: PostDeliveryDTO & { deliveryType: string }) => {
-    const submitData = { ...data, deliveryType: undefined };
+    const submitData = {
+      ...data,
+      deliveryType: undefined,
+      deliveryDate: new Date(data.deliveryDate).toISOString(),
+    };
     if (data.deliveryType === EDeliveryType.EXPORT) {
       data.purchaseOrderId = undefined;
     }

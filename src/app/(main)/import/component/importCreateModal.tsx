@@ -31,6 +31,8 @@ import { useGetImportDetail } from "../api/getImportsDetails";
 import { useGetImportProduct } from "../api/getImportsProduct";
 import { PostImportProductDTO } from "../api/postImportsProduct";
 import { usePostImportProductBatch } from "../api/postImportsProductBatch";
+import { usePostImportDebtBatch } from "../../debt/api/importDebt/postImportDebtBatch";
+import { PostImportDebtDTO } from "../../debt/api/importDebt/postImportDebt";
 
 export const ImportCreateModal = ({
   isOpen,
@@ -99,6 +101,7 @@ export const ImportCreateModal = ({
 
   const { mutateAsync: createImport } = usePostImport();
   const { mutateAsync: createImportProduct } = usePostImportProductBatch();
+  const { mutateAsync: createImportDebtBatch } = usePostImportDebtBatch();
 
   const itemSelectHandler = (value: string, field: keyof PostImportDTO) => {
     if (value) {
@@ -226,7 +229,18 @@ export const ImportCreateModal = ({
     if (result) {
       console.log(result);
       products[0].importId = result.id;
-      await createImportProduct(products);
+      const importProductResult = await createImportProduct(products);
+      await createImportDebtBatch(
+        importProductResult.map(
+          (importData) =>
+            ({
+              importId: result.id,
+              productId: importData.productId.toString(),
+              originalAmount: importData.subtotal,
+              debtNote: "",
+            }) as PostImportDebtDTO,
+        ),
+      );
       onCloseHandler();
     } else {
       toastNotification(
@@ -445,7 +459,7 @@ export const ImportCreateModal = ({
                         inputSize={"sm"}
                         {...register(`products.${index}.unitPrice`, {
                           required: "Unit Price is required",
-                          min: 0,
+                          min: 1,
                         })}
                         required
                         isError={

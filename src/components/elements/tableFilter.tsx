@@ -52,7 +52,7 @@ export const TableFilter = <T, TDTO extends IPagination>({
     <MainTable
       columns={columns}
       data={data?.content ?? []}
-      heading={(numberTitle ?? "") + data?.totalElements}
+      heading={(numberTitle ?? "") + (data?.totalElements ?? 0)}
       paginateProps={{
         pageNo: (data?.pageNo ?? -1) + 1,
         pageSize: data?.pageSize ?? 0,

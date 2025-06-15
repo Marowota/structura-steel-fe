@@ -5,6 +5,7 @@ import Image from "next/image";
 import { UserContext } from "./AuthorizedLayout";
 import {
   ArchiveRestore,
+  Banknote,
   Barcode,
   CreditCard,
   Handshake,
@@ -53,6 +54,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
       icon: <Truck />,
       route: "/delivery",
       header: "Delivery",
+    },
+    {
+      name: "Debt",
+      icon: <Banknote />,
+      route: "/debt",
+      header: "Debt",
     },
     {
       name: "Partner",

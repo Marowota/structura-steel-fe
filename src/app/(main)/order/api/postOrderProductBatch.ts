@@ -10,8 +10,8 @@ import {
   useMutation,
   useQueryClient,
 } from "@tanstack/react-query";
-import { TOrder } from "./getOrders";
 import { PostOrderProductDTO } from "./postOrderProduct";
+import { TOrderProduct } from "./getOrdersProduct";
 
 export type TCreateError = {
   timestamp: string;
@@ -20,12 +20,16 @@ export type TCreateError = {
 };
 
 export type TUsePostOrderProductBatchParams = {
-  options?: MutationOptions<TOrder, TCreateError, PostOrderProductDTO[]>;
+  options?: MutationOptions<
+    TOrderProduct[],
+    TCreateError,
+    PostOrderProductDTO[]
+  >;
 };
 
 const postOrderProductBatch = async (data: PostOrderProductDTO[]) => {
   const response = await axiosRequestHandler(() =>
-    extendedAxios.post<TOrder, PostOrderProductDTO[]>(
+    extendedAxios.post<TOrderProduct[], PostOrderProductDTO[]>(
       API_URL.orderService.orderProductBatch(data[0].orderId),
       data,
     ),

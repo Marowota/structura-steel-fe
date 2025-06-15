@@ -31,6 +31,8 @@ import { usePostOrderProductBatch } from "../api/postOrderProductBatch";
 import { EToastType, toastNotification } from "@/lib";
 import { useGetOrderDetail } from "../api/getOrdersDetails";
 import { useGetOrderProduct } from "../api/getOrdersProduct";
+import { usePostOrderDebtBatch } from "../../debt/api/orderDebt/postOrderDebtBatch";
+import { PostOrderDebtDTO } from "../../debt/api/orderDebt/postOrderDebt";
 
 export const OrderCreateModal = ({
   isOpen,
@@ -101,6 +103,7 @@ export const OrderCreateModal = ({
 
   const { mutateAsync: createOrder } = usePostOrder();
   const { mutateAsync: createOrderProduct } = usePostOrderProductBatch();
+  const { mutateAsync: createOrderDebtBatch } = usePostOrderDebtBatch();
 
   const itemSelectHandler = (value: string, field: keyof PostOrderDTO) => {
     if (value) {
@@ -204,7 +207,19 @@ export const OrderCreateModal = ({
     if (result) {
       console.log(result);
       products[0].orderId = result.id;
-      await createOrderProduct(products);
+      const orderProductResult = await createOrderProduct(products);
+      await createOrderDebtBatch(
+        orderProductResult.map(
+          (orderData) =>
+            ({
+              orderId: result.id,
+              productId: orderData.productId.toString(),
+              originalAmount: orderData.subtotal,
+              debtNote: "",
+            }) as PostOrderDebtDTO,
+        ),
+      );
+
       onCloseHandler();
     } else {
       toastNotification(
@@ -425,7 +440,7 @@ export const OrderCreateModal = ({
                         inputSize={"sm"}
                         {...register(`products.${index}.unitPrice`, {
                           required: "Unit Price is required",
-                          min: 0,
+                          min: 1,
                         })}
                         required
                         isError={
