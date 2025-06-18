@@ -9,6 +9,7 @@ const API_BASE_URL = {
   payService: API_DOMAIN + "/api/v1/core/payments",
   partnerService: API_DOMAIN + "/api/v1/partners",
   userService: API_DOMAIN + "/api/v1/core/users",
+  reportService: API_DOMAIN + "/api/v1/core/reports",
 };
 
 export const API_URL = {
@@ -66,6 +67,12 @@ export const API_URL = {
   },
   payService: {
     index: API_BASE_URL.payService,
+  },
+  reportService: {
+    receivables: API_BASE_URL.reportService + "/receivables",
+    payables: API_BASE_URL.reportService + "/payables",
+    profitLoss: API_BASE_URL.reportService + "/profit-loss",
+    daily: API_BASE_URL.reportService + "/daily-activity",
   },
   partnerService: {
     index: API_BASE_URL.partnerService,

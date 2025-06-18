@@ -7,3 +7,4 @@ export * from "./modalSection";
 export * from "./dropdown";
 export * from "./inputSearch";
 export * from "./textArea";
+export * from "./reportCard";

@@ -8,6 +8,7 @@ import {
   Banknote,
   Barcode,
   CreditCard,
+  FileText,
   Handshake,
   LogOut,
   ReceiptText,
@@ -72,6 +73,12 @@ export function MainLayout({ children }: { children: ReactNode }) {
       icon: <Barcode />,
       route: "/product",
       header: "Product",
+    },
+    {
+      name: "Report",
+      icon: <FileText />,
+      route: "/report",
+      header: "Report",
     },
     {
       name: "User",

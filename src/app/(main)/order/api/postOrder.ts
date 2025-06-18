@@ -26,11 +26,6 @@ export type TCreateError = {
   details: string;
 };
 
-export enum EOrderType {
-  BAN_SI = "Bán sỉ",
-  BAN_LE = "Bán lẻ",
-}
-
 export type TUsePostOrderParams = {
   options?: MutationOptions<TOrder, TCreateError, PostOrderDTO>;
 };

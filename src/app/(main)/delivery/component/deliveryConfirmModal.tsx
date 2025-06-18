@@ -60,6 +60,10 @@ export const DeliveryConfirmModal = ({
     if (data) {
       reset({
         deliveryId: data.id,
+        confirmationFromSender:
+          data.deliveryType === EDeliveryType.IMPORT
+            ? data.confirmationFromFactory
+            : data.confirmationFromPartner,
         confirmationFromReceiver: data.confirmationFromReceiver,
         confirmationFromFactory: data.confirmationFromFactory,
         confirmationFromPartner: data.confirmationFromPartner,

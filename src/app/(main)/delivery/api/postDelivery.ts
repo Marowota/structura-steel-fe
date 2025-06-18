@@ -54,7 +54,7 @@ export const usePostDelivery = ({ options }: TUsePostDeliveryParams = {}) => {
     mutationKey: ["deliveries"],
     mutationFn: postDelivery,
     onSuccess: () => {
-      //toastNotification("Delivery created successfully", EToastType.SUCCESS);
+      toastNotification("Delivery created successfully", EToastType.SUCCESS);
       queryClient.invalidateQueries({ queryKey: ["deliveries"] });
     },
     onError: (error: TCreateError) => {
