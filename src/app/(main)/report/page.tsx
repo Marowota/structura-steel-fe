@@ -115,10 +115,10 @@ export default function ReportPage() {
     },
   });
 
+  const dailyData = data as TDailyReport;
   const renderTable = () => {
     switch (reportPageType) {
       case EReportPageType.DAILY:
-        const dailyData = data as TDailyReport;
         return (
           <>
             <div className="min-h-[78vh]">
@@ -304,14 +304,22 @@ export default function ReportPage() {
                 <ReportCard
                   variant={EReportCardVariant.SUCCESS}
                   title="Received"
-                  description="450.000"
+                  description={
+                    (dailyData?.summary.totalAmountReceived.toLocaleString(
+                      "en-US",
+                    ) ?? "0") + " VND"
+                  }
                   icon={<HandCoins className="h-5 w-5" />}
                   className="flex-1"
                 />
                 <ReportCard
                   variant={EReportCardVariant.ERROR}
                   title="Paid"
-                  description="450.000"
+                  description={
+                    (dailyData?.summary.totalAmountPaid.toLocaleString(
+                      "en-US",
+                    ) ?? "0") + " VND"
+                  }
                   icon={<WalletCards className="h-5 w-5" />}
                   className="flex-1"
                 />
@@ -320,28 +328,44 @@ export default function ReportPage() {
                 <ReportCard
                   variant={EReportCardVariant.PRIMARY}
                   title="Sale orders"
-                  description="25"
+                  description={
+                    dailyData?.summary.newSaleOrdersCount.toLocaleString(
+                      "en-US",
+                    ) ?? "0"
+                  }
                   icon={<ReceiptText className="h-5 w-5" />}
                   className="flex-1"
                 />
                 <ReportCard
                   variant={EReportCardVariant.PRIMARY}
                   title="Import orders"
-                  description="43"
+                  description={
+                    dailyData?.summary.newPurchaseOrdersCount.toLocaleString(
+                      "en-US",
+                    ) ?? "0"
+                  }
                   icon={<CreditCard className="h-5 w-5" />}
                   className="flex-1"
                 />
                 <ReportCard
                   variant={EReportCardVariant.PRIMARY}
                   title="Completed delivery"
-                  description="12"
+                  description={
+                    dailyData?.summary.completedDeliveriesCount.toLocaleString(
+                      "en-US",
+                    ) ?? "0"
+                  }
                   icon={<Truck className="h-5 w-5" />}
                   className="flex-1"
                 />
                 <ReportCard
                   variant={EReportCardVariant.PRIMARY}
                   title="Total receivables"
-                  description="723.000"
+                  description={
+                    (dailyData?.summary.newSaleOrdersValue.toLocaleString(
+                      "en-US",
+                    ) ?? "0") + " VND"
+                  }
                   icon={<DollarSign className="h-5 w-5" />}
                   className="flex-1"
                 />
