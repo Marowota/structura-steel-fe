@@ -4,8 +4,8 @@ import dayjs from "dayjs";
 
 export const paymentTransactionColumns: ColumnDef<TPaymentTransactionItem>[] = [
   {
-    accessorKey: "transactionCode",
-    header: "Transaction Code",
+    accessorKey: "transactionType",
+    header: "Transaction Type",
   },
   {
     accessorKey: "partnerName",
@@ -17,13 +17,23 @@ export const paymentTransactionColumns: ColumnDef<TPaymentTransactionItem>[] = [
     cell: (info) => (info.getValue() as number).toLocaleString("en-US"),
   },
   {
-    accessorKey: "transactionDate",
-    header: "Transaction Date",
+    accessorKey: "paymentTime",
+    header: "Payment Time",
     cell: (info) =>
       dayjs(info.getValue() as string).format("DD/MM/YYYY HH:mm:ss"),
   },
   {
-    accessorKey: "createdBy",
-    header: "Created By",
+    accessorKey: "paymentMethod",
+    header: "Payment Method",
+  },
+  {
+    accessorKey: "notes",
+    header: "Notes",
+  },
+  {
+    accessorKey: "createdAt",
+    header: "Created At",
+    cell: (info) =>
+      dayjs(info.getValue() as string).format("DD/MM/YYYY HH:mm:ss"),
   },
 ];
