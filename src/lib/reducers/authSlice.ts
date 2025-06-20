@@ -8,6 +8,7 @@ export interface IAuthState {
   isTokenExpired: boolean;
   userInfo: TJwtObject | null;
   authToken: TAuthToken | null;
+  firstLogin: boolean;
 }
 
 const initialState: IAuthState = {
@@ -15,6 +16,7 @@ const initialState: IAuthState = {
   isTokenExpired: true,
   userInfo: null,
   authToken: null,
+  firstLogin: false,
 };
 
 export const authSlice = createSlice({
@@ -26,6 +28,7 @@ export const authSlice = createSlice({
       state.isTokenExpired = false;
       state.userInfo = action.payload.userInfo;
       state.authToken = action.payload.authToken;
+      state.firstLogin = false;
     },
     expireToken: (state) => {
       state.isTokenExpired = true;
@@ -34,6 +37,11 @@ export const authSlice = createSlice({
       state.isAuthenticated = false;
       state.userInfo = null;
       state.authToken = null;
+      state.firstLogin = false;
+    },
+    setFirstLogin: (state, action) => {
+      console.log("setFirstLogin", action.payload);
+      state.firstLogin = action.payload.firstLogin ?? true;
     },
   },
 });
@@ -50,5 +58,8 @@ export const selectAuthObject = (state: RootState) => state.auth;
 export const selectIsTokenExpired = (state: RootState) =>
   state.auth.isTokenExpired;
 
-export const { authenticate, expireToken, logout } = authSlice.actions;
+export const selectIsFirstLogin = (state: RootState) => state.auth.firstLogin;
+
+export const { authenticate, expireToken, logout, setFirstLogin } =
+  authSlice.actions;
 export const authReducer = authSlice.reducer;

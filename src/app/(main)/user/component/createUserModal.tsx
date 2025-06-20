@@ -68,24 +68,7 @@ export const UserCreateModal = ({
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
           <ModalSection title="Account Information">
             <div className="grid grid-cols-2 gap-2">
-              <Input
-                label="Username"
-                {...register("username", {
-                  required: "Username is required",
-                  minLength: { message: "Minimum length is 3", value: 3 },
-                  maxLength: { message: "Maximum length is 50", value: 50 },
-                  pattern: {
-                    message:
-                      "Username can only contain letters, numbers, and underscores",
-                    value: /^[a-zA-Z0-9_]+$/,
-                  },
-                })}
-                disabled={isLoading || !!editId}
-                required
-                isError={!!errors.username}
-                errorMessage={errors.username?.message}
-              />
-              <Input
+              {/* <Input
                 label={!!editId ? "New Password" : "Password"}
                 {...register("password", {
                   required: editId ? false : "Password is required",
@@ -103,8 +86,25 @@ export const UserCreateModal = ({
                 required={!editId}
                 isError={!!errors.password}
                 errorMessage={errors.password?.message}
-              />
+              /> */}
               <div className="col-span-2">
+                <Input
+                  label="Username"
+                  {...register("username", {
+                    required: "Username is required",
+                    minLength: { message: "Minimum length is 3", value: 3 },
+                    maxLength: { message: "Maximum length is 50", value: 50 },
+                    pattern: {
+                      message:
+                        "Username can only contain letters, numbers, and underscores",
+                      value: /^[a-zA-Z0-9_]+$/,
+                    },
+                  })}
+                  disabled={isLoading || !!editId}
+                  required
+                  isError={!!errors.username}
+                  errorMessage={errors.username?.message}
+                />
                 <Controller
                   name="realmRole"
                   control={control}

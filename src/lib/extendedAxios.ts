@@ -67,6 +67,15 @@ class ExtendedAxios {
   private async errorInterceptor<T, DTO>(error: AxiosError<T, DTO>) {
     switch (error.response?.status) {
       case 400:
+        if (error.config?.url?.includes(API_URL.AuthService.login)) {
+          store.dispatch(
+            authSlice.actions.setFirstLogin({
+              firstLogin: true,
+            }),
+          );
+          toastNotification("Please change your password", EToastType.INFO);
+          return;
+        }
         return Promise.reject(error);
       case 401:
         if (error.config?.url?.includes(API_URL.AuthService.login)) {
@@ -79,7 +88,7 @@ class ExtendedAxios {
         return;
       case 404:
         toastNotification("Resource not found", EToastType.ERROR);
-        return;
+        return Promise.reject(error);
       case 409:
         return Promise.reject(error);
       case 500:

@@ -111,5 +111,7 @@ export const API_URL = {
     detail: (id: string) => `${API_BASE_URL.userService}/${id}`,
     signUp: API_BASE_URL.userService + "/sign-up",
     softDelete: (id: string) => `${API_BASE_URL.userService}/soft-delete/${id}`,
+    changePasswordFirstTime:
+      API_BASE_URL.userService + "/first-time-password-change",
   },
 };

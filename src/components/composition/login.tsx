@@ -2,7 +2,7 @@
 import { PostLoginDTO, usePostLogin } from "@/app/login/api/postLogin";
 import { Button, Input } from "@/components/elements";
 import { setCredential } from "@/hooks/useGetUserInfo";
-import { selectIsAuthenticated } from "@/lib/reducers";
+import { selectIsAuthenticated, selectIsFirstLogin } from "@/lib/reducers";
 import Image from "next/image";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
@@ -15,12 +15,19 @@ export default function LoginForm() {
   const dispatch = useDispatch();
 
   const authenticated = useSelector(selectIsAuthenticated);
+  const isFirstLogin = useSelector(selectIsFirstLogin);
 
   useEffect(() => {
     if (authenticated) {
       redirect("/");
     }
   }, [authenticated]);
+
+  useEffect(() => {
+    if (isFirstLogin) {
+      redirect("/setup-password");
+    }
+  }, [isFirstLogin]);
 
   const onSubmit: SubmitHandler<PostLoginDTO> = async (data) => {
     const response = await login(data);
