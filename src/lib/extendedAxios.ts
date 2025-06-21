@@ -84,8 +84,10 @@ class ExtendedAxios {
         store.dispatch(authSlice.actions.expireToken());
         return;
       case 403:
-        toastNotification("Forbidden", EToastType.ERROR);
-        return;
+        return Promise.reject({
+          message:
+            "You don't have permission to do this, please contact your admin",
+        });
       case 404:
         toastNotification("Resource not found", EToastType.ERROR);
         return Promise.reject(error);
