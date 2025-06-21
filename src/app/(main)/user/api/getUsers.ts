@@ -14,11 +14,17 @@ import axios from "axios";
 
 export enum EUserRole {
   ROLE_ADMIN = "ROLE_ADMIN",
+  ROLE_IMPORTER = "ROLE_IMPORTER",
+  ROLE_SALER = "ROLE_SALER",
+  ROLE_ACCOUNTANT = "ROLE_ACCOUNTANT",
   ROLE_USER = "ROLE_USER",
 }
 
 export const EUserRoleLabel = new Map<EUserRole, string>([
   [EUserRole.ROLE_ADMIN, "Admin"],
+  [EUserRole.ROLE_IMPORTER, "Importer"],
+  [EUserRole.ROLE_SALER, "Saler"],
+  [EUserRole.ROLE_ACCOUNTANT, "Accountant"],
   [EUserRole.ROLE_USER, "User"],
 ]);
 

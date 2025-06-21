@@ -113,5 +113,6 @@ export const API_URL = {
     softDelete: (id: string) => `${API_BASE_URL.userService}/soft-delete/${id}`,
     changePasswordFirstTime:
       API_BASE_URL.userService + "/first-time-password-change",
+    myProfile: `${API_BASE_URL.userService}/my-profile`,
   },
 };

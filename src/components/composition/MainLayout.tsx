@@ -21,21 +21,21 @@ import { nameToTwoText } from "@/mapper/nameToTwoText";
 import { authSlice } from "@/lib";
 import { useDispatch } from "react-redux";
 import Link from "next/link";
-import { useGetUserDetail } from "@/app/(main)/user/api/getUsersDetail";
 import { EUserRole } from "@/app/(main)/user/api/getUsers";
 import { ProtectedFeature } from "./ProtectedFeature";
+import { ProtectedPage } from "./ProtectedPage";
+import { useGetMyProfile } from "@/app/(main)/account/api/getMyProfile";
 
 export function MainLayout({ children }: { children: ReactNode }) {
   const userInfo = useContext(UserContext);
-  const userDetail = useGetUserDetail({
+  const { data: userDetail } = useGetMyProfile({
     params: { username: userInfo?.preferred_username },
   });
   const displayName =
-    (userDetail?.data?.firstName ?? "") +
-    " " +
-    (userDetail?.data?.lastName ?? "");
+    (userDetail?.firstName ?? "") + " " + (userDetail?.lastName ?? "");
   const pathname = usePathname();
   const dispatch = useDispatch();
+  const blockedAllTabRoles: EUserRole[] = [EUserRole.ROLE_USER];
 
   const Tabs = [
     {
@@ -43,42 +43,62 @@ export function MainLayout({ children }: { children: ReactNode }) {
       icon: <ReceiptText />,
       route: "/order",
       header: "Order",
+      protected: [EUserRole.ROLE_ADMIN, EUserRole.ROLE_SALER],
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "Import",
       icon: <CreditCard />,
       route: "/import",
       header: "Import",
+      protected: [EUserRole.ROLE_ADMIN, EUserRole.ROLE_IMPORTER],
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "Delivery",
       icon: <Truck />,
       route: "/delivery",
       header: "Delivery",
+      protected: [
+        EUserRole.ROLE_ADMIN,
+        EUserRole.ROLE_SALER,
+        EUserRole.ROLE_IMPORTER,
+      ],
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "Debt",
       icon: <Banknote />,
       route: "/debt",
       header: "Debt",
+      protected: [
+        EUserRole.ROLE_ADMIN,
+        EUserRole.ROLE_SALER,
+        EUserRole.ROLE_IMPORTER,
+        EUserRole.ROLE_ACCOUNTANT,
+      ],
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "Partner",
       icon: <Handshake />,
       route: "/partner",
       header: "Partner",
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "Product",
       icon: <Barcode />,
       route: "/product",
       header: "Product",
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "Report",
       icon: <FileText />,
       route: "/report",
       header: "Report",
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "User",
@@ -86,12 +106,15 @@ export function MainLayout({ children }: { children: ReactNode }) {
       route: "/user",
       header: "User",
       protected: [EUserRole.ROLE_ADMIN],
+      blocked: [...blockedAllTabRoles],
     },
     {
       name: "Restore",
       icon: <ArchiveRestore />,
       route: "/restore",
       header: "Restore",
+      protected: [EUserRole.ROLE_ADMIN],
+      blocked: [...blockedAllTabRoles],
     },
   ];
 
@@ -122,7 +145,11 @@ export function MainLayout({ children }: { children: ReactNode }) {
         </div>
         <div className="w-full flex-1 overflow-y-auto">
           {Tabs.map((tab) => (
-            <ProtectedFeature key={tab.name} acceptedRoles={tab.protected}>
+            <ProtectedFeature
+              key={tab.name}
+              acceptedRoles={tab.protected}
+              blockedRoles={tab.blocked}
+            >
               <Button
                 variant={"navbar"}
                 size="nav"
@@ -154,13 +181,18 @@ export function MainLayout({ children }: { children: ReactNode }) {
           </div>
         </div>
       </div>
-      <div className="mx-6 flex h-full flex-1 flex-col gap-1 overflow-x-auto bg-white p-6 shadow-md">
-        <div className="text-headline-sm-semibold text-brand-800">
-          {selectedTab?.header}
+      <ProtectedPage
+        acceptedRoles={selectedTab?.protected}
+        blockedRoles={selectedTab?.blocked}
+      >
+        <div className="mx-6 flex h-full flex-1 flex-col gap-1 overflow-x-auto bg-white p-6 shadow-md">
+          <div className="text-headline-sm-semibold text-brand-800">
+            {selectedTab?.header}
+          </div>
+          <div className="border-info-300 border" />
+          <div className="min-h-0 w-full flex-1">{children}</div>
         </div>
-        <div className="border-info-300 border" />
-        <div className="min-h-0 w-full flex-1">{children}</div>
-      </div>
+      </ProtectedPage>
     </div>
   );
 }

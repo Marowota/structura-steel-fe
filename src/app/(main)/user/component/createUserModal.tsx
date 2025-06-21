@@ -35,8 +35,9 @@ export const UserCreateModal = ({
   const { data: editData, isLoading } = useGetUserDetail({
     params: { username: username },
   });
-  const { mutateAsync: createUser } = usePostUser();
-  const { mutateAsync: updateUser } = usePutUser();
+  const { mutateAsync: createUser, isPending: isPostingUser } = usePostUser();
+  const { mutateAsync: updateUser, isPending: isPuttingUser } = usePutUser();
+  const isPending = isPostingUser || isPuttingUser;
 
   const onCloseHandler = () => {
     reset({});
@@ -115,10 +116,12 @@ export const UserCreateModal = ({
                     <Dropdown
                       label="Realm Role"
                       options={mapArrayToTDropdown(
-                        Object.entries(EUserRole).map(([key, value]) => ({
-                          label: EUserRoleLabel.get(value) ?? key,
-                          value: value,
-                        })),
+                        Object.entries(EUserRole)
+                          .filter(([, value]) => value !== EUserRole.ROLE_USER)
+                          .map(([key, value]) => ({
+                            label: EUserRoleLabel.get(value) ?? key,
+                            value: value,
+                          })),
                         "label",
                         "value",
                       )}
@@ -180,7 +183,7 @@ export const UserCreateModal = ({
             >
               Cancel
             </Button>
-            <Button size={"sm"} disabled={isLoading}>
+            <Button size={"sm"} disabled={isLoading || isPending}>
               {editId ? "Update" : "Create"}
             </Button>
           </div>
