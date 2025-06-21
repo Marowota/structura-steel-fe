@@ -6,8 +6,11 @@ import { useGetMyProfile } from "./(main)/account/api/getMyProfile";
 import { roleHomePage } from "@/constant/roleHomePage";
 import { EUserRole } from "./(main)/user/api/getUsers";
 import Image from "next/image";
+import { useEffect } from "react";
+import { useAuthenticate } from "@/hooks/useGetUserInfo";
 
 export default function Home() {
+  useAuthenticate();
   const userInfo = useSelector(selectUserInfo);
   const { data: userDetail } = useGetMyProfile({
     params: { username: userInfo?.preferred_username },
@@ -16,9 +19,11 @@ export default function Home() {
   console.log("userInfo", userInfo);
   console.log("userDetail", userDetail);
   console.log("homePage", homePage);
-  if (userDetail && homePage) {
-    redirect(homePage);
-  }
+  useEffect(() => {
+    if (userDetail?.realmRole && homePage) {
+      redirect(homePage);
+    }
+  }, [userDetail?.realmRole, homePage]);
   return (
     <>
       <div className="flex h-screen w-screen flex-col items-center justify-center">
