@@ -45,6 +45,7 @@ export type TTableFilterProps = {
   sortBy: string;
   sortDir: ETableSort;
   onFilterChange?: (filter: TTableFilterProps) => void;
+  noFilterHeaderIds?: string[];
 };
 
 export type TTableActionsProps<T> = {
@@ -129,6 +130,13 @@ export const MainTable = <T,>(
       : [],
   );
 
+  if (filterProps) {
+    filterProps.noFilterHeaderIds = [
+      ...(filterProps.noFilterHeaderIds ?? []),
+      "action",
+    ];
+  }
+
   const table = useReactTable({
     columns,
     data,
@@ -171,6 +179,8 @@ export const MainTable = <T,>(
                       key={header.id}
                       colSpan={header.colSpan}
                       onClick={() =>
+                        filterProps &&
+                        !filterProps.noFilterHeaderIds?.includes(header.id) &&
                         filterProps?.onFilterChange?.({
                           ...filterProps,
                           sortBy: header.id,
@@ -186,26 +196,32 @@ export const MainTable = <T,>(
                       <div
                         className={cn(
                           "group flex items-center gap-1",
-                          filterProps ? "cursor-pointer" : "",
+                          filterProps &&
+                            !filterProps.noFilterHeaderIds?.includes(header.id)
+                            ? "cursor-pointer"
+                            : "",
                         )}
                       >
                         {flexRender(
                           header.column.columnDef.header,
                           header.getContext(),
                         )}
-                        {filterProps && (
-                          <ArrowDown
-                            className={cn(
-                              "h-4 min-h-4 w-4 min-w-4 text-gray-500 group-hover:text-gray-900",
-                              header.id === filterProps?.sortBy
-                                ? ""
-                                : "opacity-0 group-hover:opacity-100",
-                              filterProps?.sortDir === ETableSort.DESC
-                                ? ""
-                                : "rotate-180",
-                            )}
-                          />
-                        )}
+                        {filterProps &&
+                          !filterProps.noFilterHeaderIds?.includes(
+                            header.id,
+                          ) && (
+                            <ArrowDown
+                              className={cn(
+                                "h-4 min-h-4 w-4 min-w-4 text-gray-500 group-hover:text-gray-900",
+                                header.id === filterProps?.sortBy
+                                  ? ""
+                                  : "opacity-0 group-hover:opacity-100",
+                                filterProps?.sortDir === ETableSort.DESC
+                                  ? ""
+                                  : "rotate-180",
+                              )}
+                            />
+                          )}
                       </div>
                     </th>
                   ))}

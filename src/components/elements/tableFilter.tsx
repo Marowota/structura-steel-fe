@@ -23,6 +23,7 @@ export const TableFilter = <T, TDTO extends IPagination>({
   paramsDefault = DEFAULT_PAGINATION_PARAMS as TDTO,
   paramsKey,
   softDel = false,
+  noFilterHeaderIds = [],
 }: {
   search: string;
   onRowClick: (row: Row<T>) => void;
@@ -35,6 +36,7 @@ export const TableFilter = <T, TDTO extends IPagination>({
   paramsDefault?: TDTO;
   paramsKey?: string;
   softDel?: boolean;
+  noFilterHeaderIds?: string[];
 }) => {
   const { params, setNewParams } = useLinkParams<TDTO>(
     paramsDefault,
@@ -76,6 +78,7 @@ export const TableFilter = <T, TDTO extends IPagination>({
           };
           setNewParams(newParams);
         },
+        noFilterHeaderIds: noFilterHeaderIds,
       }}
       onRowClick={onRowClick}
       actions={actions}
