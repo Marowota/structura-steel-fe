@@ -205,7 +205,7 @@ export default function ReportPage() {
     }
     if (response) {
       const disposition = response.headers["content-disposition"];
-      let filename = "download";
+      let filename = "download.xlsx";
 
       if (disposition) {
         const match = disposition.match(/filename="?(.+?)"?($|;)/);
@@ -213,8 +213,6 @@ export default function ReportPage() {
           filename = match[1];
         }
       }
-
-      filename = filename + ".xlsx";
 
       const url = URL.createObjectURL(response.data);
       const a = document.createElement("a");
@@ -360,7 +358,7 @@ export default function ReportPage() {
                 />
                 <ReportCard
                   variant={EReportCardVariant.PRIMARY}
-                  title="Total receivables"
+                  title="Total sale debt"
                   description={
                     (dailyData?.summary.newSaleOrdersValue.toLocaleString(
                       "vi-VN",
