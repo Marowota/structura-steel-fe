@@ -1,15 +1,15 @@
 "use client";
 import { Dropdown } from "@/components/elements";
 import { useState } from "react";
-import { useGetDebtStatues } from "../api/getDebtStatues";
 import { DoughnutChart } from "./charts";
 import { limitTickLength } from "../helper/limitTickLength";
 import { colors } from "../constant/color";
 import { EDebtType, EDebtTypeLabel } from "../../debt/api/postPayDebt";
+import { useGetDebtStatus } from "../api/getDebtStatus";
 
-export const DebtStatuesCountChart = () => {
+export const DebtStatusCountChart = () => {
   const [debtType, setDebtType] = useState<EDebtType>(EDebtType.ORDER);
-  const { data: debtStatuesData } = useGetDebtStatues({
+  const { data: debtStatusData } = useGetDebtStatus({
     params: {
       type: debtType,
     },
@@ -19,7 +19,7 @@ export const DebtStatuesCountChart = () => {
     <>
       <div className="border-brand-300 flex h-fit w-full flex-col gap-3 rounded-md border px-3 py-2">
         <div className="flex items-center">
-          <div className="text-lg-bold text-info-800">Debt statues count</div>
+          <div className="text-lg-bold text-info-800">Debt status count</div>
           <div className="ml-auto flex items-center gap-2">
             <div>Type </div>
             <Dropdown
@@ -42,13 +42,13 @@ export const DebtStatuesCountChart = () => {
             <DoughnutChart
               data={{
                 labels:
-                  debtStatuesData?.map((item) => {
+                  debtStatusData?.map((item) => {
                     return limitTickLength(item.status, 20);
                   }) || [],
                 datasets: [
                   {
                     label: "Count",
-                    data: debtStatuesData?.map((item) => item.count) || [],
+                    data: debtStatusData?.map((item) => item.count) || [],
                     backgroundColor: [
                       colors.info["400"],
                       colors.brand["400"],

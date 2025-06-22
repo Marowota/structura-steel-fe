@@ -100,7 +100,7 @@ class ExtendedAxios {
         toastNotification("Internal server error", EToastType.ERROR);
         return;
       default:
-        toastNotification("Something went wrong", EToastType.ERROR);
+        toastNotification("Backend not available", EToastType.ERROR);
         return Promise.reject(error);
     }
   }

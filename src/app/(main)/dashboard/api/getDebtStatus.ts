@@ -5,24 +5,24 @@ import { useQuery, UseQueryOptions } from "@tanstack/react-query";
 import axios from "axios";
 import { EDebtType } from "../../debt/api/postPayDebt";
 
-type TDebtStatues = {
+type TDebtStatus = {
   status: string;
   count: number;
   totalAmount: number;
 };
 
-export type GetDebtStatuesDTO = IPagination & {
+export type GetDebtStatusDTO = IPagination & {
   type: EDebtType;
 };
 
-export type TUseGetDebtStatuesParams = {
-  params?: GetDebtStatuesDTO;
+export type TUseGetDebtStatusParams = {
+  params?: GetDebtStatusDTO;
   options?: UseQueryOptions<TResult>;
 };
 
-type TResult = TDebtStatues[];
+type TResult = TDebtStatus[];
 
-const getDebtStatues = async (params?: GetDebtStatuesDTO) => {
+const getDebtStatus = async (params?: GetDebtStatusDTO) => {
   try {
     const response = await extendedAxios.get<TResult>(
       API_URL.analyticService.debtStatus,
@@ -39,13 +39,13 @@ const getDebtStatues = async (params?: GetDebtStatuesDTO) => {
   }
 };
 
-export const useGetDebtStatues = ({
+export const useGetDebtStatus = ({
   options,
   params,
-}: TUseGetDebtStatuesParams = {}) => {
+}: TUseGetDebtStatusParams = {}) => {
   const query = useQuery({
-    queryKey: ["debtStatues", params],
-    queryFn: () => getDebtStatues(params),
+    queryKey: ["debtStatus", params],
+    queryFn: () => getDebtStatus(params),
     ...options,
   });
 
