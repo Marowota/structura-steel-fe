@@ -432,15 +432,33 @@ export const DeliveryCreateModal = ({
                   />
                 )}
               />
-              <Input label="Driver Name" {...register("driverName")} />
+              <Input
+                label="Driver Name"
+                {...register("driverName", {
+                  required: "Driver name is required",
+                })}
+                required
+                isError={errors.driverName ? true : false}
+                errorMessage={errors.driverName?.message}
+              />
               <Input
                 type="date"
                 label="Delivery Date"
-                {...register("deliveryDate")}
+                {...register("deliveryDate", {
+                  required: "Delivery date is required",
+                })}
+                required
+                isError={errors.deliveryDate ? true : false}
+                errorMessage={errors.deliveryDate?.message}
               />
               <Input
                 label="Delivery Address"
-                {...register("deliveryAddress")}
+                {...register("deliveryAddress", {
+                  required: "Delivery address is required",
+                })}
+                required
+                isError={errors.deliveryAddress ? true : false}
+                errorMessage={errors.deliveryAddress?.message}
               />
               <Input
                 label="Distance (km)"
@@ -451,7 +469,11 @@ export const DeliveryCreateModal = ({
                     value: 0,
                     message: "Distance cannot be negative",
                   },
+                  required: "Distance is required",
                 })}
+                required
+                isError={errors.distance ? true : false}
+                errorMessage={errors.distance?.message}
               />
             </div>
           </ModalSection>
@@ -465,7 +487,11 @@ export const DeliveryCreateModal = ({
                   value: 0,
                   message: "Unit price cannot be negative",
                 },
+                required: "Unit price is required",
               })}
+              required
+              isError={errors.deliveryUnitPrice ? true : false}
+              errorMessage={errors.deliveryUnitPrice?.message}
             />
             <Input
               label="Additional Fees"
@@ -478,7 +504,7 @@ export const DeliveryCreateModal = ({
                 },
               })}
             />
-            <Input
+            {/* <Input
               label="Total Delivery Fee"
               type="number"
               {...register("totalDeliveryFee", {
@@ -488,7 +514,7 @@ export const DeliveryCreateModal = ({
                   message: "Total delivery fee cannot be negative",
                 },
               })}
-            />
+            /> */}
             <Textarea label="Note" {...register("deliveryOrderNote")} />
           </ModalSection>
         </div>
