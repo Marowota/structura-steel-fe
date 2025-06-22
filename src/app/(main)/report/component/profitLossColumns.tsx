@@ -20,21 +20,21 @@ export const profitLossColumns: ColumnDef<TProfitLossReport>[] = [
   {
     accessorKey: "revenue",
     header: "Revenue",
-    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("en-US"),
+    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("vi-VN"),
   },
   {
     accessorKey: "costOfGoods",
     header: "Cost of Goods",
-    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("en-US"),
+    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("vi-VN"),
   },
   {
     accessorKey: "deliveryCost",
     header: "Delivery Cost",
-    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("en-US"),
+    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("vi-VN"),
   },
   {
     accessorKey: "grossProfit",
     header: "Gross Profit",
-    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("en-US"),
+    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("vi-VN"),
   },
 ];

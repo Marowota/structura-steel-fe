@@ -22,7 +22,7 @@ export const receivableDebtColumns: ColumnDef<TReceivableDebtReport>[] = [
   {
     accessorKey: "remainingAmount",
     header: "Remaining Amount",
-    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("en-US"),
+    cell: (info) => ((info.getValue() as number) ?? 0).toLocaleString("vi-VN"),
   },
   {
     accessorKey: "status",

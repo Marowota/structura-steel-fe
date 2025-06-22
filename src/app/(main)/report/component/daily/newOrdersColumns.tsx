@@ -18,7 +18,7 @@ export const newOrderColumns: ColumnDef<TNewOrderItem>[] = [
   {
     accessorKey: "value",
     header: "Value",
-    cell: (info) => (info.getValue() as number).toLocaleString("en-US"),
+    cell: (info) => (info.getValue() as number).toLocaleString("vi-VN"),
   },
   {
     accessorKey: "createdAt",

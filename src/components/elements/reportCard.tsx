@@ -4,7 +4,9 @@ export enum EReportCardVariant {
   PRIMARY = "primary",
   SECONDARY = "secondary",
   SUCCESS = "success",
+  SUCCESS_SECONDARY = "success-secondary",
   ERROR = "error",
+  ERROR_SECONDARY = "error-secondary",
 }
 
 export type ReportCardVariant = {
@@ -44,9 +46,27 @@ export const reportCardVariant = new Map<EReportCardVariant, ReportCardVariant>(
       },
     ],
     [
+      EReportCardVariant.SUCCESS_SECONDARY,
+      {
+        outline: "border-brand-300",
+        icon: "bg-success-100 text-success-900",
+        title: "text-info-800",
+        description: "text-gray-600",
+      },
+    ],
+    [
       EReportCardVariant.ERROR,
       {
         outline: "border-info-300",
+        icon: "bg-error-100 text-error-900",
+        title: "text-info-800",
+        description: "text-gray-600",
+      },
+    ],
+    [
+      EReportCardVariant.ERROR_SECONDARY,
+      {
+        outline: "border-brand-300",
         icon: "bg-error-100 text-error-900",
         title: "text-info-800",
         description: "text-gray-600",

@@ -25,6 +25,6 @@ export const payableDebtColumns: ColumnDef<TPayableDebtReport>[] = [
   {
     accessorKey: "remainingAmount",
     header: "Remaining Amount",
-    cell: (info) => (info.getValue() as number).toLocaleString("en-US"),
+    cell: (info) => (info.getValue() as number).toLocaleString("vi-VN"),
   },
 ];

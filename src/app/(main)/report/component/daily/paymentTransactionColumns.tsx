@@ -14,7 +14,7 @@ export const paymentTransactionColumns: ColumnDef<TPaymentTransactionItem>[] = [
   {
     accessorKey: "amount",
     header: "Amount",
-    cell: (info) => (info.getValue() as number).toLocaleString("en-US"),
+    cell: (info) => (info.getValue() as number).toLocaleString("vi-VN"),
   },
   {
     accessorKey: "paymentTime",

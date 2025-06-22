@@ -17,6 +17,12 @@ export enum EDebtType {
   IMPORT = "PURCHASE_DEBT",
 }
 
+export const EDebtTypeLabel: Record<EDebtType, string> = {
+  [EDebtType.ORDER]: "Order Debt",
+  [EDebtType.DELIVERY]: "Delivery Debt",
+  [EDebtType.IMPORT]: "Import Debt",
+};
+
 export type TPayDebt = {
   id: string;
   debtType: EDebtType;

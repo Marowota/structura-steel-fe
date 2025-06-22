@@ -10,6 +10,7 @@ const API_BASE_URL = {
   partnerService: API_DOMAIN + "/api/v1/partners",
   userService: API_DOMAIN + "/api/v1/core/users",
   reportService: API_DOMAIN + "/api/v1/core/reports",
+  analyticService: API_DOMAIN + "/api/v1/core/analytics",
 };
 
 export const API_URL = {
@@ -114,5 +115,13 @@ export const API_URL = {
     changePasswordFirstTime:
       API_BASE_URL.userService + "/first-time-password-change",
     myProfile: `${API_BASE_URL.userService}/my-profile`,
+  },
+  analyticService: {
+    index: API_BASE_URL.analyticService,
+    summary: API_BASE_URL.analyticService + "/summary",
+    revenueOvertime: API_BASE_URL.analyticService + "/revenue-over-time",
+    topCustomer: API_BASE_URL.analyticService + "/top-customers",
+    topProduct: API_BASE_URL.analyticService + "/top-products",
+    debtStatus: API_BASE_URL.analyticService + "/debt-status",
   },
 };

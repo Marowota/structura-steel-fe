@@ -7,6 +7,7 @@ import {
   ArchiveRestore,
   Banknote,
   Barcode,
+  ChartNoAxesCombined,
   CreditCard,
   FileText,
   Handshake,
@@ -38,6 +39,13 @@ export function MainLayout({ children }: { children: ReactNode }) {
   const blockedAllTabRoles: EUserRole[] = [EUserRole.ROLE_USER];
 
   const Tabs = [
+    {
+      name: "Dashboard",
+      icon: <ChartNoAxesCombined />,
+      route: "/dashboard",
+      header: "Dashboard",
+      blocked: [...blockedAllTabRoles],
+    },
     {
       name: "Order",
       icon: <ReceiptText />,
