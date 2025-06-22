@@ -42,7 +42,7 @@ export const ProductTable = ({
         pageNo: (data?.pageNo ?? -1) + 1,
         pageSize: data?.pageSize ?? 0,
         totalElements: data?.totalElements ?? 0,
-        totalPages: data?.totalPages ?? -1,
+        totalPages: data?.totalPages ?? 0,
         last: data?.last ?? true,
         onPageChange: (page) => {
           const newParams = { ...params, pageNo: page };
