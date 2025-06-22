@@ -34,6 +34,7 @@ export const orderColumns: ColumnDef<TOrder>[] = [
   {
     accessorKey: "totalAmount",
     header: "Total Amount",
-    cell: (data) => data.renderValue() ?? "-",
+    cell: (info) =>
+      ((info.getValue() as number) ?? 0).toLocaleString("vi-VN") ?? "-",
   },
 ];

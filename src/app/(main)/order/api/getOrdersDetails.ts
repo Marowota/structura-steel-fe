@@ -4,8 +4,13 @@ import { API_URL } from "@/constant/apiURL";
 import { EOrderStatus } from "./getOrders";
 import { TPartner } from "../../partner/api/getPartners";
 import { TProject } from "../../partner/api/getProjectsByPartner";
-import { EOrderType } from "./postOrder";
 import { TOrderProduct } from "./getOrdersProduct";
+
+export enum EOrderType {
+  PURCHASE = "PURCHASE",
+  SALE = "SALE",
+  DELIVERY = "DELIVERY",
+}
 
 export type TOrderDetail = {
   id: string;

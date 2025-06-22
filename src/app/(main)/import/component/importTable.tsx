@@ -32,7 +32,8 @@ export const importColumns: ColumnDef<TImport>[] = [
   {
     accessorKey: "totalAmount",
     header: "Total Amount",
-    cell: (info) => info.getValue() ?? "-",
+    cell: (info) =>
+      ((info.getValue() as number) ?? 0).toLocaleString("vi-VN") ?? "-",
   },
   {
     accessorKey: "confirmationFromSupplier",

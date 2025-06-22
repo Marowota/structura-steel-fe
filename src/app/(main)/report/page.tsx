@@ -306,7 +306,7 @@ export default function ReportPage() {
                   title="Received"
                   description={
                     (dailyData?.summary.totalAmountReceived.toLocaleString(
-                      "en-US",
+                      "vi-VN",
                     ) ?? "0") + " VND"
                   }
                   icon={<HandCoins className="h-5 w-5" />}
@@ -317,7 +317,7 @@ export default function ReportPage() {
                   title="Paid"
                   description={
                     (dailyData?.summary.totalAmountPaid.toLocaleString(
-                      "en-US",
+                      "vi-VN",
                     ) ?? "0") + " VND"
                   }
                   icon={<WalletCards className="h-5 w-5" />}
@@ -330,7 +330,7 @@ export default function ReportPage() {
                   title="Sale orders"
                   description={
                     dailyData?.summary.newSaleOrdersCount.toLocaleString(
-                      "en-US",
+                      "vi-VN",
                     ) ?? "0"
                   }
                   icon={<ReceiptText className="h-5 w-5" />}
@@ -341,7 +341,7 @@ export default function ReportPage() {
                   title="Import orders"
                   description={
                     dailyData?.summary.newPurchaseOrdersCount.toLocaleString(
-                      "en-US",
+                      "vi-VN",
                     ) ?? "0"
                   }
                   icon={<CreditCard className="h-5 w-5" />}
@@ -352,7 +352,7 @@ export default function ReportPage() {
                   title="Completed delivery"
                   description={
                     dailyData?.summary.completedDeliveriesCount.toLocaleString(
-                      "en-US",
+                      "vi-VN",
                     ) ?? "0"
                   }
                   icon={<Truck className="h-5 w-5" />}
@@ -363,7 +363,7 @@ export default function ReportPage() {
                   title="Total receivables"
                   description={
                     (dailyData?.summary.newSaleOrdersValue.toLocaleString(
-                      "en-US",
+                      "vi-VN",
                     ) ?? "0") + " VND"
                   }
                   icon={<DollarSign className="h-5 w-5" />}

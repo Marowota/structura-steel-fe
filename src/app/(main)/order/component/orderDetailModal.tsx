@@ -46,14 +46,18 @@ export const OrderDetailModal = ({
                 <div className="flex" key={detail.id}>
                   <div className="text-sm-semibold">{detail.product.name}</div>
                   <div className="ml-auto">
-                    quantity: {detail.quantity} - unit price: {detail.unitPrice}{" "}
+                    quantity: {detail.quantity} - unit price:{" "}
+                    {((detail.unitPrice as number) ?? 0).toLocaleString(
+                      "vi-VN",
+                    )}{" "}
                     - weight: {detail.weight}
                   </div>
                 </div>
               ))}
             </div>
             <div className="text-md-semibold text-info-800 mt-auto self-end">
-              Total amount: {data?.totalAmount}
+              Total amount:{" "}
+              {((data?.totalAmount as number) ?? 0).toLocaleString("vi-VN")}
             </div>
           </ModalSection>
         </div>

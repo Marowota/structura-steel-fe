@@ -16,11 +16,15 @@ export const importDebtColumns: ColumnDef<TImportDebt>[] = [
     accessorKey: "originalAmount",
     header: "Original Amount",
     size: 150,
+    cell: (info) =>
+      ((info.getValue() as number) ?? 0).toLocaleString("vi-VN") ?? "-",
   },
   {
     accessorKey: "remainingAmount",
     header: "Remaining Amount",
     size: 150,
+    cell: (info) =>
+      ((info.getValue() as number) ?? 0).toLocaleString("vi-VN") ?? "-",
   },
   {
     accessorKey: "status",

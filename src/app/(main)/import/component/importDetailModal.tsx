@@ -52,7 +52,8 @@ export const ImportDetailModal = ({
               ))}
             </div>
             <div className="text-md-semibold text-info-800 mt-auto self-end">
-              Total amount: {data?.totalAmount}
+              Total amount:{" "}
+              {((data?.totalAmount as number) ?? 0).toLocaleString("vi-VN")}
             </div>
           </ModalSection>
         </div>

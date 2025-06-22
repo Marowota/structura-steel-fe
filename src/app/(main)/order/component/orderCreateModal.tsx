@@ -470,10 +470,12 @@ export const OrderCreateModal = ({
         <div className="flex items-center justify-end gap-2">
           <div className="text-md-semibold text-info-800">
             Total amount:{" "}
-            {currentProducts?.reduce(
-              (acc, product) => acc + product.quantity * product.unitPrice,
-              0,
-            ) ?? 0}{" "}
+            {(
+              (currentProducts?.reduce(
+                (acc, product) => acc + product.quantity * product.unitPrice,
+                0,
+              ) as number) ?? 0
+            ).toLocaleString("vi-VN")}{" "}
           </div>
           <Button
             onClick={() => onCloseHandler()}
