@@ -9,6 +9,13 @@ export const importColumns: ColumnDef<TImport>[] = [
     cell: (info) => info.getValue() ?? "-",
   },
   {
+    accessorKey: "importCode",
+    header: "Code",
+    cell: (info) => (
+      <div className="max-w-40">{(info.getValue() as string) ?? "-"}</div>
+    ),
+  },
+  {
     accessorKey: "supplierName",
     header: "Supplier",
     cell: (info) => info.getValue() ?? "-",

@@ -9,6 +9,13 @@ export const orderColumns: ColumnDef<TOrder>[] = [
     cell: (data) => data.renderValue() ?? "-",
   },
   {
+    accessorKey: "exportCode",
+    header: "Code",
+    cell: (info) => (
+      <div className="max-w-40">{(info.getValue() as string) ?? "-"}</div>
+    ),
+  },
+  {
     accessorKey: "partnerName",
     header: "Partner Name",
     cell: (data) => data.renderValue() ?? "-",

@@ -9,6 +9,13 @@ export const deliveryColumns: ColumnDef<TDelivery>[] = [
     cell: (info) => info.getValue() ?? "-",
   },
   {
+    accessorKey: "deliveryCode",
+    header: "Delivery Code",
+    cell: (info) => (
+      <div className="max-w-40">{(info.getValue() as string) ?? "-"}</div>
+    ),
+  },
+  {
     accessorKey: "status",
     header: "Status",
     cell: (info) => info.getValue() ?? "-",

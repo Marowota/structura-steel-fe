@@ -28,6 +28,10 @@ export const ImportDetailModal = ({
             className="flex w-1/3 flex-col gap-4"
           >
             <div>
+              <span className="text-sm-semibold">Code: </span>
+              {data?.importCode}
+            </div>
+            <div>
               <span className="text-sm-semibold">Supplier: </span>
               {data?.supplier?.partnerName}
             </div>

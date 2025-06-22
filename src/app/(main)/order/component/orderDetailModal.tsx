@@ -28,6 +28,10 @@ export const OrderDetailModal = ({
             className="flex w-1/3 flex-col gap-4"
           >
             <div>
+              <span className="text-sm-semibold">Code: </span>
+              {data?.exportCode}
+            </div>
+            <div>
               <span className="text-sm-semibold">Partner: </span>
               {data?.partner?.partnerName}
             </div>
