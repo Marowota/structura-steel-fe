@@ -35,7 +35,6 @@ import { useDeleteVehicleForever } from "./api/deleteVehicleForever";
 import { useDeleteWarehouseForever } from "./api/deleteWarehouseForever";
 import { useDeleteProductForever } from "./api/deleteProductForever";
 import { ERestoreType, TRestoreAction, TSoftDel } from "./types";
-import { useGetOrders } from "../order/api/getOrders";
 import { useGetProjectsByPartner } from "../partner/api/getProjectsByPartner";
 import { useGetVehiclesByPartner } from "../partner/api/getVehiclesByPartner";
 import { useGetWarehousesByPartner } from "../partner/api/getWarehouseByPartner";
@@ -44,7 +43,6 @@ import { vehicleColumns } from "../partner/component/vehicle/vehicleTable";
 import { warehouseColumns } from "../partner/component/warehouse/warehouseTable";
 import { useGetProducts } from "../product/api/getProducts";
 import { productColumns } from "../product/component/productTable";
-import { orderColumns } from "../order/component/orderTable";
 
 const mapRestoreTypeToAction = new Map<ERestoreType, TRestoreAction>([
   [
@@ -92,15 +90,15 @@ const mapRestoreTypeToAction = new Map<ERestoreType, TRestoreAction>([
       paramsKey: "pd",
     },
   ],
-  [
-    ERestoreType.SALE_ORDER,
-    {
-      key: ERestoreType.SALE_ORDER,
-      columns: orderColumns as ColumnDef<TSoftDel>[],
-      dataHook: useGetOrders,
-      paramsKey: "so",
-    },
-  ],
+  // [
+  //   ERestoreType.SALE_ORDER,
+  //   {
+  //     key: ERestoreType.SALE_ORDER,
+  //     columns: orderColumns as ColumnDef<TSoftDel>[],
+  //     dataHook: useGetOrders,
+  //     paramsKey: "so",
+  //   },
+  // ],
 ]);
 
 export default function RestorePage() {
