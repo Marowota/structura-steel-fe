@@ -7,7 +7,7 @@ import {
 } from "@/components/elements";
 import { EUserRole, TUser, useGetUsers } from "./api/getUsers";
 import { Row } from "@tanstack/react-table";
-import { Edit, Trash } from "lucide-react";
+import { Edit, SquareAsterisk, Trash } from "lucide-react";
 import { Suspense, useContext, useState } from "react";
 import { TableFilter } from "@/components/elements/tableFilter";
 import { useDebouncedCallback } from "use-debounce";
@@ -17,6 +17,7 @@ import { UserDeleteModal } from "./component/deleteUserModal";
 import { UserContext } from "@/components/composition";
 import { useGetUserDetail } from "./api/getUsersDetail";
 import { ProtectedFeature } from "@/components/composition/ProtectedFeature";
+import { ChangePasswordModal } from "./component/changePasswordModal";
 
 export default function UserPage() {
   const userInfo = useContext(UserContext);
@@ -33,6 +34,10 @@ export default function UserPage() {
     deleteId: undefined,
     username: undefined,
   });
+  const [isOpenResetPassword, setIsOpenResetPassword] = useState({
+    email: undefined,
+  });
+
   const [search, setSearch] = useState("");
   const debouncedSearch = useDebouncedCallback((value: string) => {
     setSearch(value);
@@ -58,6 +63,12 @@ export default function UserPage() {
     });
   };
 
+  const onResetPassword = (row: Row<TUser>) => {
+    setIsOpenResetPassword({
+      email: row.getValue("email"),
+    });
+  };
+
   const tableActions: TTableActionsProps<TUser>[] =
     userDetail.data?.realmRole === EUserRole.ROLE_ADMIN
       ? [
@@ -65,6 +76,11 @@ export default function UserPage() {
             action: EBaseActions.EDIT,
             icon: <Edit className="h-4 w-4" />,
             onClick: onEdit,
+          },
+          {
+            action: EBaseActions.CHANGE_PASSWORD,
+            icon: <SquareAsterisk className="h-4 w-4" />,
+            onClick: onResetPassword,
           },
           {
             action: EBaseActions.DELETE,
@@ -105,6 +121,15 @@ export default function UserPage() {
           }
           deleteId={isOpenDelete.deleteId}
           username={isOpenDelete.username}
+        />
+        <ChangePasswordModal
+          isOpen={!!isOpenResetPassword.email}
+          onClose={() =>
+            setIsOpenResetPassword({
+              email: undefined,
+            })
+          }
+          email={isOpenResetPassword.email ?? ""}
         />
       </ProtectedFeature>
 

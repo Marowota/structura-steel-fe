@@ -75,7 +75,9 @@ export default function ChangePasswordFirstTimePage() {
             type="password"
             variant={"normal"}
             {...register("newPassword", {
-              required: "New password is required",
+              required: "Password is required",
+              minLength: { message: "Minimum length is 6", value: 6 },
+              maxLength: { message: "Maximum length is 100", value: 100 },
               pattern: {
                 message:
                   "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character",
