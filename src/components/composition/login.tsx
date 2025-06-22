@@ -4,6 +4,7 @@ import { Button, Input } from "@/components/elements";
 import { setCredential } from "@/hooks/useGetUserInfo";
 import { selectIsAuthenticated, selectIsFirstLogin } from "@/lib/reducers";
 import Image from "next/image";
+import Link from "next/link";
 import { redirect } from "next/navigation";
 import { useEffect } from "react";
 import { useForm, SubmitHandler } from "react-hook-form";
@@ -67,6 +68,12 @@ export default function LoginForm() {
         <Button className="w-full" type="submit">
           login
         </Button>
+        <Link
+          href="/forgot-password"
+          className="self-end text-sm text-blue-500 hover:text-blue-800"
+        >
+          Forgot password?
+        </Link>
       </form>
     </div>
   );

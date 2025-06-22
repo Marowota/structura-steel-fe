@@ -89,7 +89,9 @@ class ExtendedAxios {
             "You don't have permission to do this, please contact your admin",
         });
       case 404:
-        toastNotification("Resource not found", EToastType.ERROR);
+        if (!error.config?.url?.includes(API_URL.userService.forgotPassword)) {
+          toastNotification("Resource not found", EToastType.ERROR);
+        }
         return Promise.reject(error);
       case 409:
         return Promise.reject(error);

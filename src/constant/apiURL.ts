@@ -116,6 +116,8 @@ export const API_URL = {
       API_BASE_URL.userService + "/first-time-password-change",
     myProfile: `${API_BASE_URL.userService}/my-profile`,
     resetPassword: API_BASE_URL.userService + "/reset-password",
+    forgotPassword: API_BASE_URL.userService + "/forgot-password",
+    verifyOtp: API_BASE_URL.userService + "/verify-otp",
   },
   analyticService: {
     index: API_BASE_URL.analyticService,
