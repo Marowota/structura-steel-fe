@@ -50,7 +50,8 @@ export const ImportDetailModal = ({
                 <div className="flex" key={detail.id}>
                   <div className="text-sm-semibold">{detail.product.name}</div>
                   <div className="ml-auto">
-                    quantity: {detail.quantity} - unit price: {detail.unitPrice}
+                    quantity: {detail.quantity} - unit price: {detail.unitPrice}{" "}
+                    - weight: {detail.weight} kg
                   </div>
                 </div>
               ))}

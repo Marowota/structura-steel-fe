@@ -11,6 +11,7 @@ export type TImportProduct = {
   product: TProduct;
   quantity: number;
   unitPrice: number;
+  weight: number;
   subtotal: number;
   version: number;
   createdAt: string;

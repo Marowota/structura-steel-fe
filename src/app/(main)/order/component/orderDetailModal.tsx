@@ -54,7 +54,7 @@ export const OrderDetailModal = ({
                     {((detail.unitPrice as number) ?? 0).toLocaleString(
                       "vi-VN",
                     )}{" "}
-                    - weight: {detail.weight}
+                    - weight {detail.weight} kg
                   </div>
                 </div>
               ))}
