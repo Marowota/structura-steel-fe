@@ -114,6 +114,7 @@ export default function DeliveryPage() {
             search={search}
             onRowClick={onRowClick}
             actions={tableActions}
+            paramsDefault={{ sortBy: "id", sortDir: "desc" }}
           />
         </Suspense>
       </div>

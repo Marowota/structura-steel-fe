@@ -120,6 +120,7 @@ export default function ImportPage() {
             search={search}
             onRowClick={onRowClick}
             actions={tableActions}
+            paramsDefault={{ sortBy: "id", sortDir: "desc" }}
           />
         </Suspense>
       </div>
