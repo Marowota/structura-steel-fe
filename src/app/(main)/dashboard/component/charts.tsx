@@ -1,32 +1,23 @@
 "use client";
-import { Line, Bar, Doughnut } from "react-chartjs-2";
-import {
-  CategoryScale,
-  Chart,
-  LineElement,
-  BarElement,
-  PointElement,
-  ArcElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-  ChartData,
-  ChartOptions,
-} from "chart.js";
+import dynamic from "next/dynamic";
+import { ChartData, ChartOptions } from "chart.js";
+import "chart.js/auto";
 
-Chart.register(
-  CategoryScale,
-  LineElement,
-  BarElement,
-  PointElement,
-  ArcElement,
-  LinearScale,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
+export const Line = dynamic(
+  () => import("react-chartjs-2").then((mod) => mod.Line),
+  {
+    ssr: false,
+  },
+);
+export const Bar = dynamic(
+  () => import("react-chartjs-2").then((mod) => mod.Bar),
+  {
+    ssr: false,
+  },
+);
+export const Doughnut = dynamic(
+  () => import("react-chartjs-2").then((mod) => mod.Doughnut),
+  { ssr: false },
 );
 
 export const LineChart = ({ data }: { data: ChartData<"line"> }) => {
@@ -76,9 +67,6 @@ export const LineChart = ({ data }: { data: ChartData<"line"> }) => {
           },
         },
         elements: {
-          line: {
-            tension: 0.35,
-          },
           point: {
             radius: 4,
             hoverBackgroundColor: "#fff",

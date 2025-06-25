@@ -1,6 +1,6 @@
 "use client";
-import { DebtStatusAmountChart } from "./component/debtStatuesAmountChart";
-import { DebtStatusCountChart } from "./component/debtStatuesCountChart";
+import { DebtStatusAmountChart } from "./component/debtStatusAmountChart";
+import { DebtStatusCountChart } from "./component/debtStatusCountChart";
 import { RevenueOvertimeChart } from "./component/revenueOvertimeChart";
 import { SummaryChart } from "./component/sumaryChart";
 import { TopCustomerChart } from "./component/topCustomerChart";

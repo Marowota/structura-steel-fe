@@ -1,13 +1,13 @@
 "use client";
 import { Dropdown } from "@/components/elements";
 import { useState } from "react";
-import { DoughnutChart } from "./charts";
 import { limitTickLength } from "../helper/limitTickLength";
 import { colors } from "../constant/color";
 import { EDebtType, EDebtTypeLabel } from "../../debt/api/postPayDebt";
 import { useGetDebtStatus } from "../api/getDebtStatus";
+import { DoughnutChart } from "./charts";
 
-export const DebtStatusCountChart = () => {
+export const DebtStatusAmountChart = () => {
   const [debtType, setDebtType] = useState<EDebtType>(EDebtType.ORDER);
   const { data: debtStatusData } = useGetDebtStatus({
     params: {
@@ -19,7 +19,7 @@ export const DebtStatusCountChart = () => {
     <>
       <div className="border-brand-300 flex h-fit w-full flex-col gap-3 rounded-md border px-3 py-2">
         <div className="flex items-center">
-          <div className="text-lg-bold text-info-800">Debt status count</div>
+          <div className="text-lg-bold text-info-800">Debt status amount</div>
           <div className="ml-auto flex items-center gap-2">
             <div>Type </div>
             <Dropdown
@@ -47,8 +47,8 @@ export const DebtStatusCountChart = () => {
                   }) || [],
                 datasets: [
                   {
-                    label: "Count",
-                    data: debtStatusData?.map((item) => item.count) || [],
+                    label: "Total amount",
+                    data: debtStatusData?.map((item) => item.totalAmount) || [],
                     backgroundColor: [
                       colors.info["400"],
                       colors.brand["400"],
