@@ -105,7 +105,7 @@ export default function OrderPage() {
             search={search}
             onRowClick={onRowClick}
             actions={tableActions}
-            paramsDefault={{ sortBy: "id", sortDir: "desc" }}
+            paramsDefault={{ sortBy: "createdAt", sortDir: "desc" }}
           />
         </Suspense>
       </div>
