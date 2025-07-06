@@ -26,23 +26,32 @@ import {
   useGetInfiniteProducts,
 } from "../../product/api/getProducts";
 import { PostOrderProductDTO } from "../api/postOrderProduct";
-import { X } from "lucide-react";
+import { Plus, X } from "lucide-react";
 import { usePostOrderProductBatch } from "../api/postOrderProductBatch";
 import { EToastType, toastNotification } from "@/lib";
 import { useGetOrderDetail } from "../api/getOrdersDetails";
 import { useGetOrderProduct } from "../api/getOrdersProduct";
 import { usePostOrderDebtBatch } from "../../debt/api/orderDebt/postOrderDebtBatch";
 import { PostOrderDebtDTO } from "../../debt/api/orderDebt/postOrderDebt";
+import { PartnerCreateModal } from "../../partner/component/partner/partnerCreateModal";
+import { ProjectCreateModal } from "../../partner/component/project/ProjectCreateModal";
 
 export const OrderCreateModal = ({
   isOpen,
   onClose,
+  onCloseOtherModal,
   editId,
 }: {
   isOpen: boolean;
   onClose: () => void;
+  onCloseOtherModal: () => void;
   editId?: string;
 }) => {
+  const [isOpenCreatePartner, setIsOpenCreatePartner] =
+    useState<boolean>(false);
+  const [isOpenCreateProject, setIsOpenCreateProject] =
+    useState<boolean>(false);
+
   const {
     register,
     handleSubmit,
@@ -235,101 +244,150 @@ export const OrderCreateModal = ({
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onCloseHandler}
-      className="flex h-[70vh] min-h-fit flex-col gap-2"
-    >
-      <ModalHeader title="Create Order" />
-      <form
-        className="flex h-full flex-col gap-4"
-        onSubmit={handleSubmit(onSubmit)}
+    <>
+      <PartnerCreateModal
+        isOpen={isOpenCreatePartner}
+        onClose={() => {
+          setIsOpenCreatePartner(false);
+          onCloseOtherModal();
+        }}
+        editId={undefined}
+      />
+      <ProjectCreateModal
+        isOpen={isOpenCreateProject}
+        onClose={() => {
+          setIsOpenCreateProject(false);
+          onCloseOtherModal();
+        }}
+        editId={undefined}
+        partnerId={currentPartnerId ?? ""}
+      />
+      <Modal
+        isOpen={isOpen}
+        onClose={onCloseHandler}
+        className="flex h-[70vh] min-h-fit flex-col gap-2"
       >
-        <div className="flex h-full min-h-0 flex-row gap-4">
-          <ModalSection title="General Information" className="overflow-auto">
-            <div className="flex min-w-72 flex-col gap-2">
-              <Controller
-                control={control}
-                name="partnerId"
-                rules={{ required: "Partner is required" }}
-                render={({ field: { onChange, value } }) => (
-                  <InputSearch
-                    label="Partner"
-                    defaultValue={editOrderData?.partner?.partnerName}
-                    outerValue={value}
-                    options={mapArrayToTDropdown(
-                      partners?.content ?? [],
-                      "partnerName",
-                      "id",
+        <ModalHeader title="Create Order" />
+        <form
+          className="flex h-full flex-col gap-4"
+          onSubmit={handleSubmit(onSubmit)}
+        >
+          <div className="flex h-full min-h-0 flex-row gap-4">
+            <ModalSection title="General Information" className="overflow-auto">
+              <div className="flex min-w-72 flex-col gap-2">
+                <div className="flex items-end gap-2">
+                  <Controller
+                    control={control}
+                    name="partnerId"
+                    rules={{ required: "Partner is required" }}
+                    render={({ field: { onChange, value } }) => (
+                      <InputSearch
+                        label="Partner"
+                        defaultValue={editOrderData?.partner?.partnerName}
+                        outerValue={value}
+                        options={mapArrayToTDropdown(
+                          partners?.content ?? [],
+                          "partnerName",
+                          "id",
+                        )}
+                        paginationInfo={partners}
+                        onSearch={(label) => {
+                          setPartnerParams((prev) => ({
+                            ...prev,
+                            search: label,
+                            pageNo: 0,
+                          }));
+                        }}
+                        onPageChange={() => {
+                          fetchNextPagePartners();
+                        }}
+                        onItemSelect={(item) => {
+                          onChange(item.value);
+                          setProjectParams((prev) => {
+                            return {
+                              ...prev,
+                              pageNo: 0,
+                              search: "",
+                              partnerId: item.value,
+                            };
+                          });
+                        }}
+                        required
+                        isError={errors.partnerId ? true : false}
+                        errorMessage={errors.partnerId?.message}
+                        isLoading={isPartnersLoading}
+                      />
                     )}
-                    paginationInfo={partners}
-                    onSearch={(label) => {
-                      setPartnerParams((prev) => ({
-                        ...prev,
-                        search: label,
-                        pageNo: 0,
-                      }));
-                    }}
-                    onPageChange={() => {
-                      fetchNextPagePartners();
-                    }}
-                    onItemSelect={(item) => {
-                      onChange(item.value);
-                      setProjectParams((prev) => {
-                        return {
-                          ...prev,
-                          pageNo: 0,
-                          search: "",
-                          partnerId: item.value,
-                        };
-                      });
-                    }}
-                    required
-                    isError={errors.partnerId ? true : false}
-                    errorMessage={errors.partnerId?.message}
-                    isLoading={isPartnersLoading}
                   />
-                )}
-              />
-              <Controller
-                control={control}
-                name="projectId"
-                rules={{ required: "Project is required" }}
-                render={({ field: { onChange, value } }) => (
-                  <InputSearch
-                    label="Project"
-                    outerValue={value}
-                    defaultValue={editOrderData?.project?.projectName}
-                    options={mapArrayToTDropdown(
-                      projects?.content ?? [],
-                      "projectName",
-                      "id",
+                  {!editId && (
+                    <Button
+                      variant="secondary"
+                      size="md"
+                      onClick={() => {
+                        setIsOpenCreatePartner(true);
+                        onClose();
+                      }}
+                      type="button"
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                <div className="flex items-end gap-2">
+                  <Controller
+                    control={control}
+                    name="projectId"
+                    rules={{ required: "Project is required" }}
+                    render={({ field: { onChange, value } }) => (
+                      <InputSearch
+                        label="Project"
+                        outerValue={value}
+                        defaultValue={editOrderData?.project?.projectName}
+                        options={mapArrayToTDropdown(
+                          projects?.content ?? [],
+                          "projectName",
+                          "id",
+                        )}
+                        paginationInfo={projects}
+                        onSearch={(label) => {
+                          setProjectParams((prev) => ({
+                            ...prev,
+                            search: label,
+                            pageNo: 0,
+                          }));
+                        }}
+                        onPageChange={() => {
+                          fetchNextPageProject();
+                        }}
+                        onItemSelect={(item) => {
+                          itemSelectHandler(item.value, "projectId");
+                          onChange(item.value);
+                        }}
+                        required
+                        isError={errors.projectId ? true : false}
+                        errorMessage={errors.projectId?.message}
+                        disabled={!currentPartnerId}
+                        disabledMessage="Please select a partner first"
+                        isLoading={isProjectsLoading}
+                      />
                     )}
-                    paginationInfo={projects}
-                    onSearch={(label) => {
-                      setProjectParams((prev) => ({
-                        ...prev,
-                        search: label,
-                        pageNo: 0,
-                      }));
-                    }}
-                    onPageChange={() => {
-                      fetchNextPageProject();
-                    }}
-                    onItemSelect={(item) => {
-                      itemSelectHandler(item.value, "projectId");
-                      onChange(item.value);
-                    }}
-                    required
-                    isError={errors.projectId ? true : false}
-                    errorMessage={errors.projectId?.message}
-                    disabled={!currentPartnerId}
-                    disabledMessage="Please select a partner first"
-                    isLoading={isProjectsLoading}
                   />
-                )}
-              />
-              {/* <Controller
+                  {!editId && (
+                    <Button
+                      variant="secondary"
+                      size="md"
+                      onClick={() => {
+                        setIsOpenCreateProject(true);
+                        onClose();
+                      }}
+                      type="button"
+                      disabled={!currentPartnerId}
+                    >
+                      <Plus className="h-4 w-4" />
+                    </Button>
+                  )}
+                </div>
+                {/* <Controller
                 control={control}
                 name="orderType"
                 rules={{ required: "Order type is required" }}
@@ -355,141 +413,142 @@ export const OrderCreateModal = ({
                   />
                 )}
               /> */}
-              <Textarea label="Note" {...register("saleOrdersNote")} />
-            </div>
-          </ModalSection>
-          <ModalSection title="Products" className="w-[40vw]">
-            <InputSearch
-              placeholder="Search"
-              options={mapArrayToTDropdown(
-                products?.content ?? [],
-                "name",
-                "id",
-              )}
-              paginationInfo={products}
-              onSearch={(value) => {
-                setProductParams((prev) => ({
-                  ...prev,
-                  search: value,
-                  pageNo: 0,
-                }));
-              }}
-              onPageChange={() => {
-                fetchNextPageProducts();
-              }}
-              onItemSelect={(item) => {
-                if (item.value) {
-                  const existingProduct = currentProducts?.find(
-                    (p) => p.productId === item.value,
-                  );
-                  if (existingProduct) {
-                    setValue(
-                      `products.${currentProducts?.indexOf(existingProduct)}.quantity`,
-                      existingProduct.quantity + 1,
+                <Textarea label="Note" {...register("saleOrdersNote")} />
+              </div>
+            </ModalSection>
+            <ModalSection title="Products" className="w-[40vw]">
+              <InputSearch
+                placeholder="Search"
+                options={mapArrayToTDropdown(
+                  products?.content ?? [],
+                  "name",
+                  "id",
+                )}
+                paginationInfo={products}
+                onSearch={(value) => {
+                  setProductParams((prev) => ({
+                    ...prev,
+                    search: value,
+                    pageNo: 0,
+                  }));
+                }}
+                onPageChange={() => {
+                  fetchNextPageProducts();
+                }}
+                onItemSelect={(item) => {
+                  if (item.value) {
+                    const existingProduct = currentProducts?.find(
+                      (p) => p.productId === item.value,
                     );
-                    return;
-                  } else {
-                    const selectedProduct: PostOrderProductDTO = {
-                      orderId: "",
-                      productId: item.value,
-                      quantity: 1,
-                      unitPrice: 0,
-                      weight: 1,
-                      name: item.label,
-                    };
-                    setValue("products", [
-                      ...(currentProducts ?? []),
-                      selectedProduct,
-                    ]);
-                    clearErrors("products");
+                    if (existingProduct) {
+                      setValue(
+                        `products.${currentProducts?.indexOf(existingProduct)}.quantity`,
+                        existingProduct.quantity + 1,
+                      );
+                      return;
+                    } else {
+                      const selectedProduct: PostOrderProductDTO = {
+                        orderId: "",
+                        productId: item.value,
+                        quantity: 1,
+                        unitPrice: 0,
+                        weight: 1,
+                        name: item.label,
+                      };
+                      setValue("products", [
+                        ...(currentProducts ?? []),
+                        selectedProduct,
+                      ]);
+                      clearErrors("products");
+                    }
                   }
-                }
-              }}
-              {...register("products", {
-                required: "Product is required",
-              })}
-              resetOnSelect
-              isLoading={isProductsLoading}
-              isError={errors.products ? true : false}
-              errorMessage={errors.products?.message}
-            />
-            <div className="mt-2 flex h-0 flex-grow flex-col overflow-auto">
-              {currentProducts?.map((product, index) => (
-                <div key={index} className="flex flex-col gap-2 px-3">
-                  <div className="border-brand-300 flex items-center gap-2 border-b py-2">
-                    <div className="text-sm-medium">{product.name}</div>
-                    <div className="ml-auto flex items-end gap-2">
-                      <Input
-                        type="number"
-                        className="w-20"
-                        label="Quantity"
-                        inputSize={"sm"}
-                        {...register(`products.${index}.quantity`, {
-                          required: "Quantity is required",
-                          min: 1,
-                        })}
-                        required
-                        isError={
-                          errors.products?.[index]?.quantity ? true : false
-                        }
-                      />
-                      <Input
-                        type="number"
-                        className="w-20"
-                        label="Unit Price"
-                        inputSize={"sm"}
-                        {...register(`products.${index}.unitPrice`, {
-                          required: "Unit Price is required",
-                          min: 1,
-                        })}
-                        required
-                        isError={
-                          errors.products?.[index]?.unitPrice ? true : false
-                        }
-                      />
-                      <Button
-                        variant={"navbar"}
-                        size="sm"
-                        onClick={() => {
-                          const updatedProducts = currentProducts?.filter(
-                            (_, i) => i !== index,
-                          );
-                          setValue("products", updatedProducts);
-                        }}
-                        type="button"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                }}
+                {...register("products", {
+                  required: "Product is required",
+                })}
+                resetOnSelect
+                isLoading={isProductsLoading}
+                isError={errors.products ? true : false}
+                errorMessage={errors.products?.message}
+              />
+              <div className="mt-2 flex h-0 flex-grow flex-col overflow-auto">
+                {currentProducts?.map((product, index) => (
+                  <div key={index} className="flex flex-col gap-2 px-3">
+                    <div className="border-brand-300 flex items-center gap-2 border-b py-2">
+                      <div className="text-sm-medium">{product.name}</div>
+                      <div className="ml-auto flex items-end gap-2">
+                        <Input
+                          type="number"
+                          className="w-20"
+                          label="Quantity"
+                          inputSize={"sm"}
+                          {...register(`products.${index}.quantity`, {
+                            required: "Quantity is required",
+                            min: 1,
+                          })}
+                          required
+                          isError={
+                            errors.products?.[index]?.quantity ? true : false
+                          }
+                        />
+                        <Input
+                          type="number"
+                          className="w-20"
+                          label="Unit Price"
+                          inputSize={"sm"}
+                          {...register(`products.${index}.unitPrice`, {
+                            required: "Unit Price is required",
+                            min: 1,
+                          })}
+                          required
+                          isError={
+                            errors.products?.[index]?.unitPrice ? true : false
+                          }
+                        />
+                        <Button
+                          variant={"navbar"}
+                          size="sm"
+                          onClick={() => {
+                            const updatedProducts = currentProducts?.filter(
+                              (_, i) => i !== index,
+                            );
+                            setValue("products", updatedProducts);
+                          }}
+                          type="button"
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </div>
-                </div>
-              ))}
-            </div>
-          </ModalSection>
-        </div>
-        <div className="flex items-center justify-end gap-2">
-          <div className="text-md-semibold text-info-800">
-            Total amount:{" "}
-            {(
-              (currentProducts?.reduce(
-                (acc, product) => acc + product.quantity * product.unitPrice,
-                0,
-              ) as number) ?? 0
-            ).toLocaleString("vi-VN")}{" "}
+                ))}
+              </div>
+            </ModalSection>
           </div>
-          <Button
-            onClick={() => onCloseHandler()}
-            type="button"
-            size={"sm"}
-            variant={"secondary"}
-          >
-            Cancel
-          </Button>
-          <Button disabled={isLoading} size={"sm"}>
-            {editId ? "Update" : "Create"}
-          </Button>
-        </div>
-      </form>
-    </Modal>
+          <div className="flex items-center justify-end gap-2">
+            <div className="text-md-semibold text-info-800">
+              Total amount:{" "}
+              {(
+                (currentProducts?.reduce(
+                  (acc, product) => acc + product.quantity * product.unitPrice,
+                  0,
+                ) as number) ?? 0
+              ).toLocaleString("vi-VN")}{" "}
+            </div>
+            <Button
+              onClick={() => onCloseHandler()}
+              type="button"
+              size={"sm"}
+              variant={"secondary"}
+            >
+              Cancel
+            </Button>
+            <Button disabled={isLoading} size={"sm"}>
+              {editId ? "Update" : "Create"}
+            </Button>
+          </div>
+        </form>
+      </Modal>
+    </>
   );
 };

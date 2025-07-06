@@ -61,6 +61,9 @@ export default function OrderPage() {
       <OrderCreateModal
         isOpen={isOpenCreate.isOpen}
         onClose={() => setIsOpenCreate({ isOpen: false, editId: undefined })}
+        onCloseOtherModal={() => {
+          setIsOpenCreate({ isOpen: true, editId: undefined });
+        }}
         editId={isOpenCreate.editId}
         key={isOpenCreate.editId ? isOpenCreate.editId : "new-order"}
       />
