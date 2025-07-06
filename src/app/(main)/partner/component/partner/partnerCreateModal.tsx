@@ -164,6 +164,7 @@ export const PartnerCreateModal = ({
               <Input
                 type="number"
                 label="Contact Person Phone"
+                required
                 {...register("contactPersonPhone", {
                   pattern: {
                     value: /^(0|\+84)(\d{9})$/,
@@ -172,8 +173,8 @@ export const PartnerCreateModal = ({
                   required: "Contact person phone is required",
                 })}
                 disabled={isLoading}
-                isError={!!errors.legalRepresentativePhone}
-                errorMessage={errors.legalRepresentativePhone?.message}
+                isError={!!errors.contactPersonPhone}
+                errorMessage={errors.contactPersonPhone?.message}
               />
             </div>
           </ModalSection>
