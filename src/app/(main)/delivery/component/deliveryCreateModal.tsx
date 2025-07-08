@@ -8,7 +8,7 @@ import {
   ModalSection,
   Textarea,
 } from "@/components/elements";
-import { Dropdown, mapArrayToTDropdown } from "@/components/elements/dropdown";
+import { mapArrayToTDropdown } from "@/components/elements/dropdown";
 import {
   GetPartnersDTO,
   useGetInfinitePartners,
@@ -22,7 +22,6 @@ import {
   GetVehiclesDTO,
   useGetInfiniteVehiclesByPartner,
 } from "../../partner/api/getVehiclesByPartner";
-import { GetOrdersDTO, useGetInfiniteOrders } from "../../order/api/getOrders";
 import {
   GetImportsDTO,
   useGetInfiniteImports,
@@ -90,7 +89,7 @@ export const DeliveryCreateModal = ({
     }
   };
 
-  const currentDeliveryType = watch("deliveryType");
+  // const currentDeliveryType = watch("deliveryType");
   const currentPartnerId = watch("partnerId");
 
   const defaultParams: IPagination = {
@@ -101,9 +100,9 @@ export const DeliveryCreateModal = ({
     search: "",
   };
 
-  const [orderParams, setOrderParams] = useState<GetOrdersDTO>({
-    ...defaultParams,
-  });
+  // const [orderParams, setOrderParams] = useState<GetOrdersDTO>({
+  //   ...defaultParams,
+  // });
   const [importParams, setImportParams] = useState<GetImportsDTO>({
     ...defaultParams,
   });
@@ -116,13 +115,13 @@ export const DeliveryCreateModal = ({
     partnerId: currentPartnerId,
   });
 
-  const {
-    data: infiniteOrders,
-    fetchNextPage: fetchNextPageOrders,
-    isFetchingNextPage: isOrdersLoading,
-  } = useGetInfiniteOrders({
-    params: orderParams,
-  });
+  // const {
+  //   data: infiniteOrders,
+  //   fetchNextPage: fetchNextPageOrders,
+  //   isFetchingNextPage: isOrdersLoading,
+  // } = useGetInfiniteOrders({
+  //   params: orderParams,
+  // });
 
   const {
     data: infiniteImports,
@@ -146,17 +145,17 @@ export const DeliveryCreateModal = ({
     isFetchingNextPage: isVehiclesLoading,
   } = useGetInfiniteVehiclesByPartner({ params: vehicleParams });
 
-  const orders = useMemo(() => {
-    const lastPage =
-      infiniteOrders?.pages?.[infiniteOrders.pages.length - 1] ??
-      DEFAULT_PAGINATION_RESPONSE;
-    return {
-      ...lastPage,
-      content: infiniteOrders?.pages
-        ? infiniteOrders.pages.map((page) => page.content).flat()
-        : [],
-    };
-  }, [infiniteOrders]);
+  // const orders = useMemo(() => {
+  //   const lastPage =
+  //     infiniteOrders?.pages?.[infiniteOrders.pages.length - 1] ??
+  //     DEFAULT_PAGINATION_RESPONSE;
+  //   return {
+  //     ...lastPage,
+  //     content: infiniteOrders?.pages
+  //       ? infiniteOrders.pages.map((page) => page.content).flat()
+  //       : [],
+  //   };
+  // }, [infiniteOrders]);
 
   const imports = useMemo(() => {
     const lastPage =
@@ -207,9 +206,6 @@ export const DeliveryCreateModal = ({
     if (data.deliveryType === EDeliveryType.EXPORT) {
       data.purchaseOrderId = undefined;
     }
-    if (data.deliveryType === EDeliveryType.IMPORT) {
-      data.saleOrderId = undefined;
-    }
     createDelivery(submitData);
     onCloseHandler();
   };
@@ -233,7 +229,7 @@ export const DeliveryCreateModal = ({
         <div className="flex h-full min-h-0 flex-row gap-4">
           <ModalSection title="General Information" className="overflow-auto">
             <div className="grid min-w-72 grid-cols-2 gap-2">
-              <Controller
+              {/* <Controller
                 control={control}
                 name="deliveryType"
                 rules={{ required: "Delivery type is required" }}
@@ -257,9 +253,9 @@ export const DeliveryCreateModal = ({
                     errorMessage={errors.deliveryType?.message}
                   />
                 )}
-              />
+              /> */}
 
-              {(currentDeliveryType === EDeliveryType.EXPORT ||
+              {/* {(currentDeliveryType === EDeliveryType.EXPORT ||
                 currentDeliveryType !== EDeliveryType.IMPORT) && (
                 <Controller
                   control={control}
@@ -304,52 +300,50 @@ export const DeliveryCreateModal = ({
                     />
                   )}
                 />
-              )}
+              )}  */}
 
-              {currentDeliveryType === EDeliveryType.IMPORT && (
-                <Controller
-                  control={control}
-                  name="purchaseOrderId"
-                  rules={{ required: "Order is required" }}
-                  render={({ field: { onChange, value } }) => (
-                    <InputSearch
-                      label="Import Order"
-                      defaultValue={editDeliveryData?.purchaseOrderId}
-                      outerValue={value}
-                      options={mapArrayToTDropdown(
-                        imports?.content ?? [],
-                        "importCode",
-                        "id",
-                      )}
-                      paginationInfo={imports}
-                      onSearch={(label) => {
-                        setImportParams((prev) => ({
+              <Controller
+                control={control}
+                name="purchaseOrderId"
+                rules={{ required: "Order is required" }}
+                render={({ field: { onChange, value } }) => (
+                  <InputSearch
+                    label="Import Order"
+                    defaultValue={editDeliveryData?.purchaseOrderId}
+                    outerValue={value}
+                    options={mapArrayToTDropdown(
+                      imports?.content ?? [],
+                      "importCode",
+                      "id",
+                    )}
+                    paginationInfo={imports}
+                    onSearch={(label) => {
+                      setImportParams((prev) => ({
+                        ...prev,
+                        search: label,
+                        pageNo: 0,
+                      }));
+                    }}
+                    onPageChange={() => {
+                      fetchNextPageImports();
+                    }}
+                    onItemSelect={(item) => {
+                      onChange(item.value);
+                      setImportParams((prev) => {
+                        return {
                           ...prev,
-                          search: label,
                           pageNo: 0,
-                        }));
-                      }}
-                      onPageChange={() => {
-                        fetchNextPageImports();
-                      }}
-                      onItemSelect={(item) => {
-                        onChange(item.value);
-                        setImportParams((prev) => {
-                          return {
-                            ...prev,
-                            pageNo: 0,
-                            search: "",
-                          };
-                        });
-                      }}
-                      required
-                      isError={errors.purchaseOrderId ? true : false}
-                      errorMessage={errors.purchaseOrderId?.message}
-                      isLoading={isImportsLoading}
-                    />
-                  )}
-                />
-              )}
+                          search: "",
+                        };
+                      });
+                    }}
+                    required
+                    isError={errors.purchaseOrderId ? true : false}
+                    errorMessage={errors.purchaseOrderId?.message}
+                    isLoading={isImportsLoading}
+                  />
+                )}
+              />
 
               <Controller
                 control={control}
@@ -442,14 +436,13 @@ export const DeliveryCreateModal = ({
                 errorMessage={errors.driverName?.message}
               />
               <Input
-                type="date"
-                label="Delivery Date"
-                {...register("deliveryDate", {
-                  required: "Delivery date is required",
+                label="Sender Address"
+                {...register("senderAddress", {
+                  required: "Sender address is required",
                 })}
                 required
-                isError={errors.deliveryDate ? true : false}
-                errorMessage={errors.deliveryDate?.message}
+                isError={errors.senderAddress ? true : false}
+                errorMessage={errors.senderAddress?.message}
               />
               <Input
                 label="Delivery Address"
@@ -459,6 +452,16 @@ export const DeliveryCreateModal = ({
                 required
                 isError={errors.deliveryAddress ? true : false}
                 errorMessage={errors.deliveryAddress?.message}
+              />
+              <Input
+                type="date"
+                label="Delivery Date"
+                {...register("deliveryDate", {
+                  required: "Delivery date is required",
+                })}
+                required
+                isError={errors.deliveryDate ? true : false}
+                errorMessage={errors.deliveryDate?.message}
               />
               <Input
                 label="Distance (km)"
@@ -502,7 +505,11 @@ export const DeliveryCreateModal = ({
                   value: 0,
                   message: "Additional fees cannot be negative",
                 },
+                required: "Additional fees are required",
               })}
+              required
+              isError={errors.additionalFees ? true : false}
+              errorMessage={errors.additionalFees?.message}
             />
             {/* <Input
               label="Total Delivery Fee"

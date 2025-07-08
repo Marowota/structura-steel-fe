@@ -14,16 +14,15 @@ import { TDelivery } from "./getDeliveries";
 
 export type PostDeliveryDTO = {
   purchaseOrderId?: string;
-  saleOrderId?: string;
   deliveryDate: string;
   partnerId: string;
   vehicleId: string;
   driverName: string;
   deliveryAddress: string;
+  senderAddress: string;
   distance: number;
   deliveryUnitPrice: number;
   additionalFees: number;
-  totalDeliveryFee: number;
   deliveryOrderNote: string;
 };
 

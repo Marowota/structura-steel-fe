@@ -21,16 +21,6 @@ export const deliveryColumns: ColumnDef<TDelivery>[] = [
     cell: (info) => info.getValue() ?? "-",
   },
   {
-    accessorKey: "deliveryType",
-    header: "Delivery Type",
-    cell: (info) => info.getValue() ?? "-",
-  },
-  {
-    accessorKey: "confirmationFromPartner",
-    header: "Confirmation From Partner",
-    cell: (info) => info.getValue() ?? "-",
-  },
-  {
     accessorKey: "confirmationFromFactory",
     header: "Confirmation From Factory",
     cell: (info) => info.getValue() ?? "-",
@@ -43,11 +33,6 @@ export const deliveryColumns: ColumnDef<TDelivery>[] = [
   {
     accessorKey: "purchaseOrderId",
     header: "Purchase Order ID",
-    cell: (info) => info.getValue() ?? "-",
-  },
-  {
-    accessorKey: "saleOrderId",
-    header: "Sale Order ID",
     cell: (info) => info.getValue() ?? "-",
   },
   {

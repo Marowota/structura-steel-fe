@@ -29,12 +29,10 @@ export type TDelivery = {
   id: string;
   status: EDeliveryStatus;
   deliveryCode: string;
-  deliveryType: EDeliveryType;
   confirmationFromPartner: EConfirmation;
   confirmationFromFactory: EConfirmation;
   confirmationFromReceiver: EConfirmation;
   purchaseOrderId: string;
-  saleOrderId: string;
   deliveryDate: string;
   totalDeliveryFee: number;
   version: number;
