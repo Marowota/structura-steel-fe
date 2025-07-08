@@ -44,6 +44,9 @@ export type TProduct = {
   thickness: number | null;
   diameter: number | null;
   standard: string;
+  importPrice: number;
+  exportPrice: number;
+  profitPercentage: number;
 };
 
 export type GetProductsDTO = IPagination & {};

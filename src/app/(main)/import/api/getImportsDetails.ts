@@ -10,6 +10,7 @@ export type TImportDetail = {
   id: string;
   status: EImportStatus;
   importCode: string;
+  saleOrderId: string;
   confirmationFromSupplier: string;
   supplier: TPartner;
   project: TProject;

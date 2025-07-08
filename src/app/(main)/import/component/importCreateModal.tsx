@@ -16,11 +16,7 @@ import {
 import { DEFAULT_PAGINATION_RESPONSE, IPagination } from "@/types/IPagination";
 import { useEffect, useMemo, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
-import { PostImportDTO, usePostImport } from "../api/postImport";
-import {
-  GetProjectsDTO,
-  useGetInfiniteProjectsByPartner,
-} from "../../partner/api/getProjectsByPartner";
+import { DEFAULT_ORDER, PostImportDTO, usePostImport } from "../api/postImport";
 import {
   GetProductsDTO,
   useGetInfiniteProducts,
@@ -33,6 +29,9 @@ import { PostImportProductDTO } from "../api/postImportsProduct";
 import { usePostImportProductBatch } from "../api/postImportsProductBatch";
 import { usePostImportDebtBatch } from "../../debt/api/importDebt/postImportDebtBatch";
 import { PostImportDebtDTO } from "../../debt/api/importDebt/postImportDebt";
+import { GetOrdersDTO, useGetInfiniteOrders } from "../../order/api/getOrders";
+import { useGetOrderProduct } from "../../order/api/getOrdersProduct";
+import { getProductDetail } from "../../product/api/getProductsDetail";
 
 export const ImportCreateModal = ({
   isOpen,
@@ -49,11 +48,14 @@ export const ImportCreateModal = ({
     reset,
     setValue,
     watch,
-    resetField,
     formState: { errors },
     clearErrors,
     control,
-  } = useForm<PostImportDTO & { products: PostImportProductDTO[] }>();
+  } = useForm<
+    PostImportDTO & {
+      products: (PostImportProductDTO & { exportPrice?: number })[];
+    }
+  >();
 
   const { data: editImportData, isLoading: isEditOderLoading } =
     useGetImportDetail({
@@ -69,7 +71,7 @@ export const ImportCreateModal = ({
     if (editImportData && editImportProducts?.content) {
       const newData: PostImportDTO & { products: PostImportProductDTO[] } = {
         supplierId: editImportData.supplier.id,
-        projectId: editImportData.project.id,
+        saleOrderId: editImportData.saleOrderId,
         purchaseOrdersNote: editImportData.purchaseOrdersNote,
         products: editImportProducts.content.map((importProduct) => ({
           importId: editImportData.id,
@@ -79,22 +81,7 @@ export const ImportCreateModal = ({
           unitPrice: importProduct.unitPrice,
         })),
       };
-      setPartnerParams((prev) => {
-        return {
-          ...prev,
-          search: editImportData.supplier.partnerName,
-          pageNo: 0,
-        };
-      });
 
-      setProjectParams((prev) => {
-        return {
-          ...prev,
-          search: editImportData.project.projectName,
-          pageNo: 0,
-          partnerId: editImportData.supplier.id,
-        };
-      });
       reset(newData);
     }
   }, [editImportData, editImportProducts]);
@@ -103,18 +90,8 @@ export const ImportCreateModal = ({
   const { mutateAsync: createImportProduct } = usePostImportProductBatch();
   const { mutateAsync: createImportDebtBatch } = usePostImportDebtBatch();
 
-  const itemSelectHandler = (value: string, field: keyof PostImportDTO) => {
-    if (value) {
-      setValue(field, value, {
-        shouldValidate: true,
-      });
-    } else {
-      resetField(field);
-    }
-  };
-
-  const [currentPartnerId, setCurrentPartnerId] = useState<string>();
   const currentProducts = watch("products");
+  const currentOrderId = watch("saleOrderId");
 
   const defaultParams: IPagination = {
     pageNo: 0,
@@ -124,17 +101,59 @@ export const ImportCreateModal = ({
     search: "",
   };
 
+  const { data: orderProductsData } = useGetOrderProduct({
+    params: { id: currentOrderId ?? "", all: true },
+  });
+
+  useEffect(() => {
+    if (currentOrderId && orderProductsData?.content) {
+      const newProducts: PostImportProductDTO[] = orderProductsData.content.map(
+        (orderProduct) => ({
+          importId: "",
+          productId: orderProduct.productId,
+          quantity: orderProduct.quantity,
+          unitPrice: orderProduct.product.importPrice,
+          exportPrice: orderProduct.product.exportPrice,
+          name: orderProduct.product.name,
+        }),
+      );
+      setValue("products", newProducts);
+    }
+    if (!currentOrderId) {
+      setValue("products", []);
+    }
+    setIsLatestProductInfo(false);
+  }, [currentOrderId, orderProductsData?.content]);
+
+  const [isLatestProductInfo, setIsLatestProductInfo] = useState(false);
+
+  useEffect(() => {
+    if (isLatestProductInfo || !currentProducts || currentProducts.length <= 0)
+      return;
+    const newProductPromise = currentProducts.map(async (product) => {
+      const latestProductInformation = await getProductDetail({
+        id: product.productId,
+      });
+      return {
+        ...product,
+        unitPrice: latestProductInformation.importPrice,
+        exportPrice: latestProductInformation.exportPrice,
+        name: latestProductInformation.name,
+      };
+    });
+    Promise.all(newProductPromise).then((resolvedProducts) => {
+      setValue("products", resolvedProducts);
+    });
+    setIsLatestProductInfo(true);
+  }, [isLatestProductInfo, currentProducts]);
+
   const [supplierParams, setSupplierParams] = useState<GetPartnersDTO>({
     ...defaultParams,
     sortBy: "partnerName",
   });
-  const [partnerParams, setPartnerParams] = useState<GetPartnersDTO>({
+  const [orderParams, setOrderParams] = useState<GetOrdersDTO>({
     ...defaultParams,
-    sortBy: "partnerName",
-  });
-  const [projectParams, setProjectParams] = useState<GetProjectsDTO>({
-    ...defaultParams,
-    partnerId: currentPartnerId,
+    sortBy: "exportCode",
   });
   const [productParams, setProductParams] = useState<GetProductsDTO>({
     ...defaultParams,
@@ -150,18 +169,12 @@ export const ImportCreateModal = ({
   });
 
   const {
-    data: infinitePartners,
-    fetchNextPage: fetchNextPagePartners,
-    isFetchingNextPage: isPartnersLoading,
-  } = useGetInfinitePartners({
-    params: partnerParams,
+    data: infiniteOrders,
+    fetchNextPage: fetchNextPageOrders,
+    isFetchingNextPage: isOrdersLoading,
+  } = useGetInfiniteOrders({
+    params: orderParams,
   });
-
-  const {
-    data: infiniteProjects,
-    fetchNextPage: fetchNextPageProject,
-    isFetchingNextPage: isProjectsLoading,
-  } = useGetInfiniteProjectsByPartner({ params: projectParams });
 
   const {
     data: infiniteProducts,
@@ -181,29 +194,20 @@ export const ImportCreateModal = ({
     };
   }, [infiniteSuppliers]);
 
-  const partners = useMemo(() => {
+  const orders = useMemo(() => {
     const lastPage =
-      infinitePartners?.pages?.[infinitePartners.pages.length - 1] ??
+      infiniteOrders?.pages?.[infiniteOrders.pages.length - 1] ??
       DEFAULT_PAGINATION_RESPONSE;
     return {
       ...lastPage,
-      content: infinitePartners?.pages
-        ? infinitePartners.pages.map((page) => page.content).flat()
+      content: infiniteOrders?.pages
+        ? [
+            DEFAULT_ORDER,
+            ...infiniteOrders.pages.map((page) => page.content).flat(),
+          ]
         : [],
     };
-  }, [infinitePartners]);
-
-  const projects = useMemo(() => {
-    const lastPage =
-      infiniteProjects?.pages?.[infiniteProjects.pages.length - 1] ??
-      DEFAULT_PAGINATION_RESPONSE;
-    return {
-      ...lastPage,
-      content: infiniteProjects?.pages
-        ? infiniteProjects.pages.map((page) => page.content).flat()
-        : [],
-    };
-  }, [infiniteProjects]);
+  }, [infiniteOrders]);
 
   const products = useMemo(() => {
     const lastPage =
@@ -217,15 +221,14 @@ export const ImportCreateModal = ({
     };
   }, [infiniteProducts]);
 
-  useEffect(() => {
-    resetField("projectId");
-  }, [currentPartnerId]);
-
   const onSubmit = async (
     data: PostImportDTO & { products: PostImportProductDTO[] },
   ) => {
     const { products, ...rest } = data;
-    const result = await createImport(rest);
+    const result = await createImport({
+      ...rest,
+      saleOrderId: data.saleOrderId == DEFAULT_ORDER.id ? "" : data.saleOrderId,
+    });
     if (result) {
       console.log(result);
       products[0].importId = result.id;
@@ -304,74 +307,38 @@ export const ImportCreateModal = ({
                   />
                 )}
               />
-              <InputSearch
-                label="Partner"
-                outerValue={currentPartnerId}
-                options={mapArrayToTDropdown(
-                  partners?.content ?? [],
-                  "partnerName",
-                  "id",
-                )}
-                paginationInfo={partners}
-                onSearch={(label) => {
-                  setPartnerParams((prev) => ({
-                    ...prev,
-                    search: label,
-                    pageNo: 0,
-                  }));
-                }}
-                onPageChange={() => {
-                  fetchNextPagePartners();
-                }}
-                onItemSelect={(item) => {
-                  setCurrentPartnerId(item.value);
-                  setProjectParams((prev) => {
-                    return {
-                      ...prev,
-                      pageNo: 0,
-                      search: "",
-                      partnerId: item.value,
-                    };
-                  });
-                }}
-                required
-                isLoading={isPartnersLoading}
-              />
               <Controller
                 control={control}
-                name="projectId"
-                rules={{ required: "Project is required" }}
+                name="saleOrderId"
+                rules={{ required: "Sale Order is required" }}
                 render={({ field: { onChange, value } }) => (
                   <InputSearch
-                    label="Project"
+                    label="Sale Order"
+                    defaultValue={editImportData?.saleOrderId}
                     outerValue={value}
-                    defaultValue={editImportData?.project?.projectName}
                     options={mapArrayToTDropdown(
-                      projects?.content ?? [],
-                      "projectName",
+                      orders?.content ?? [],
+                      "exportCode",
                       "id",
                     )}
-                    paginationInfo={projects}
+                    paginationInfo={orders}
                     onSearch={(label) => {
-                      setProjectParams((prev) => ({
+                      setOrderParams((prev) => ({
                         ...prev,
                         search: label,
                         pageNo: 0,
                       }));
                     }}
                     onPageChange={() => {
-                      fetchNextPageProject();
+                      fetchNextPageOrders();
                     }}
                     onItemSelect={(item) => {
-                      itemSelectHandler(item.value, "projectId");
                       onChange(item.value);
                     }}
                     required
-                    isError={errors.projectId ? true : false}
-                    errorMessage={errors.projectId?.message}
-                    disabled={!currentPartnerId}
-                    disabledMessage="Please select a partner first"
-                    isLoading={isProjectsLoading}
+                    isError={errors.saleOrderId ? true : false}
+                    errorMessage={errors.saleOrderId?.message}
+                    isLoading={isOrdersLoading}
                   />
                 )}
               />
@@ -423,6 +390,7 @@ export const ImportCreateModal = ({
                     clearErrors("products");
                   }
                 }
+                setIsLatestProductInfo(false);
               }}
               {...register("products", {
                 required: "Product is required",
@@ -431,6 +399,7 @@ export const ImportCreateModal = ({
               isLoading={isProductsLoading}
               isError={errors.products ? true : false}
               errorMessage={errors.products?.message}
+              disabled={currentOrderId === DEFAULT_ORDER.id ? false : true}
             />
             <div className="mt-2 flex h-0 flex-grow flex-col overflow-auto">
               {currentProducts?.map((product, index) => (
@@ -440,7 +409,7 @@ export const ImportCreateModal = ({
                     <div className="ml-auto flex items-end gap-2">
                       <Input
                         type="number"
-                        className="w-20"
+                        className="w-20 disabled:opacity-90"
                         label="Quantity"
                         inputSize={"sm"}
                         {...register(`products.${index}.quantity`, {
@@ -451,21 +420,31 @@ export const ImportCreateModal = ({
                         isError={
                           errors.products?.[index]?.quantity ? true : false
                         }
+                        disabled={
+                          currentOrderId === DEFAULT_ORDER.id ? false : true
+                        }
                       />
                       <Input
+                        disabled
                         type="number"
-                        className="w-20"
-                        label="Unit Price"
+                        className="w-24 disabled:opacity-90"
+                        label="Import Price"
                         inputSize={"sm"}
-                        {...register(`products.${index}.unitPrice`, {
-                          required: "Unit Price is required",
-                          min: 1,
-                        })}
+                        value={currentProducts?.[index]?.unitPrice ?? ""}
+                        // {...register(`products.${index}.unitPrice`, {
+                        //   required: "Unit Price is required",
+                        //   min: 1,
+                        // })}
                         required
                         isError={
                           errors.products?.[index]?.unitPrice ? true : false
                         }
                       />
+                      {/* <Input
+                        disabled
+                        label="Export Price"
+                        {...register(`products.${index}.exportPrice`)}
+                      /> */}
                       <Button
                         variant={"navbar"}
                         size="sm"

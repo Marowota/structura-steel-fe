@@ -51,9 +51,9 @@ export const OrderDetailModal = ({
                   <div className="text-sm-semibold">{detail.product.name}</div>
                   <div className="ml-auto">
                     quantity: {detail.quantity} - unit price:{" "}
-                    {((detail.unitPrice as number) ?? 0).toLocaleString(
-                      "vi-VN",
-                    )}{" "}
+                    {(
+                      (detail.product.exportPrice as number) ?? 0
+                    ).toLocaleString("vi-VN")}{" "}
                     - weight {detail.weight} kg
                   </div>
                 </div>

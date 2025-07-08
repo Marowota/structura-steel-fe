@@ -12,9 +12,14 @@ import {
 } from "@tanstack/react-query";
 import { TImport } from "./getImports";
 
+export const DEFAULT_ORDER = {
+  id: "-1",
+  exportCode: "Import to warehouse",
+};
+
 export type PostImportDTO = {
   supplierId: string;
-  projectId: string;
+  saleOrderId: string;
   purchaseOrdersNote?: string;
 };
 

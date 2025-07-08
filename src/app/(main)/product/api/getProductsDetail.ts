@@ -12,7 +12,7 @@ export type UseGetProductDetailParams = {
   options?: UseQueryOptions<TProduct>;
 };
 
-const getProductDetail = async (params?: GetProductDetailDTO) => {
+export const getProductDetail = async (params?: GetProductDetailDTO) => {
   if (!params?.id) return {} as TProduct;
   const response = await axiosRequestHandler(() =>
     extendedAxios.get<TProduct>(
