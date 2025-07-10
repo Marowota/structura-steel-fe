@@ -3,7 +3,14 @@ import { EReportCardVariant, Input, ReportCard } from "@/components/elements";
 import dayjs from "dayjs";
 import { useState } from "react";
 import { useGetSummary } from "../api/getSummary";
-import { ArrowDown, ArrowUp, Coins, HandCoins, TrendingUp } from "lucide-react";
+import {
+  ArrowDown,
+  ArrowUp,
+  Coins,
+  HandCoins,
+  TrendingUp,
+  Truck,
+} from "lucide-react";
 
 export const SummaryChart = () => {
   const [periodParams, setPeriodParams] = useState<{
@@ -88,12 +95,22 @@ export const SummaryChart = () => {
           />
           <ReportCard
             variant={EReportCardVariant.PRIMARY}
-            title="Cost"
+            title="Import Cost"
             description={
               (summaryData?.totalCostOfGoods?.toLocaleString("vi-VN") ?? "0") +
               " VND"
             }
             icon={<Coins className="h-5 w-5" />}
+            className="flex-1"
+          />
+          <ReportCard
+            variant={EReportCardVariant.PRIMARY}
+            title="Delivery Cost"
+            description={
+              (summaryData?.totalDeliveryCost?.toLocaleString("vi-VN") ?? "0") +
+              " VND"
+            }
+            icon={<Truck className="h-5 w-5" />}
             className="flex-1"
           />
           <ReportCard

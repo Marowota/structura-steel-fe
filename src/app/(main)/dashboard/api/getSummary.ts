@@ -7,6 +7,7 @@ import axios from "axios";
 type TSummary = {
   totalRevenue: number;
   totalCostOfGoods: number;
+  totalDeliveryCost: number;
   grossProfit: number;
   totalDebtReceivable: number;
   totalDebtPayable: number;
