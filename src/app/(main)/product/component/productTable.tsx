@@ -128,4 +128,19 @@ export const productColumns: ColumnDef<TProduct>[] = [
     header: "Standard",
     cell: (data) => data.renderValue() ?? "-",
   },
+  {
+    accessorKey: "importPrice",
+    header: "Import Price",
+    cell: (data) => data.renderValue() ?? "-",
+  },
+  {
+    accessorKey: "exportPrice",
+    header: "Export Price",
+    cell: (data) => data.renderValue() ?? "-",
+  },
+  {
+    accessorKey: "profitPercentage",
+    header: "Profit Percentage",
+    cell: (data) => data.renderValue() ?? "-",
+  },
 ];

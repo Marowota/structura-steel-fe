@@ -24,6 +24,8 @@ export type PutProductDTO = {
     thickness: number | null;
     diameter: number | null;
     standard: string;
+    importPrice: number;
+    profitPercentage: number;
   };
 };
 

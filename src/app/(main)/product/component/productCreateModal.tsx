@@ -86,6 +86,8 @@ export const ProductCreateModal = ({
 
   const currentDisabledFields =
     mappingProductTypeToDisabledFields(currentProductType);
+  const currentImportPrice = watch("importPrice");
+  const currentProfitPercentage = watch("profitPercentage");
 
   useEffect(() => {
     reset(editData);
@@ -96,59 +98,94 @@ export const ProductCreateModal = ({
       <div className="flex flex-col gap-2">
         <ModalHeader title={`${editId ? "Edit" : "New"} Product`} />
         <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-          <ModalSection title="General Information">
-            <div className="grid grid-cols-2 gap-2">
-              <div className="col-span-2">
-                <Input
-                  label="Name"
-                  required
-                  {...register("name", {
-                    required: "Name is required",
-                    minLength: {
-                      value: 2,
-                      message: "Name must be at least 2 characters",
-                    },
-                  })}
-                  isError={errors.name ? true : false}
-                  errorMessage={errors.name?.message}
-                />
-              </div>
-              <Controller
-                control={control}
-                name="productType"
-                rules={{ required: "Product type is required" }}
-                render={({ field: { onChange, value } }) => (
-                  <Dropdown
-                    label="Product Type"
+          <div className="flex gap-2">
+            <ModalSection title="General Information">
+              <div className="grid grid-cols-2 gap-2">
+                <div className="col-span-2">
+                  <Input
+                    label="Name"
                     required
-                    options={mapArrayToTDropdown(
-                      Object.entries(EProductType).map(([, value]) => ({
-                        label: PRODUCT_TYPE_OPTIONS.get(value) || value,
-                        value: value,
-                      })),
-                      "label",
-                      "value",
-                    )}
-                    outerValue={value}
-                    onItemSelect={(item) => {
-                      onChange(item.value);
-                      mappingProductTypeToDisabledFields().forEach((field) => {
-                        resetField(field as keyof PostProductDTO);
-                      });
-                    }}
-                    isError={errors.productType ? true : false}
-                    errorMessage={errors.productType?.message}
+                    {...register("name", {
+                      required: "Name is required",
+                      minLength: {
+                        value: 2,
+                        message: "Name must be at least 2 characters",
+                      },
+                    })}
+                    isError={errors.name ? true : false}
+                    errorMessage={errors.name?.message}
                   />
-                )}
-              />
-              <Input label="Standard" {...register("standard")} />
-            </div>
-          </ModalSection>
+                </div>
+                <Controller
+                  control={control}
+                  name="productType"
+                  rules={{ required: "Product type is required" }}
+                  render={({ field: { onChange, value } }) => (
+                    <Dropdown
+                      label="Product Type"
+                      required
+                      options={mapArrayToTDropdown(
+                        Object.entries(EProductType).map(([, value]) => ({
+                          label: PRODUCT_TYPE_OPTIONS.get(value) || value,
+                          value: value,
+                        })),
+                        "label",
+                        "value",
+                      )}
+                      outerValue={value}
+                      onItemSelect={(item) => {
+                        onChange(item.value);
+                        mappingProductTypeToDisabledFields().forEach(
+                          (field) => {
+                            resetField(field as keyof PostProductDTO);
+                          },
+                        );
+                      }}
+                      isError={errors.productType ? true : false}
+                      errorMessage={errors.productType?.message}
+                    />
+                  )}
+                />
+                <Input label="Standard" {...register("standard")} />
+              </div>
+            </ModalSection>
+            <ModalSection title="Pricing Information">
+              <div className="flex flex-col gap-2">
+                <Input
+                  label="Import Price (VND)"
+                  type="number"
+                  step="any"
+                  className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  isError={errors.importPrice ? true : false}
+                  errorMessage={errors.importPrice?.message}
+                  {...register("importPrice", {
+                    required: "Import Price is required",
+                  })}
+                  required
+                />
+                <Input
+                  label="Profit Percentage (%)"
+                  type="number"
+                  step="any"
+                  className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+                  isError={errors.profitPercentage ? true : false}
+                  errorMessage={errors.profitPercentage?.message}
+                  {...register("profitPercentage", {
+                    required: "Profit Percentage is required",
+                  })}
+                  required
+                />
+                Export price:{" "}
+                {currentImportPrice *
+                  (1 + (currentProfitPercentage ?? 0) / 100)}
+              </div>
+            </ModalSection>
+          </div>
 
           <ModalSection title="Product Dimensions">
             <div className="grid grid-cols-3 gap-2">
               <Input
-                label="Length"
+                label="Length (m)"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -163,7 +200,7 @@ export const ProductCreateModal = ({
                 disabled={currentDisabledFields.has("length")}
               />
               <Input
-                label="Width"
+                label="Width (mm)"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -178,7 +215,7 @@ export const ProductCreateModal = ({
                 disabled={currentDisabledFields.has("width")}
               />
               <Input
-                label="Height"
+                label="Height (mm)"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -193,7 +230,7 @@ export const ProductCreateModal = ({
                 disabled={currentDisabledFields.has("height")}
               />
               <Input
-                label="Unit Weight"
+                label="Unit Weight (kg/m)"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -208,7 +245,7 @@ export const ProductCreateModal = ({
                 disabled={currentDisabledFields.has("unitWeight")}
               />
               <Input
-                label="Thickness"
+                label="Thickness (mm)"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
@@ -223,7 +260,7 @@ export const ProductCreateModal = ({
                 disabled={currentDisabledFields.has("thickness")}
               />
               <Input
-                label="Diameter"
+                label="Diameter (mm)"
                 type="number"
                 step="any"
                 className="[appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"

@@ -22,6 +22,8 @@ export type PostProductDTO = {
   thickness: number | null;
   diameter: number | null;
   standard: string;
+  importPrice: number;
+  profitPercentage: number;
 };
 
 export type TCreateError = {

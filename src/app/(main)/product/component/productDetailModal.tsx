@@ -1,5 +1,6 @@
 import { Modal, ModalHeader, ModalSection } from "@/components/elements";
 import { useGetProductDetail } from "../api/getProductsDetail";
+import { PRODUCT_TYPE_OPTIONS } from "../api/getProducts";
 
 export const ProductDetailModal = ({
   isOpen,
@@ -31,6 +32,27 @@ export const ProductDetailModal = ({
             <div className="flex items-center gap-2">
               <span className="text-sm font-bold">Standard:</span>
               <span className="text-sm">{data?.standard}</span>
+            </div>
+
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold">Product Type:</span>
+              <span className="text-sm">
+                {data?.productType
+                  ? PRODUCT_TYPE_OPTIONS.get(data.productType)
+                  : "-"}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold">Import Price:</span>
+              <span className="text-sm">{data?.importPrice}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold">Export Price:</span>
+              <span className="text-sm">{data?.exportPrice}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <span className="text-sm font-bold">Profit Percentage:</span>
+              <span className="text-sm">{data?.profitPercentage}</span>
             </div>
           </div>
         </ModalSection>
