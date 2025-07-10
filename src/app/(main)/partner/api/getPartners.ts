@@ -40,6 +40,8 @@ export type TPartner = {
   bankName: string;
   bankAccountNumber: string;
   partnerProjects: TProject[];
+  debtReceivable: number;
+  debtPayable: number;
   createdAt: string;
   updatedAt: string;
   createdBy: string;

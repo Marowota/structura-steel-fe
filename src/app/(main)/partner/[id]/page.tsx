@@ -45,25 +45,42 @@ export default function PartnerDetailPage() {
           </div>
         </div>
       </div>
-      <div className="w-1/2 min-w-[600px] rounded-md border border-gray-200 px-3 py-2 shadow-md">
-        <div className="text-lg-bold text-brand-800 mb-2">
-          Basic information
+      <div className="flex gap-4">
+        <div className="w-1/2 min-w-[600px] rounded-md border border-gray-200 px-3 py-2 shadow-md">
+          <div className="text-lg-bold text-brand-800 mb-2">
+            Basic information
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div>Tax code</div>
+            <div className="col-span-2">{partnerData?.taxCode}</div>
+          </div>
+          <div className="bg-info-200 my-2 h-[1px]" />
+          <div className="grid grid-cols-3 gap-2">
+            <div>Bank name</div>
+            <div className="col-span-2">{partnerData?.bankName}</div>
+          </div>
+          <div className="bg-info-200 my-2 h-[1px]" />
+          <div className="grid grid-cols-3 gap-2">
+            <div>Bank account number</div>
+            <div className="col-span-2">{partnerData?.bankAccountNumber}</div>
+          </div>
+          <div className="bg-info-200 my-2 h-[1px]" />
         </div>
-        <div className="grid grid-cols-3 gap-2">
-          <div>Tax code</div>
-          <div className="col-span-2">{partnerData?.taxCode}</div>
+        <div className="w-1/2 min-w-[600px] rounded-md border border-gray-200 px-3 py-2 shadow-md">
+          <div className="text-lg-bold text-brand-800 mb-2">
+            Debt information
+          </div>
+          <div className="grid grid-cols-3 gap-2">
+            <div>Receivable</div>
+            <div className="col-span-2">{partnerData?.debtReceivable} VND</div>
+          </div>
+          <div className="bg-info-200 my-2 h-[1px]" />
+          <div className="grid grid-cols-3 gap-2">
+            <div>Payable</div>
+            <div className="col-span-2">{partnerData?.debtPayable} VND</div>
+          </div>
+          <div className="bg-info-200 my-2 h-[1px]" />
         </div>
-        <div className="bg-info-200 my-2 h-[1px]" />
-        <div className="grid grid-cols-3 gap-2">
-          <div>Bank name</div>
-          <div className="col-span-2">{partnerData?.bankName}</div>
-        </div>
-        <div className="bg-info-200 my-2 h-[1px]" />
-        <div className="grid grid-cols-3 gap-2">
-          <div>Bank account number</div>
-          <div className="col-span-2">{partnerData?.bankAccountNumber}</div>
-        </div>
-        <div className="bg-info-200 my-2 h-[1px]" />
       </div>
       <div className="w-full rounded-md border border-gray-200 px-3 py-2 shadow-md">
         <div className="text-lg-bold text-brand-800 mb-2">Projects</div>
