@@ -27,6 +27,7 @@ import {
   useGetInfiniteImports,
 } from "../../import/api/getImports";
 import { EDeliveryType } from "../api/getDeliveries";
+import { usePostDeliveryDebt } from "../../debt/api/deliveryDebt/postDevlieryDebt";
 
 export const DeliveryCreateModal = ({
   isOpen,
@@ -78,6 +79,7 @@ export const DeliveryCreateModal = ({
   }, [editDeliveryData]);
 
   const { mutateAsync: createDelivery } = usePostDelivery();
+  const { mutateAsync: createDeliveryDebt } = usePostDeliveryDebt();
 
   const itemSelectHandler = (value: string, field: keyof PostDeliveryDTO) => {
     if (value) {
@@ -206,7 +208,11 @@ export const DeliveryCreateModal = ({
     if (data.deliveryType === EDeliveryType.EXPORT) {
       data.purchaseOrderId = undefined;
     }
-    createDelivery(submitData);
+    const result = await createDelivery(submitData);
+    await createDeliveryDebt({
+      deliveryId: result.id,
+      originalAmount: data.deliveryUnitPrice + data.additionalFees,
+    });
     onCloseHandler();
   };
 
