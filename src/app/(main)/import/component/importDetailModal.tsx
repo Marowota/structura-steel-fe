@@ -51,7 +51,8 @@ export const ImportDetailModal = ({
                   <div className="text-sm-semibold">{detail.product.name}</div>
                   <div className="ml-auto">
                     quantity: {detail.quantity} - price:{" "}
-                    {detail.product.importPrice} - weight: {detail.weight} kg
+                    {detail.product.importPrice} VND - weight: {detail.weight}{" "}
+                    kg
                   </div>
                 </div>
               ))}
