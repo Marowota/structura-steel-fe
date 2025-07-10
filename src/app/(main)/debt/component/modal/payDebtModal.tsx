@@ -94,6 +94,10 @@ export const PayDebtModal = ({
                 type="number"
                 {...register("amountPaid", {
                   required: "Amount paid is required",
+                  min: {
+                    value: 0,
+                    message: "Amount Paid cannot be negative",
+                  },
                 })}
                 isError={!!errors.amountPaid}
                 errorMessage={errors.amountPaid?.message}

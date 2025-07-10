@@ -160,6 +160,10 @@ export const ProductCreateModal = ({
                   errorMessage={errors.importPrice?.message}
                   {...register("importPrice", {
                     required: "Import Price is required",
+                    min: {
+                      value: 0,
+                      message: "Import Price cannot be negative",
+                    },
                   })}
                   required
                 />
@@ -172,6 +176,10 @@ export const ProductCreateModal = ({
                   errorMessage={errors.profitPercentage?.message}
                   {...register("profitPercentage", {
                     required: "Profit Percentage is required",
+                    min: {
+                      value: 0,
+                      message: "Profit Percentage cannot be negative",
+                    },
                   })}
                   required
                 />
@@ -195,6 +203,12 @@ export const ProductCreateModal = ({
                   required: currentDisabledFields.has("length")
                     ? false
                     : "Length is required",
+                  min: currentDisabledFields.has("length")
+                    ? undefined
+                    : {
+                        value: 0,
+                        message: "Length cannot be negative",
+                      },
                 })}
                 required={!currentDisabledFields.has("length")}
                 disabled={currentDisabledFields.has("length")}
@@ -210,6 +224,12 @@ export const ProductCreateModal = ({
                   required: currentDisabledFields.has("width")
                     ? false
                     : "Width is required",
+                  min: currentDisabledFields.has("width")
+                    ? undefined
+                    : {
+                        value: 0,
+                        message: "Width cannot be negative",
+                      },
                 })}
                 required={!currentDisabledFields.has("width")}
                 disabled={currentDisabledFields.has("width")}
@@ -225,6 +245,12 @@ export const ProductCreateModal = ({
                   required: currentDisabledFields.has("height")
                     ? false
                     : "Height is required",
+                  min: currentDisabledFields.has("height")
+                    ? undefined
+                    : {
+                        value: 0,
+                        message: "Height cannot be negative",
+                      },
                 })}
                 required={!currentDisabledFields.has("height")}
                 disabled={currentDisabledFields.has("height")}
@@ -240,6 +266,12 @@ export const ProductCreateModal = ({
                   required: currentDisabledFields.has("unitWeight")
                     ? false
                     : "Unit Weight is required",
+                  min: currentDisabledFields.has("unitWeight")
+                    ? undefined
+                    : {
+                        value: 0,
+                        message: "Unit Weight cannot be negative",
+                      },
                 })}
                 required={!currentDisabledFields.has("unitWeight")}
                 disabled={currentDisabledFields.has("unitWeight")}
@@ -255,6 +287,12 @@ export const ProductCreateModal = ({
                   required: currentDisabledFields.has("thickness")
                     ? false
                     : "Thickness is required",
+                  min: currentDisabledFields.has("thickness")
+                    ? undefined
+                    : {
+                        value: 0,
+                        message: "Thickness cannot be negative",
+                      },
                 })}
                 required={!currentDisabledFields.has("thickness")}
                 disabled={currentDisabledFields.has("thickness")}
@@ -270,6 +308,12 @@ export const ProductCreateModal = ({
                   required: currentDisabledFields.has("diameter")
                     ? false
                     : "Diameter is required",
+                  min: currentDisabledFields.has("diameter")
+                    ? undefined
+                    : {
+                        value: 0,
+                        message: "Diameter cannot be negative",
+                      },
                 })}
                 required={!currentDisabledFields.has("diameter")}
                 disabled={currentDisabledFields.has("diameter")}

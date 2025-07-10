@@ -101,7 +101,16 @@ export const VehicleCreateModal = ({
                   />
                 )}
               />
-              <Input type="number" label="Capacity" {...register("capacity")} />
+              <Input
+                type="number"
+                label="Capacity"
+                {...register("capacity", {
+                  min: {
+                    value: 0,
+                    message: "Capacity cannot be negative",
+                  },
+                })}
+              />
               <div className="col-span-2">
                 <Textarea label="Description" {...register("description")} />
               </div>
