@@ -67,11 +67,7 @@ export function MainLayout({ children }: { children: ReactNode }) {
       icon: <Truck />,
       route: "/delivery",
       header: "Delivery",
-      protected: [
-        EUserRole.ROLE_ADMIN,
-        EUserRole.ROLE_SALER,
-        EUserRole.ROLE_IMPORTER,
-      ],
+      protected: [EUserRole.ROLE_ADMIN, EUserRole.ROLE_IMPORTER],
       blocked: [...blockedAllTabRoles],
     },
     {
