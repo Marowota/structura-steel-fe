@@ -35,6 +35,7 @@ import { usePostOrderDebtBatch } from "../../debt/api/orderDebt/postOrderDebtBat
 import { PostOrderDebtDTO } from "../../debt/api/orderDebt/postOrderDebt";
 import { PartnerCreateModal } from "../../partner/component/partner/partnerCreateModal";
 import { ProjectCreateModal } from "../../partner/component/project/ProjectCreateModal";
+import { getProductDetail } from "../../product/api/getProductsDetail";
 
 export const OrderCreateModal = ({
   isOpen,
@@ -134,6 +135,28 @@ export const OrderCreateModal = ({
     sortDir: "asc",
     search: "",
   };
+
+  const [isLatestProductInfo, setIsLatestProductInfo] = useState(false);
+
+  useEffect(() => {
+    if (isLatestProductInfo || !currentProducts || currentProducts.length <= 0)
+      return;
+    const newProductPromise = currentProducts.map(async (product) => {
+      const latestProductInformation = await getProductDetail({
+        id: product.productId,
+      });
+      return {
+        ...product,
+        unitPrice: latestProductInformation.exportPrice,
+        importPrice: latestProductInformation.importPrice,
+        name: latestProductInformation.name,
+      };
+    });
+    Promise.all(newProductPromise).then((resolvedProducts) => {
+      setValue("products", resolvedProducts);
+    });
+    setIsLatestProductInfo(true);
+  }, [isLatestProductInfo, currentProducts]);
 
   const [partnerParams, setPartnerParams] = useState<GetPartnersDTO>({
     ...defaultParams,
@@ -461,6 +484,7 @@ export const OrderCreateModal = ({
                       ]);
                       clearErrors("products");
                     }
+                    setIsLatestProductInfo(false);
                   }
                 }}
                 {...register("products", {
@@ -492,14 +516,16 @@ export const OrderCreateModal = ({
                           }
                         />
                         <Input
+                          disabled
                           type="number"
-                          className="w-20"
-                          label="Unit Price"
+                          className="w-24 disabled:opacity-90"
+                          label="Export Price"
                           inputSize={"sm"}
-                          {...register(`products.${index}.unitPrice`, {
-                            required: "Unit Price is required",
-                            min: 1,
-                          })}
+                          value={currentProducts?.[index]?.unitPrice ?? 0}
+                          // {...register(`products.${index}.unitPrice`, {
+                          //   required: "Unit Price is required",
+                          //   min: 1,
+                          // })}
                           required
                           isError={
                             errors.products?.[index]?.unitPrice ? true : false
