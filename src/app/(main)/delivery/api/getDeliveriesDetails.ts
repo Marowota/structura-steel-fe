@@ -51,7 +51,10 @@ const getDeliveryDetail = async (params?: GetDeliveryDetailDTO) => {
     ),
   );
 
-  return response.data;
+  return {
+    ...response.data,
+    deliveryType: EDeliveryType.IMPORT,
+  } as TDeliveryDetail;
 };
 
 export const useGetDeliveryDetail = ({
