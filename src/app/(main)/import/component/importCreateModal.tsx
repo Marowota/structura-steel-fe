@@ -455,6 +455,9 @@ export const ImportCreateModal = ({
                           setValue("products", updatedProducts);
                         }}
                         type="button"
+                        disabled={
+                          currentOrderId === DEFAULT_ORDER.id ? false : true
+                        }
                       >
                         <X className="h-4 w-4" />
                       </Button>
