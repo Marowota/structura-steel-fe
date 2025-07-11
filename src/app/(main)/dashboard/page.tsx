@@ -1,6 +1,4 @@
 "use client";
-import { DebtStatusAmountChart } from "./component/debtStatusAmountChart";
-import { DebtStatusCountChart } from "./component/debtStatusCountChart";
 import { RevenueOvertimeChart } from "./component/revenueOvertimeChart";
 import { SummaryChart } from "./component/sumaryChart";
 import { TopCustomerChart } from "./component/topCustomerChart";
@@ -13,10 +11,10 @@ export default function DashboardPage() {
       <RevenueOvertimeChart />
       <TopCustomerChart />
       <TopProductChart />
-      <div className="grid grid-cols-2 gap-3">
+      {/* <div className="grid grid-cols-2 gap-3">
         <DebtStatusAmountChart />
         <DebtStatusCountChart />
-      </div>
+      </div> */}
       <div className="min-h-3"></div>
     </div>
   );
