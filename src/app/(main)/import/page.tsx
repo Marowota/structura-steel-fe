@@ -71,6 +71,9 @@ export default function ImportPage() {
       <ImportCreateModal
         isOpen={isOpenCreate.isOpen}
         onClose={() => setIsOpenCreate({ isOpen: false, editId: undefined })}
+        onCloseOtherModal={() => {
+          setIsOpenCreate({ isOpen: true, editId: undefined });
+        }}
         editId={isOpenCreate.editId}
         key={isOpenCreate.editId ? isOpenCreate.editId : "new-import"}
       />
