@@ -16,7 +16,6 @@ export enum ERestoreType {
   VEHICLE = "Vehicle",
   WAREHOUSE = "Warehouse",
   PRODUCT = "Product",
-  SALE_ORDER = "Sale order",
 }
 
 export type TSoftDel =
